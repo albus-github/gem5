@@ -1,0 +1,754 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ACTIVATE	common.h	/^    ACTIVATE,$/;"	m	class:dramsim3::CommandType
+ADD16	hmc.h	/^    ADD16,$/;"	m	class:dramsim3::HMCReqType
+ADD8	hmc.h	/^    ADD8,  \/\/ 2ADD8, cannot name it like that in c++...$/;"	m	class:dramsim3::HMCReqType
+ADDS16R	hmc.h	/^    ADDS16R,$/;"	m	class:dramsim3::HMCReqType
+ADDS8R	hmc.h	/^    ADDS8R,  \/\/ 2ADD8, cannot name it like that...$/;"	m	class:dramsim3::HMCReqType
+AL	configuration.h	/^    int AL;$/;"	m	class:dramsim3::Config
+AND16	hmc.h	/^    AND16,$/;"	m	class:dramsim3::HMCReqType
+AbruptExit	common.cc	/^void AbruptExit(const std::string& file, int line) {$/;"	f	namespace:dramsim3
+ActivationWindowOk	channel_state.cc	/^bool ChannelState::ActivationWindowOk(int rank, uint64_t curr_time) const {$/;"	f	class:dramsim3::ChannelState
+AddCommand	command_queue.cc	/^bool CommandQueue::AddCommand(Command cmd) {$/;"	f	class:dramsim3::CommandQueue
+AddTransaction	controller.cc	/^bool Controller::AddTransaction(Transaction trans) {$/;"	f	class:dramsim3::Controller
+AddTransaction	dram_system.cc	/^bool IdealDRAMSystem::AddTransaction(uint64_t hex_addr, bool is_write) {$/;"	f	class:dramsim3::IdealDRAMSystem
+AddTransaction	dram_system.cc	/^bool JedecDRAMSystem::AddTransaction(uint64_t hex_addr, bool is_write) {$/;"	f	class:dramsim3::JedecDRAMSystem
+AddTransaction	hmc.cc	/^bool HMCMemorySystem::AddTransaction(uint64_t hex_addr, bool is_write) {$/;"	f	class:dramsim3::HMCMemorySystem
+AddTransaction	memory_system.cc	/^bool MemorySystem::AddTransaction(uint64_t hex_addr, bool is_write) {$/;"	f	class:dramsim3::MemorySystem
+AddValue	simple_stats.cc	/^void SimpleStats::AddValue(const std::string name, const int value) {$/;"	f	class:dramsim3::SimpleStats
+Address	common.h	/^    Address()$/;"	f	struct:dramsim3::Address
+Address	common.h	/^    Address(const Address& addr)$/;"	f	struct:dramsim3::Address
+Address	common.h	/^    Address(int channel, int rank, int bankgroup, int bank, int row, int column)$/;"	f	struct:dramsim3::Address
+Address	common.h	/^struct Address {$/;"	s	namespace:dramsim3
+AddressMapping	configuration.cc	/^Address Config::AddressMapping(uint64_t hex_addr) const {                   $/;"	f	class:dramsim3::Config
+ArbitratePrecharge	command_queue.cc	/^bool CommandQueue::ArbitratePrecharge(const CMDIterator& cmd_it,                    \/\/判断是否要precharge，考虑行缓冲命名和命中限制（为什么要限制行缓冲命中的次数？？？）$/;"	f	class:dramsim3::CommandQueue
+BANK_LEVEL_STAGGERED	configuration.h	/^    BANK_LEVEL_STAGGERED,$/;"	m	class:dramsim3::RefreshPolicy
+BL	configuration.h	/^    int BL;$/;"	m	class:dramsim3::Config
+BWR	hmc.h	/^    BWR,$/;"	m	class:dramsim3::HMCReqType
+BWR8R	hmc.h	/^    BWR8R,  \/\/ bit write with return$/;"	m	class:dramsim3::HMCReqType
+Bank	common.h	/^    int Bank() const { return addr.bank; }$/;"	f	struct:dramsim3::Command
+BankNeedRefresh	channel_state.cc	/^void ChannelState::BankNeedRefresh(int rank, int bankgroup, int bank,$/;"	f	class:dramsim3::ChannelState
+BankState	bankstate.cc	/^BankState::BankState()$/;"	f	class:dramsim3::BankState
+BankState	bankstate.h	/^class BankState {$/;"	c	namespace:dramsim3
+Bankgroup	common.h	/^    int Bankgroup() const { return addr.bankgroup; }$/;"	f	struct:dramsim3::Command
+BaseDRAMSystem	dram_system.cc	/^BaseDRAMSystem::BaseDRAMSystem(Config &config, const std::string &output_dir,$/;"	f	class:dramsim3::BaseDRAMSystem
+BaseDRAMSystem	dram_system.h	/^class BaseDRAMSystem {$/;"	c	namespace:dramsim3
+BuildAgeQueue	hmc.cc	/^std::vector<int> HMCMemorySystem::BuildAgeQueue(std::vector<int> &age_counter) {$/;"	f	class:dramsim3::HMCMemorySystem
+CASEQ8	hmc.h	/^    CASEQ8,$/;"	m	class:dramsim3::HMCReqType
+CASGT16	hmc.h	/^    CASGT16,$/;"	m	class:dramsim3::HMCReqType
+CASGT8	hmc.h	/^    CASGT8,$/;"	m	class:dramsim3::HMCReqType
+CASLT16	hmc.h	/^    CASLT16,$/;"	m	class:dramsim3::HMCReqType
+CASLT8	hmc.h	/^    CASLT8,$/;"	m	class:dramsim3::HMCReqType
+CASZERO16	hmc.h	/^    CASZERO16,$/;"	m	class:dramsim3::HMCReqType
+CL	configuration.h	/^    int CL;$/;"	m	class:dramsim3::Config
+CLOSED	bankstate.h	/^    enum class State { OPEN, CLOSED, SREF, PD, SIZE };$/;"	m	class:dramsim3::BankState::State
+CLOSE_PAGE	controller.h	/^enum class RowBufPolicy { OPEN_PAGE, CLOSE_PAGE, SIZE };$/;"	m	class:dramsim3::RowBufPolicy
+CPU	cpu.h	/^    CPU(const std::string& config_file, const std::string& output_dir)$/;"	f	class:dramsim3::CPU
+CPU	cpu.h	/^class CPU {$/;"	c	namespace:dramsim3
+CWL	configuration.h	/^    int CWL;$/;"	m	class:dramsim3::Config
+CalcFinalT	thermal.cc	/^void ThermalCalculator::CalcFinalT(int case_id, uint64_t clk) {$/;"	f	class:dramsim3::ThermalCalculator
+CalcTransT	thermal.cc	/^void ThermalCalculator::CalcTransT(int case_id) {$/;"	f	class:dramsim3::ThermalCalculator
+CalculateSize	configuration.cc	/^void Config::CalculateSize() {$/;"	f	class:dramsim3::Config
+Cap	thermal.h	/^    double *Cap;            \/\/ Cap storing the thermal capacitance$/;"	m	class:dramsim3::ThermalCalculator
+CapSize	thermal.h	/^    int MidxSize, CapSize;  \/\/ first dimension size of Midx and Cap$/;"	m	class:dramsim3::ThermalCalculator
+Ccu	thermal_config.h	/^const double Ccu = 3.2e6;   \/\/ Copper$/;"	v
+Channel	common.h	/^    int Channel() const { return addr.channel; }$/;"	f	struct:dramsim3::Command
+ChannelState	channel_state.cc	/^ChannelState::ChannelState(const Config& config, const Timing& timing)$/;"	f	class:dramsim3::ChannelState
+ChannelState	channel_state.h	/^class ChannelState {$/;"	c	namespace:dramsim3
+Chs	thermal_config.h	/^const double Chs = 2.42e6;  \/\/ Heat sink$/;"	v
+Cin	thermal_config.h	/^const double Cin = 1.65e6;  \/\/ insulator$/;"	v
+ClockTick	command_queue.h	/^    void ClockTick() { clk_ += 1; };$/;"	f	class:dramsim3::CommandQueue
+ClockTick	controller.cc	/^void Controller::ClockTick() {$/;"	f	class:dramsim3::Controller
+ClockTick	cpu.cc	/^void RandomCPU::ClockTick() {$/;"	f	class:dramsim3::RandomCPU
+ClockTick	cpu.cc	/^void StreamCPU::ClockTick() {$/;"	f	class:dramsim3::StreamCPU
+ClockTick	cpu.cc	/^void TraceBasedCPU::ClockTick() {$/;"	f	class:dramsim3::TraceBasedCPU
+ClockTick	dram_system.cc	/^void IdealDRAMSystem::ClockTick() {$/;"	f	class:dramsim3::IdealDRAMSystem
+ClockTick	dram_system.cc	/^void JedecDRAMSystem::ClockTick() {$/;"	f	class:dramsim3::JedecDRAMSystem
+ClockTick	hmc.cc	/^void HMCMemorySystem::ClockTick() {$/;"	f	class:dramsim3::HMCMemorySystem
+ClockTick	memory_system.cc	/^void MemorySystem::ClockTick() { dram_system_->ClockTick(); }$/;"	f	class:dramsim3::MemorySystem
+ClockTick	refresh.cc	/^void Refresh::ClockTick() {$/;"	f	class:dramsim3::Refresh
+Column	common.h	/^    int Column() const { return addr.column; }$/;"	f	struct:dramsim3::Command
+Command	common.h	/^    Command() : cmd_type(CommandType::SIZE), hex_addr(0) {}$/;"	f	struct:dramsim3::Command
+Command	common.h	/^    Command(CommandType cmd_type, const Address& addr, uint64_t hex_addr)$/;"	f	struct:dramsim3::Command
+Command	common.h	/^struct Command {$/;"	s	namespace:dramsim3
+CommandQueue	command_queue.cc	/^CommandQueue::CommandQueue(int channel_id, const Config& config,$/;"	f	class:dramsim3::CommandQueue
+CommandQueue	command_queue.h	/^class CommandQueue {$/;"	c	namespace:dramsim3
+CommandType	common.h	/^enum class CommandType {$/;"	c	namespace:dramsim3
+Config	configuration.cc	/^Config::Config(std::string config_file, std::string out_dir)$/;"	f	class:dramsim3::Config
+Config	configuration.h	/^class Config {$/;"	c	namespace:dramsim3
+Controller	controller.cc	/^Controller::Controller(int channel, const Config &config, const Timing &timing,$/;"	f	class:dramsim3::Controller
+Controller	controller.h	/^class Controller {$/;"	c	namespace:dramsim3
+Csi	thermal_config.h	/^const double Csi = 1.66e6;  \/\/ Silicon$/;"	v
+DDR3	configuration.h	/^    DDR3,$/;"	m	class:dramsim3::DRAMProtocol
+DDR4	configuration.h	/^    DDR4,$/;"	m	class:dramsim3::DRAMProtocol
+DEV_TO_DEV	hmc.h	/^enum class HMCLinkType { HOST_TO_DEV, DEV_TO_DEV, SIZE };$/;"	m	class:dramsim3::HMCLinkType
+DRAMClockTick	hmc.cc	/^void HMCMemorySystem::DRAMClockTick() {$/;"	f	class:dramsim3::HMCMemorySystem
+DRAMProtocol	configuration.h	/^enum class DRAMProtocol {$/;"	c	namespace:dramsim3
+DirExist	common.cc	/^bool DirExist(std::string dir) {$/;"	f	namespace:dramsim3
+DrainRequests	hmc.cc	/^void HMCMemorySystem::DrainRequests() {$/;"	f	class:dramsim3::HMCMemorySystem
+DrainResponses	hmc.cc	/^void HMCMemorySystem::DrainResponses() {$/;"	f	class:dramsim3::HMCMemorySystem
+EQ16	hmc.h	/^    EQ16,$/;"	m	class:dramsim3::HMCReqType
+EQ8	hmc.h	/^    EQ8,$/;"	m	class:dramsim3::HMCReqType
+ERR	hmc.h	/^enum class HMCRespType { NONE, RD_RS, WR_RS, ERR, SIZE };$/;"	m	class:dramsim3::HMCRespType
+EraseRWCommand	command_queue.cc	/^void CommandQueue::EraseRWCommand(const Command& cmd) {$/;"	f	class:dramsim3::CommandQueue
+FinishRefresh	command_queue.cc	/^Command CommandQueue::FinishRefresh() {         \/\/实际上就是发送刷新队列中下一条刷新命令$/;"	f	class:dramsim3::CommandQueue
+GDDR5	configuration.h	/^    GDDR5,$/;"	m	class:dramsim3::DRAMProtocol
+GDDR5X	configuration.h	/^    GDDR5X,$/;"	m	class:dramsim3::DRAMProtocol
+GDDR6	configuration.h	/^    GDDR6,$/;"	m	class:dramsim3::DRAMProtocol
+GetBitInPos	common.cc	/^int GetBitInPos(uint64_t bits, int pos) {$/;"	f	namespace:dramsim3
+GetBurstLength	memory_system.cc	/^int MemorySystem::GetBurstLength() const { return config_->BL; }$/;"	f	class:dramsim3::MemorySystem
+GetBusBits	memory_system.cc	/^int MemorySystem::GetBusBits() const { return config_->bus_width; }$/;"	f	class:dramsim3::MemorySystem
+GetChannel	dram_system.cc	/^int BaseDRAMSystem::GetChannel(uint64_t hex_addr) const {$/;"	f	class:dramsim3::BaseDRAMSystem
+GetCommandToIssue	command_queue.cc	/^Command CommandQueue::GetCommandToIssue() {   $/;"	f	class:dramsim3::CommandQueue
+GetDRAMProtocol	configuration.cc	/^DRAMProtocol Config::GetDRAMProtocol(std::string protocol_str) {$/;"	f	class:dramsim3::Config
+GetFirstReadyInQueue	command_queue.cc	/^Command CommandQueue::GetFirstReadyInQueue(CMDQueue& queue) const {$/;"	f	class:dramsim3::CommandQueue
+GetHistoAvg	simple_stats.cc	/^double SimpleStats::GetHistoAvg(const HistoCount& hist_counts) const {$/;"	f	class:dramsim3::SimpleStats
+GetInteger	configuration.cc	/^int Config::GetInteger(const std::string& sec, const std::string& opt,$/;"	f	class:dramsim3::Config
+GetMaxTofCase	thermal.cc	/^double ThermalCalculator::GetMaxTofCase(double **temp_map, int case_id) {$/;"	f	class:dramsim3::ThermalCalculator
+GetMaxTofCaseLayer	thermal.cc	/^double ThermalCalculator::GetMaxTofCaseLayer(double **temp_map, int case_id,$/;"	f	class:dramsim3::ThermalCalculator
+GetMemorySystem	memory_system.cc	/^MemorySystem* GetMemorySystem(const std::string &config_file, const std::string &output_dir,$/;"	f	namespace:dramsim3
+GetNextQueue	command_queue.cc	/^CMDQueue& CommandQueue::GetNextQueue() {$/;"	f	class:dramsim3::CommandQueue
+GetPhyAddress	thermal.cc	/^std::function<Address(const Address &addr)> GetPhyAddress;$/;"	m	namespace:dramsim3	file:
+GetQueue	command_queue.cc	/^CMDQueue& CommandQueue::GetQueue(int rank, int bankgroup, int bank) {$/;"	f	class:dramsim3::CommandQueue
+GetQueueIndex	command_queue.cc	/^int CommandQueue::GetQueueIndex(int rank, int bankgroup, int bank) const {$/;"	f	class:dramsim3::CommandQueue
+GetQueueSize	memory_system.cc	/^int MemorySystem::GetQueueSize() const { return config_->trans_queue_size; }$/;"	f	class:dramsim3::MemorySystem
+GetReadyCommand	bankstate.cc	/^Command BankState::GetReadyCommand(const Command& cmd, uint64_t clk) const {$/;"	f	class:dramsim3::BankState
+GetReadyCommand	channel_state.cc	/^Command ChannelState::GetReadyCommand(const Command& cmd, uint64_t clk) const {$/;"	f	class:dramsim3::ChannelState
+GetRefQIndices	command_queue.cc	/^void CommandQueue::GetRefQIndices(const Command& ref) {$/;"	f	class:dramsim3::CommandQueue
+GetTCK	memory_system.cc	/^double MemorySystem::GetTCK() const { return config_->tCK; }$/;"	f	class:dramsim3::MemorySystem
+GetTextHeader	simple_stats.cc	/^std::string SimpleStats::GetTextHeader(bool is_final) const {$/;"	f	class:dramsim3::SimpleStats
+GetTotalPower	thermal.cc	/^double ThermalCalculator::GetTotalPower(double ***powerM) {$/;"	f	class:dramsim3::ThermalCalculator
+HBM	configuration.h	/^    HBM,$/;"	m	class:dramsim3::DRAMProtocol
+HBM2	configuration.h	/^    HBM2,$/;"	m	class:dramsim3::DRAMProtocol
+HMC	configuration.h	/^    HMC,$/;"	m	class:dramsim3::DRAMProtocol
+HMCLinkType	hmc.h	/^enum class HMCLinkType { HOST_TO_DEV, DEV_TO_DEV, SIZE };$/;"	c	namespace:dramsim3
+HMCMemorySystem	hmc.cc	/^HMCMemorySystem::HMCMemorySystem(Config &config, const std::string &output_dir,$/;"	f	class:dramsim3::HMCMemorySystem
+HMCMemorySystem	hmc.h	/^class HMCMemorySystem : public BaseDRAMSystem {$/;"	c	namespace:dramsim3
+HMCReqType	hmc.h	/^enum class HMCReqType {$/;"	c	namespace:dramsim3
+HMCRequest	hmc.cc	/^HMCRequest::HMCRequest(HMCReqType req_type, uint64_t hex_addr, int vault)$/;"	f	class:dramsim3::HMCRequest
+HMCRequest	hmc.h	/^class HMCRequest {$/;"	c	namespace:dramsim3
+HMCRespType	hmc.h	/^enum class HMCRespType { NONE, RD_RS, WR_RS, ERR, SIZE };$/;"	c	namespace:dramsim3
+HMCResponse	hmc.cc	/^HMCResponse::HMCResponse(uint64_t id, HMCReqType req_type, int dest_link,$/;"	f	class:dramsim3::HMCResponse
+HMCResponse	hmc.h	/^class HMCResponse {$/;"	c	namespace:dramsim3
+HOST_TO_DEV	hmc.h	/^enum class HMCLinkType { HOST_TO_DEV, DEV_TO_DEV, SIZE };$/;"	m	class:dramsim3::HMCLinkType
+HasRWDependency	command_queue.cc	/^bool CommandQueue::HasRWDependency(const CMDIterator& cmd_it,$/;"	f	class:dramsim3::CommandQueue
+Hcu	thermal_config.h	/^const double Hcu = 5e-6;     \/\/ Copper$/;"	v
+Hhs	thermal_config.h	/^const double Hhs = 1000e-6;  \/\/ Heat sink$/;"	v
+Hin	thermal_config.h	/^const double Hin = 20e-6;    \/\/ Insulator$/;"	v
+Hsi	thermal_config.h	/^const double Hsi = 400e-6;   \/\/ Silicon$/;"	v
+INC8	hmc.h	/^    INC8,  \/\/ read, return(the original), then write$/;"	m	class:dramsim3::HMCReqType
+IdealDRAMSystem	dram_system.cc	/^IdealDRAMSystem::IdealDRAMSystem(Config &config, const std::string &output_dir,$/;"	f	class:dramsim3::IdealDRAMSystem
+IdealDRAMSystem	dram_system.h	/^class IdealDRAMSystem : public BaseDRAMSystem {$/;"	c	namespace:dramsim3
+Increment	simple_stats.h	/^    void Increment(const std::string name) { epoch_counters_[name] += 1; }$/;"	f	class:dramsim3::SimpleStats
+IncrementVec	simple_stats.h	/^    void IncrementVec(const std::string name, int pos) {$/;"	f	class:dramsim3::SimpleStats
+IncrementVecBy	simple_stats.h	/^    void IncrementVecBy(const std::string name, int pos, int num) {$/;"	f	class:dramsim3::SimpleStats
+InitDRAMParams	configuration.cc	/^void Config::InitDRAMParams() {$/;"	f	class:dramsim3::Config
+InitHistoStat	simple_stats.cc	/^void SimpleStats::InitHistoStat(std::string name, std::string description,$/;"	f	class:dramsim3::SimpleStats
+InitOtherParams	configuration.cc	/^void Config::InitOtherParams() {$/;"	f	class:dramsim3::Config
+InitPowerM	thermal.cc	/^double ***ThermalCalculator::InitPowerM(int case_id, uint64_t clk) {$/;"	f	class:dramsim3::ThermalCalculator
+InitPowerParams	configuration.cc	/^void Config::InitPowerParams() {$/;"	f	class:dramsim3::Config
+InitStat	simple_stats.cc	/^void SimpleStats::InitStat(std::string name, std::string stat_type,$/;"	f	class:dramsim3::SimpleStats
+InitSystemParams	configuration.cc	/^void Config::InitSystemParams() {                   \/\/读取configs中ini文件的配置，其中相应的参数应该可以在ini文件中修改$/;"	f	class:dramsim3::Config
+InitThermalParams	configuration.cc	/^void Config::InitThermalParams() {$/;"	f	class:dramsim3::Config
+InitTimingParams	configuration.cc	/^void Config::InitTimingParams() {$/;"	f	class:dramsim3::Config
+InitVecStat	simple_stats.cc	/^void SimpleStats::InitVecStat(std::string name, std::string stat_type,$/;"	f	class:dramsim3::SimpleStats
+InitialParameters	thermal.cc	/^void ThermalCalculator::InitialParameters() {$/;"	f	class:dramsim3::ThermalCalculator
+InsertHMCReq	hmc.cc	/^bool HMCMemorySystem::InsertHMCReq(HMCRequest *req) {$/;"	f	class:dramsim3::HMCMemorySystem
+InsertRefresh	refresh.cc	/^void Refresh::InsertRefresh() {$/;"	f	class:dramsim3::Refresh
+InsertReqToDRAM	hmc.cc	/^void HMCMemorySystem::InsertReqToDRAM(HMCRequest *req) {$/;"	f	class:dramsim3::HMCMemorySystem
+InsertReqToLink	hmc.cc	/^bool HMCMemorySystem::InsertReqToLink(HMCRequest *req, int link) {$/;"	f	class:dramsim3::HMCMemorySystem
+Is32AWReady	channel_state.cc	/^bool ChannelState::Is32AWReady(int rank, uint64_t curr_time) const {$/;"	f	class:dramsim3::ChannelState
+IsAllBankIdleInRank	channel_state.cc	/^bool ChannelState::IsAllBankIdleInRank(int rank) const {$/;"	f	class:dramsim3::ChannelState
+IsDDR4	configuration.h	/^    bool IsDDR4() const { return (protocol == DRAMProtocol::DDR4); }$/;"	f	class:dramsim3::Config
+IsFAWReady	channel_state.cc	/^bool ChannelState::IsFAWReady(int rank, uint64_t curr_time) const {$/;"	f	class:dramsim3::ChannelState
+IsGDDR	configuration.h	/^    bool IsGDDR() const {$/;"	f	class:dramsim3::Config
+IsHBM	configuration.h	/^    bool IsHBM() const {$/;"	f	class:dramsim3::Config
+IsHMC	configuration.h	/^    bool IsHMC() const { return (protocol == DRAMProtocol::HMC); }$/;"	f	class:dramsim3::Config
+IsRWPendingOnRef	channel_state.cc	/^bool ChannelState::IsRWPendingOnRef(const Command& cmd) const {$/;"	f	class:dramsim3::ChannelState
+IsRankActive	thermal_replay.cc	/^bool ThermalReplay::IsRankActive(int channel, int rank) {$/;"	f	class:ThermalReplay
+IsRankCMD	common.h	/^    bool IsRankCMD() const {$/;"	f	struct:dramsim3::Command
+IsRankSelfRefreshing	channel_state.h	/^    bool IsRankSelfRefreshing(int rank) const { return rank_is_sref_[rank]; }$/;"	f	class:dramsim3::ChannelState
+IsRead	common.h	/^    bool IsRead() const {$/;"	f	struct:dramsim3::Command
+IsReadWrite	common.h	/^    bool IsReadWrite() const { return IsRead() || IsWrite(); }$/;"	f	struct:dramsim3::Command
+IsRefresh	common.h	/^    bool IsRefresh() const {$/;"	f	struct:dramsim3::Command
+IsRefreshWaiting	channel_state.h	/^    bool IsRefreshWaiting() const { return !refresh_q_.empty(); }$/;"	f	class:dramsim3::ChannelState
+IsRowOpen	bankstate.h	/^    bool IsRowOpen() const { return state_ == State::OPEN; }$/;"	f	class:dramsim3::BankState
+IsRowOpen	channel_state.h	/^    bool IsRowOpen(int rank, int bankgroup, int bank) const {$/;"	f	class:dramsim3::ChannelState
+IsTraceFileEOF	cpu.cc	/^bool  TraceBasedCPU::IsTraceFileEOF(){$/;"	f	class:dramsim3::TraceBasedCPU
+IsTraceFileEOF	cpu.h	/^    virtual bool IsTraceFileEOF(){return false;};$/;"	f	class:dramsim3::CPU
+IsValid	common.h	/^    bool IsValid() const { return cmd_type != CommandType::SIZE; }                  \/\/SIZE类型判断为无效，其余命令类型判断相应的类型的布尔值$/;"	f	struct:dramsim3::Command
+IsWrite	common.h	/^    bool IsWrite() const {$/;"	f	struct:dramsim3::Command
+IssueCommand	controller.cc	/^void Controller::IssueCommand(const Command &cmd) {$/;"	f	class:dramsim3::Controller
+IterateNext	refresh.cc	/^void Refresh::IterateNext() {$/;"	f	class:dramsim3::Refresh
+IterateNextLink	hmc.cc	/^inline void HMCMemorySystem::IterateNextLink() {$/;"	f	class:dramsim3::HMCMemorySystem
+JedecDRAMSystem	dram_system.cc	/^JedecDRAMSystem::JedecDRAMSystem(Config &config, const std::string &output_dir,$/;"	f	class:dramsim3::JedecDRAMSystem
+JedecDRAMSystem	dram_system.h	/^class JedecDRAMSystem : public BaseDRAMSystem {$/;"	c	namespace:dramsim3
+Kcu	thermal_config.h	/^const double Kcu = 401.0;  \/\/ Copper$/;"	v
+Khs	thermal_config.h	/^const double Khs = 4.0;    \/\/ Heat sink$/;"	v
+Kin	thermal_config.h	/^const double Kin = 1.5;    \/\/ insulator$/;"	v
+Ksi	thermal_config.h	/^const double Ksi = 148.0;  \/\/ Silicon$/;"	v
+LPDDR	configuration.h	/^    LPDDR,$/;"	m	class:dramsim3::DRAMProtocol
+LPDDR3	configuration.h	/^    LPDDR3,$/;"	m	class:dramsim3::DRAMProtocol
+LPDDR4	configuration.h	/^    LPDDR4,$/;"	m	class:dramsim3::DRAMProtocol
+LocationMappingANDaddEnergy	thermal.cc	/^void ThermalCalculator::LocationMappingANDaddEnergy(const int channel,$/;"	f	class:dramsim3::ThermalCalculator
+LocationMappingANDaddEnergy_RF	thermal.cc	/^void ThermalCalculator::LocationMappingANDaddEnergy_RF(const int channel,$/;"	f	class:dramsim3::ThermalCalculator
+LogBase2	common.cc	/^int LogBase2(int power_of_two) {$/;"	f	namespace:dramsim3
+M_PI	thermal_config.h	/^const double M_PI = 3.141592653;$/;"	v
+MapToBank	thermal.cc	/^std::pair<int, int> ThermalCalculator::MapToBank(int bankgroup_id,$/;"	f	class:dramsim3::ThermalCalculator
+MapToVault	thermal.cc	/^std::pair<int, int> ThermalCalculator::MapToVault(int channel_id) {$/;"	f	class:dramsim3::ThermalCalculator
+MapToXY	thermal.cc	/^std::pair<std::vector<int>, std::vector<int>> ThermalCalculator::MapToXY($/;"	f	class:dramsim3::ThermalCalculator
+MapToZ	thermal.cc	/^int ThermalCalculator::MapToZ(int channel_id, int bank_id) {$/;"	f	class:dramsim3::ThermalCalculator
+MemorySystem	dramsim3.h	/^class MemorySystem {$/;"	c	namespace:dramsim3
+MemorySystem	memory_system.cc	/^MemorySystem::MemorySystem(const std::string &config_file,$/;"	f	class:dramsim3::MemorySystem
+MemorySystem	memory_system.h	/^class MemorySystem {$/;"	c	namespace:dramsim3
+Midx	thermal.h	/^    double **Midx;          \/\/ Midx storing thermal conductance$/;"	m	class:dramsim3::ThermalCalculator
+MidxSize	thermal.h	/^    int MidxSize, CapSize;  \/\/ first dimension size of Midx and Cap$/;"	m	class:dramsim3::ThermalCalculator
+ModuloWidth	common.h	/^inline uint32_t ModuloWidth(uint64_t addr, uint32_t bit_width, uint32_t pos) {$/;"	f	namespace:dramsim3
+NAND16	hmc.h	/^    NAND16,$/;"	m	class:dramsim3::HMCReqType
+NONE	hmc.h	/^enum class HMCRespType { NONE, RD_RS, WR_RS, ERR, SIZE };$/;"	m	class:dramsim3::HMCRespType
+NOR16	hmc.h	/^    NOR16,$/;"	m	class:dramsim3::HMCReqType
+OPEN	bankstate.h	/^    enum class State { OPEN, CLOSED, SREF, PD, SIZE };$/;"	m	class:dramsim3::BankState::State
+OPEN_PAGE	controller.h	/^enum class RowBufPolicy { OPEN_PAGE, CLOSE_PAGE, SIZE };$/;"	m	class:dramsim3::RowBufPolicy
+OR16	hmc.h	/^    OR16,$/;"	m	class:dramsim3::HMCReqType
+OpenRow	bankstate.h	/^    int OpenRow() const { return open_row_; }$/;"	f	class:dramsim3::BankState
+OpenRow	channel_state.h	/^    int OpenRow(int rank, int bankgroup, int bank) const {$/;"	f	class:dramsim3::ChannelState
+PD	bankstate.h	/^    enum class State { OPEN, CLOSED, SREF, PD, SIZE };$/;"	m	class:dramsim3::BankState::State
+PER_BANK	command_queue.h	/^enum class QueueStructure { PER_RANK, PER_BANK, SIZE };$/;"	m	class:dramsim3::QueueStructure
+PER_RANK	command_queue.h	/^enum class QueueStructure { PER_RANK, PER_BANK, SIZE };$/;"	m	class:dramsim3::QueueStructure
+PRECHARGE	common.h	/^    PRECHARGE,$/;"	m	class:dramsim3::CommandType
+P_2ADD8	hmc.h	/^    P_2ADD8,  \/\/ 2 8Byte imm operands + 8 8Byte mem operands read then write$/;"	m	class:dramsim3::HMCReqType
+P_ADD16	hmc.h	/^    P_ADD16,$/;"	m	class:dramsim3::HMCReqType
+P_BWR	hmc.h	/^    P_BWR,  \/\/ bit write, 8B mask, 8B value, read update write$/;"	m	class:dramsim3::HMCReqType
+P_INC8	hmc.h	/^    P_INC8, \/\/ read, return(the original), then posted write$/;"	m	class:dramsim3::HMCReqType
+P_WR112	hmc.h	/^    P_WR112,$/;"	m	class:dramsim3::HMCReqType
+P_WR128	hmc.h	/^    P_WR128,$/;"	m	class:dramsim3::HMCReqType
+P_WR16	hmc.h	/^    P_WR16,$/;"	m	class:dramsim3::HMCReqType
+P_WR256	hmc.h	/^    P_WR256,$/;"	m	class:dramsim3::HMCReqType
+P_WR32	hmc.h	/^    P_WR32,$/;"	m	class:dramsim3::HMCReqType
+P_WR48	hmc.h	/^    P_WR48,$/;"	m	class:dramsim3::HMCReqType
+P_WR64	hmc.h	/^    P_WR64,$/;"	m	class:dramsim3::HMCReqType
+P_WR80	hmc.h	/^    P_WR80,$/;"	m	class:dramsim3::HMCReqType
+P_WR96	hmc.h	/^    P_WR96,$/;"	m	class:dramsim3::HMCReqType
+ParseLine	thermal_replay.cc	/^void ThermalReplay::ParseLine(std::string line, uint64_t &clk, Command &cmd) {$/;"	f	class:ThermalReplay
+PendingRefCommand	channel_state.h	/^    const Command& PendingRefCommand() const {return refresh_q_.front(); }$/;"	f	class:dramsim3::ChannelState
+PrintCSVHeader_final	thermal.cc	/^void ThermalCalculator::PrintCSVHeader_final(std::ofstream &csvfile) {$/;"	f	class:dramsim3::ThermalCalculator
+PrintCSV_bank	thermal.cc	/^void ThermalCalculator::PrintCSV_bank(std::ofstream &csvfile) {$/;"	f	class:dramsim3::ThermalCalculator
+PrintCSV_final	thermal.cc	/^void ThermalCalculator::PrintCSV_final(std::ofstream &csvfile,$/;"	f	class:dramsim3::ThermalCalculator
+PrintCSV_trans	thermal.cc	/^void ThermalCalculator::PrintCSV_trans(std::ofstream &csvfile,$/;"	f	class:dramsim3::ThermalCalculator
+PrintEpochStats	controller.cc	/^void Controller::PrintEpochStats() {$/;"	f	class:dramsim3::Controller
+PrintEpochStats	dram_system.cc	/^void BaseDRAMSystem::PrintEpochStats() {$/;"	f	class:dramsim3::BaseDRAMSystem
+PrintEpochStats	simple_stats.cc	/^void SimpleStats::PrintEpochStats() {$/;"	f	class:dramsim3::SimpleStats
+PrintFinalPT	thermal.cc	/^void ThermalCalculator::PrintFinalPT(uint64_t clk) {$/;"	f	class:dramsim3::ThermalCalculator
+PrintFinalStats	controller.cc	/^void Controller::PrintFinalStats() {$/;"	f	class:dramsim3::Controller
+PrintFinalStats	simple_stats.cc	/^void SimpleStats::PrintFinalStats() {$/;"	f	class:dramsim3::SimpleStats
+PrintStatText	simple_stats.cc	/^void PrintStatText(std::ostream& where, std::string name, T value,$/;"	f	namespace:dramsim3
+PrintStats	cpu.h	/^    void PrintStats() { memory_system_.PrintStats(); }$/;"	f	class:dramsim3::CPU
+PrintStats	dram_system.cc	/^void BaseDRAMSystem::PrintStats() {$/;"	f	class:dramsim3::BaseDRAMSystem
+PrintStats	memory_system.cc	/^void MemorySystem::PrintStats() const { dram_system_->PrintStats(); }$/;"	f	class:dramsim3::MemorySystem
+PrintTransPT	thermal.cc	/^void ThermalCalculator::PrintTransPT(uint64_t clk) {$/;"	f	class:dramsim3::ThermalCalculator
+ProcessCMD	thermal_replay.cc	/^void ThermalReplay::ProcessCMD(Command &cmd, uint64_t clk) {$/;"	f	class:ThermalReplay
+QueueEmpty	command_queue.cc	/^bool CommandQueue::QueueEmpty() const {$/;"	f	class:dramsim3::CommandQueue
+QueueStructure	command_queue.h	/^enum class QueueStructure { PER_RANK, PER_BANK, SIZE };$/;"	c	namespace:dramsim3
+QueueUsage	command_queue.cc	/^int CommandQueue::QueueUsage() const {$/;"	f	class:dramsim3::CommandQueue
+QueueUsage	controller.cc	/^int Controller::QueueUsage() const { return cmd_queue_.QueueUsage(); }$/;"	f	class:dramsim3::Controller
+RANK_LEVEL_SIMULTANEOUS	configuration.h	/^    RANK_LEVEL_SIMULTANEOUS,  \/\/ impractical due to high power requirement$/;"	m	class:dramsim3::RefreshPolicy
+RANK_LEVEL_STAGGERED	configuration.h	/^    RANK_LEVEL_STAGGERED,$/;"	m	class:dramsim3::RefreshPolicy
+RD0	hmc.h	/^    RD0,$/;"	m	class:dramsim3::HMCReqType
+RD112	hmc.h	/^    RD112,$/;"	m	class:dramsim3::HMCReqType
+RD128	hmc.h	/^    RD128,$/;"	m	class:dramsim3::HMCReqType
+RD16	hmc.h	/^    RD16,$/;"	m	class:dramsim3::HMCReqType
+RD256	hmc.h	/^    RD256,$/;"	m	class:dramsim3::HMCReqType
+RD32	hmc.h	/^    RD32,$/;"	m	class:dramsim3::HMCReqType
+RD48	hmc.h	/^    RD48,$/;"	m	class:dramsim3::HMCReqType
+RD64	hmc.h	/^    RD64,$/;"	m	class:dramsim3::HMCReqType
+RD80	hmc.h	/^    RD80,$/;"	m	class:dramsim3::HMCReqType
+RD96	hmc.h	/^    RD96,$/;"	m	class:dramsim3::HMCReqType
+RD_RS	hmc.h	/^enum class HMCRespType { NONE, RD_RS, WR_RS, ERR, SIZE };$/;"	m	class:dramsim3::HMCRespType
+READ	common.h	/^    READ,$/;"	m	class:dramsim3::CommandType
+READ_PRECHARGE	common.h	/^    READ_PRECHARGE,$/;"	m	class:dramsim3::CommandType
+REFRESH	common.h	/^    REFRESH,$/;"	m	class:dramsim3::CommandType
+REFRESH_BANK	common.h	/^    REFRESH_BANK,$/;"	m	class:dramsim3::CommandType
+RL	configuration.h	/^    int RL;$/;"	m	class:dramsim3::Config
+R_TSV	thermal_config.h	/^const double R_TSV = 5e-6;  \/\/ [m]$/;"	v
+RandomCPU	cpu.h	/^class RandomCPU : public CPU {$/;"	c	namespace:dramsim3
+Rank	common.h	/^    int Rank() const { return addr.rank; }$/;"	f	struct:dramsim3::Command
+RankBackgroundEnergy	simple_stats.cc	/^double SimpleStats::RankBackgroundEnergy(const int rank) const{$/;"	f	class:dramsim3::SimpleStats
+RankNeedRefresh	channel_state.cc	/^void ChannelState::RankNeedRefresh(int rank, bool need) {$/;"	f	class:dramsim3::ChannelState
+ReadCallBack	cpu.h	/^    void ReadCallBack(uint64_t addr) { return; }$/;"	f	class:dramsim3::CPU
+Refresh	refresh.cc	/^Refresh::Refresh(const Config &config, ChannelState &channel_state)$/;"	f	class:dramsim3::Refresh
+Refresh	refresh.h	/^class Refresh {$/;"	c	namespace:dramsim3
+RefreshPolicy	configuration.h	/^enum class RefreshPolicy {$/;"	c	namespace:dramsim3
+RegisterCallbacks	dram_system.cc	/^void BaseDRAMSystem::RegisterCallbacks($/;"	f	class:dramsim3::BaseDRAMSystem
+RegisterCallbacks	memory_system.cc	/^void MemorySystem::RegisterCallbacks($/;"	f	class:dramsim3::MemorySystem
+Reset	simple_stats.cc	/^void SimpleStats::Reset() {$/;"	f	class:dramsim3::SimpleStats
+ResetStats	controller.h	/^    void ResetStats() { simple_stats_.Reset(); }$/;"	f	class:dramsim3::Controller
+ResetStats	dram_system.cc	/^void BaseDRAMSystem::ResetStats() {$/;"	f	class:dramsim3::BaseDRAMSystem
+ResetStats	memory_system.cc	/^void MemorySystem::ResetStats() { dram_system_->ResetStats(); }$/;"	f	class:dramsim3::MemorySystem
+ReturnDoneTrans	controller.cc	/^std::pair<uint64_t, int> Controller::ReturnDoneTrans(uint64_t clk) {                    \/\/统计完成的读写请求数量及读延迟？$/;"	f	class:dramsim3::Controller
+Row	common.h	/^    int Row() const { return addr.row; }$/;"	f	struct:dramsim3::Command
+RowBufPolicy	controller.h	/^enum class RowBufPolicy { OPEN_PAGE, CLOSE_PAGE, SIZE };$/;"	c	namespace:dramsim3
+RowHitCount	bankstate.h	/^    int RowHitCount() const { return row_hit_count_; }$/;"	f	class:dramsim3::BankState
+RowHitCount	channel_state.h	/^    int RowHitCount(int rank, int bankgroup, int bank) const {$/;"	f	class:dramsim3::ChannelState
+Run	thermal_replay.cc	/^void ThermalReplay::Run() {$/;"	f	class:ThermalReplay
+SREF	bankstate.h	/^    enum class State { OPEN, CLOSED, SREF, PD, SIZE };$/;"	m	class:dramsim3::BankState::State
+SREF_ENTER	common.h	/^    SREF_ENTER,$/;"	m	class:dramsim3::CommandType
+SREF_EXIT	common.h	/^    SREF_EXIT,$/;"	m	class:dramsim3::CommandType
+SWAP16	hmc.h	/^    SWAP16,  \/\/ swap imm operand and mem operand, read then write$/;"	m	class:dramsim3::HMCReqType
+ScheduleTransaction	controller.cc	/^void Controller::ScheduleTransaction() {$/;"	f	class:dramsim3::Controller
+SetAddressMapping	configuration.cc	/^void Config::SetAddressMapping() {$/;"	f	class:dramsim3::Config
+SetClockRatio	hmc.cc	/^void HMCMemorySystem::SetClockRatio() {$/;"	f	class:dramsim3::HMCMemorySystem
+SetLogicPower	thermal.cc	/^void ThermalCalculator::SetLogicPower(double logic_power) {$/;"	f	class:dramsim3::ThermalCalculator
+SetPhyAddressMapping	thermal.cc	/^void ThermalCalculator::SetPhyAddressMapping() {$/;"	f	class:dramsim3::ThermalCalculator
+SimpleStats	simple_stats.cc	/^SimpleStats::SimpleStats(const Config& config, int channel_id)$/;"	f	class:dramsim3::SimpleStats
+SimpleStats	simple_stats.h	/^class SimpleStats {$/;"	c	namespace:dramsim3
+State	bankstate.h	/^    enum class State { OPEN, CLOSED, SREF, PD, SIZE };$/;"	c	class:dramsim3::BankState
+StreamCPU	cpu.h	/^class StreamCPU : public CPU {$/;"	c	namespace:dramsim3
+StringSplit	common.cc	/^std::vector<std::string> StringSplit(const std::string& s, char delim) {$/;"	f	namespace:dramsim3
+StringSplit	common.cc	/^void StringSplit(const std::string& s, char delim, Out result) {$/;"	f	namespace:dramsim3
+T0	thermal_config.h	/^const double T0 = 273.15;  \/\/ [C]$/;"	v
+THERMALCONFIG_H	thermal_config.h	2;"	d
+T_final	thermal.h	/^    double **T_trans, **T_final;$/;"	m	class:dramsim3::ThermalCalculator
+T_size	thermal.h	/^    int T_size;$/;"	m	class:dramsim3::ThermalCalculator
+T_trans	thermal.h	/^    double **T_trans, **T_final;$/;"	m	class:dramsim3::ThermalCalculator
+Tamb	thermal.h	/^    double Tamb;  \/\/ The ambient temperature in Kelvin$/;"	m	class:dramsim3::ThermalCalculator
+ThermalCalculator	thermal.cc	/^ThermalCalculator::ThermalCalculator(const Config &config)$/;"	f	class:dramsim3::ThermalCalculator
+ThermalCalculator	thermal.h	/^class ThermalCalculator {$/;"	c	namespace:dramsim3
+ThermalReplay	thermal_replay.cc	/^ThermalReplay::ThermalReplay(std::string trace_name, std::string config_file,$/;"	f	class:ThermalReplay
+ThermalReplay	thermal_replay.h	/^class ThermalReplay {$/;"	c	namespace:dramsim3
+Timing	timing.cc	/^Timing::Timing(const Config& config)$/;"	f	class:dramsim3::Timing
+Timing	timing.h	/^class Timing {$/;"	c	namespace:dramsim3
+TraceBasedCPU	cpu.cc	/^TraceBasedCPU::TraceBasedCPU(const std::string& config_file,$/;"	f	class:dramsim3::TraceBasedCPU
+TraceBasedCPU	cpu.h	/^class TraceBasedCPU : public CPU {$/;"	c	namespace:dramsim3
+TransToCommand	controller.cc	/^Command Controller::TransToCommand(const Transaction &trans) {$/;"	f	class:dramsim3::Controller
+Transaction	common.h	/^    Transaction() {}$/;"	f	struct:dramsim3::Transaction
+Transaction	common.h	/^    Transaction(const Transaction& tran)$/;"	f	struct:dramsim3::Transaction
+Transaction	common.h	/^    Transaction(uint64_t addr, bool is_write)$/;"	f	struct:dramsim3::Transaction
+Transaction	common.h	/^struct Transaction {$/;"	s	namespace:dramsim3
+UpdateActivationTimes	channel_state.cc	/^void ChannelState::UpdateActivationTimes(int rank, uint64_t curr_time) {$/;"	f	class:dramsim3::ChannelState
+UpdateBackgroundEnergy	thermal.cc	/^void ThermalCalculator::UpdateBackgroundEnergy(const int channel,$/;"	f	class:dramsim3::ThermalCalculator
+UpdateCMDPower	thermal.cc	/^void ThermalCalculator::UpdateCMDPower(const int channel, const Command &cmd,$/;"	f	class:dramsim3::ThermalCalculator
+UpdateCommandStats	controller.cc	/^void Controller::UpdateCommandStats(const Command &cmd) {                   \/\/仅仅起统计次数的作用？$/;"	f	class:dramsim3::Controller
+UpdateCounters	simple_stats.cc	/^void SimpleStats::UpdateCounters() {$/;"	f	class:dramsim3::SimpleStats
+UpdateEpoch	thermal.cc	/^void ThermalCalculator::UpdateEpoch(uint64_t clk) {$/;"	f	class:dramsim3::ThermalCalculator
+UpdateEpochStats	simple_stats.cc	/^void SimpleStats::UpdateEpochStats() {$/;"	f	class:dramsim3::SimpleStats
+UpdateFinalStats	simple_stats.cc	/^void SimpleStats::UpdateFinalStats() {$/;"	f	class:dramsim3::SimpleStats
+UpdateHistoBins	simple_stats.cc	/^void SimpleStats::UpdateHistoBins() {$/;"	f	class:dramsim3::SimpleStats
+UpdateOtherBankgroupsSameRankTiming	channel_state.cc	/^void ChannelState::UpdateOtherBankgroupsSameRankTiming($/;"	f	class:dramsim3::ChannelState
+UpdateOtherBanksSameBankgroupTiming	channel_state.cc	/^void ChannelState::UpdateOtherBanksSameBankgroupTiming($/;"	f	class:dramsim3::ChannelState
+UpdateOtherRanksTiming	channel_state.cc	/^void ChannelState::UpdateOtherRanksTiming($/;"	f	class:dramsim3::ChannelState
+UpdatePowerMaps	thermal.cc	/^void ThermalCalculator::UpdatePowerMaps(double add_energy, bool trans,$/;"	f	class:dramsim3::ThermalCalculator
+UpdatePrints	simple_stats.cc	/^void SimpleStats::UpdatePrints(bool epoch) {$/;"	f	class:dramsim3::SimpleStats
+UpdateSameBankTiming	channel_state.cc	/^void ChannelState::UpdateSameBankTiming($/;"	f	class:dramsim3::ChannelState
+UpdateSameRankTiming	channel_state.cc	/^void ChannelState::UpdateSameRankTiming($/;"	f	class:dramsim3::ChannelState
+UpdateState	bankstate.cc	/^void BankState::UpdateState(const Command& cmd) {$/;"	f	class:dramsim3::BankState
+UpdateState	channel_state.cc	/^void ChannelState::UpdateState(const Command& cmd) {$/;"	f	class:dramsim3::ChannelState
+UpdateTiming	bankstate.cc	/^void BankState::UpdateTiming(CommandType cmd_type, uint64_t time) {$/;"	f	class:dramsim3::BankState
+UpdateTiming	channel_state.cc	/^void ChannelState::UpdateTiming(const Command& cmd, uint64_t clk) {$/;"	f	class:dramsim3::ChannelState
+UpdateTimingAndStates	channel_state.cc	/^void ChannelState::UpdateTimingAndStates(const Command& cmd, uint64_t clk) {$/;"	f	class:dramsim3::ChannelState
+VaultCallback	hmc.cc	/^void HMCMemorySystem::VaultCallback(uint64_t req_id) {$/;"	f	class:dramsim3::HMCMemorySystem
+WL	configuration.h	/^    int WL;$/;"	m	class:dramsim3::Config
+WR0	hmc.h	/^    WR0,$/;"	m	class:dramsim3::HMCReqType
+WR112	hmc.h	/^    WR112,$/;"	m	class:dramsim3::HMCReqType
+WR128	hmc.h	/^    WR128,$/;"	m	class:dramsim3::HMCReqType
+WR16	hmc.h	/^    WR16,$/;"	m	class:dramsim3::HMCReqType
+WR256	hmc.h	/^    WR256,$/;"	m	class:dramsim3::HMCReqType
+WR32	hmc.h	/^    WR32,$/;"	m	class:dramsim3::HMCReqType
+WR48	hmc.h	/^    WR48,$/;"	m	class:dramsim3::HMCReqType
+WR64	hmc.h	/^    WR64,$/;"	m	class:dramsim3::HMCReqType
+WR80	hmc.h	/^    WR80,$/;"	m	class:dramsim3::HMCReqType
+WR96	hmc.h	/^    WR96,$/;"	m	class:dramsim3::HMCReqType
+WRITE	common.h	/^    WRITE,$/;"	m	class:dramsim3::CommandType
+WRITE_PRECHARGE	common.h	/^    WRITE_PRECHARGE,$/;"	m	class:dramsim3::CommandType
+WR_RS	hmc.h	/^enum class HMCRespType { NONE, RD_RS, WR_RS, ERR, SIZE };$/;"	m	class:dramsim3::HMCRespType
+WillAcceptCommand	command_queue.cc	/^bool CommandQueue::WillAcceptCommand(int rank, int bankgroup, int bank) const {$/;"	f	class:dramsim3::CommandQueue
+WillAcceptTransaction	controller.cc	/^bool Controller::WillAcceptTransaction(uint64_t hex_addr, bool is_write) const {$/;"	f	class:dramsim3::Controller
+WillAcceptTransaction	dram_system.cc	/^bool JedecDRAMSystem::WillAcceptTransaction(uint64_t hex_addr,$/;"	f	class:dramsim3::JedecDRAMSystem
+WillAcceptTransaction	hmc.cc	/^bool HMCMemorySystem::WillAcceptTransaction(uint64_t hex_addr,$/;"	f	class:dramsim3::HMCMemorySystem
+WillAcceptTransaction	memory_system.cc	/^bool MemorySystem::WillAcceptTransaction(uint64_t hex_addr,$/;"	f	class:dramsim3::MemorySystem
+WriteCallBack	cpu.h	/^    void WriteCallBack(uint64_t addr) { return; }$/;"	f	class:dramsim3::CPU
+XOR16	hmc.h	/^    XOR16,  $/;"	m	class:dramsim3::HMCReqType
+__BANKSTATE_H	bankstate.h	2;"	d
+__CHANNEL_STATE_H	channel_state.h	2;"	d
+__COMMAND_QUEUE_H	command_queue.h	2;"	d
+__COMMON_H	common.h	2;"	d
+__CONFIG_H	configuration.h	2;"	d
+__CONTROLLER_H	controller.h	2;"	d
+__CPU_H	cpu.h	2;"	d
+__DRAM_SYSTEM_H	dram_system.h	2;"	d
+__HMC_H	hmc.h	2;"	d
+__MEMORY_SYSTEM__H	dramsim3.h	2;"	d
+__MEMORY_SYSTEM__H	memory_system.h	2;"	d
+__REFRESH_H	refresh.h	2;"	d
+__SIMPLE_STATS_	simple_stats.h	2;"	d
+__THERMAL_H	thermal.h	2;"	d
+__THERMAL_REPLAY_H	thermal_replay.h	2;"	d
+__TIMING_H	timing.h	2;"	d
+accu_Pmap	thermal.h	/^    std::vector<std::vector<double>> accu_Pmap;  \/\/ accumulative power map$/;"	m	class:dramsim3::ThermalCalculator
+act_energy_inc	configuration.h	/^    double act_energy_inc;$/;"	m	class:dramsim3::Config
+act_stb_energy_inc	configuration.h	/^    double act_stb_energy_inc;$/;"	m	class:dramsim3::Config
+added_cycle	common.h	/^    uint64_t added_cycle;$/;"	m	struct:dramsim3::Transaction
+addr	common.h	/^    Address addr;$/;"	m	struct:dramsim3::Command
+addr	common.h	/^    uint64_t addr;$/;"	m	struct:dramsim3::Transaction
+addr_a_	cpu.h	/^    uint64_t addr_a_, addr_b_, addr_c_, offset_ = 0;$/;"	m	class:dramsim3::StreamCPU
+addr_b_	cpu.h	/^    uint64_t addr_a_, addr_b_, addr_c_, offset_ = 0;$/;"	m	class:dramsim3::StreamCPU
+addr_c_	cpu.h	/^    uint64_t addr_a_, addr_b_, addr_c_, offset_ = 0;$/;"	m	class:dramsim3::StreamCPU
+address_mapping	configuration.h	/^    std::string address_mapping;$/;"	m	class:dramsim3::Config
+address_trace_	dram_system.h	/^    std::ofstream address_trace_;$/;"	m	class:dramsim3::BaseDRAMSystem
+aggressive_precharging_enabled	configuration.h	/^    bool aggressive_precharging_enabled;$/;"	m	class:dramsim3::Config
+amb_temp	configuration.h	/^    double amb_temp;         \/\/ the ambient temperature in [C]$/;"	m	class:dramsim3::Config
+array_size_	cpu.h	/^    const uint64_t array_size_ = 2 << 20;  \/\/ elements in array$/;"	m	class:dramsim3::StreamCPU
+avg_logic_power_	thermal.h	/^    double avg_logic_power_;$/;"	m	class:dramsim3::ThermalCalculator
+ba_mask	configuration.h	/^    uint64_t ch_mask, ra_mask, bg_mask, ba_mask, ro_mask, co_mask;$/;"	m	class:dramsim3::Config
+ba_pos	configuration.h	/^    int ch_pos, ra_pos, bg_pos, ba_pos, ro_pos, co_pos;$/;"	m	class:dramsim3::Config
+background_energy_	thermal.h	/^    std::vector<std::vector<double>> background_energy_;$/;"	m	class:dramsim3::ThermalCalculator
+bank	common.h	/^    int bank;$/;"	m	struct:dramsim3::Address
+bank_active_	thermal_replay.h	/^    std::vector<std::vector<std::vector<std::vector<bool>>>> bank_active_;$/;"	m	class:dramsim3::ThermalReplay
+bank_asr	configuration.h	/^    double bank_asr;  \/\/ the aspect ratio of a bank: #row_bits \/ #col_bits$/;"	m	class:dramsim3::Config
+bank_layer_order	configuration.h	/^    int bank_layer_order;$/;"	m	class:dramsim3::Config
+bank_order	configuration.h	/^    int bank_order;$/;"	m	class:dramsim3::Config
+bank_position_csv_	thermal.h	/^    std::ofstream bank_position_csv_;$/;"	m	class:dramsim3::ThermalCalculator
+bank_states_	channel_state.h	/^    std::vector<std::vector<std::vector<BankState> > > bank_states_;$/;"	m	class:dramsim3::ChannelState
+bank_x	thermal.h	/^    int vault_x, vault_y, bank_x, bank_y;$/;"	m	class:dramsim3::ThermalCalculator
+bank_y	thermal.h	/^    int vault_x, vault_y, bank_x, bank_y;$/;"	m	class:dramsim3::ThermalCalculator
+bankgroup	common.h	/^    int bankgroup;$/;"	m	struct:dramsim3::Address
+bankgroups	configuration.h	/^    int bankgroups;$/;"	m	class:dramsim3::Config
+banks	configuration.h	/^    int banks;$/;"	m	class:dramsim3::Config
+banks_per_group	configuration.h	/^    int banks_per_group;$/;"	m	class:dramsim3::Config
+bg_mask	configuration.h	/^    uint64_t ch_mask, ra_mask, bg_mask, ba_mask, ro_mask, co_mask;$/;"	m	class:dramsim3::Config
+bg_pos	configuration.h	/^    int ch_pos, ra_pos, bg_pos, ba_pos, ro_pos, co_pos;$/;"	m	class:dramsim3::Config
+bin_widths_	simple_stats.h	/^    std::unordered_map<std::string, int> bin_widths_;$/;"	m	class:dramsim3::SimpleStats
+block_size	configuration.h	/^    int block_size;  \/\/ block size in bytes$/;"	m	class:dramsim3::Config
+burst_cycle	configuration.h	/^    int burst_cycle;  \/\/ seperate BL with timing since for GDDRx it's not BL\/2$/;"	m	class:dramsim3::Config
+bus_width	configuration.h	/^    int bus_width;$/;"	m	class:dramsim3::Config
+calculate_Cap_array	thermal_solver.c	/^double *calculate_Cap_array(double W, double Lc, int numP, int dimX, int dimZ,$/;"	f
+calculate_Midx_array	thermal_solver.c	/^double **calculate_Midx_array(double W, double Lc, int numP, int dimX, int dimZ,$/;"	f
+calculate_time_step	thermal.cc	/^void ThermalCalculator::calculate_time_step() {$/;"	f	class:dramsim3::ThermalCalculator
+calculated_	simple_stats.h	/^    std::unordered_map<std::string, double> calculated_;$/;"	m	class:dramsim3::SimpleStats
+ch_mask	configuration.h	/^    uint64_t ch_mask, ra_mask, bg_mask, ba_mask, ro_mask, co_mask;$/;"	m	class:dramsim3::Config
+ch_pos	configuration.h	/^    int ch_pos, ra_pos, bg_pos, ba_pos, ro_pos, co_pos;$/;"	m	class:dramsim3::Config
+channel	common.h	/^    int channel;$/;"	m	struct:dramsim3::Address
+channel_id_	controller.h	/^    int channel_id_;$/;"	m	class:dramsim3::Controller
+channel_id_	simple_stats.h	/^    int channel_id_;$/;"	m	class:dramsim3::SimpleStats
+channel_size	configuration.h	/^    int channel_size;$/;"	m	class:dramsim3::Config
+channel_state_	command_queue.h	/^    const ChannelState& channel_state_;$/;"	m	class:dramsim3::CommandQueue
+channel_state_	controller.h	/^    ChannelState channel_state_;$/;"	m	class:dramsim3::Controller
+channel_state_	refresh.h	/^    ChannelState& channel_state_;$/;"	m	class:dramsim3::Refresh
+channel_stats_	thermal_replay.h	/^    std::vector<SimpleStats> channel_stats_;$/;"	m	class:dramsim3::ThermalReplay
+channels	configuration.h	/^    int channels;$/;"	m	class:dramsim3::Config
+chip_dim_x	configuration.h	/^    double chip_dim_x;$/;"	m	class:dramsim3::Config
+chip_dim_y	configuration.h	/^    double chip_dim_y;$/;"	m	class:dramsim3::Config
+clk_	command_queue.h	/^    uint64_t clk_;$/;"	m	class:dramsim3::CommandQueue
+clk_	controller.h	/^    uint64_t clk_;$/;"	m	class:dramsim3::Controller
+clk_	cpu.h	/^    uint64_t clk_;$/;"	m	class:dramsim3::CPU
+clk_	dram_system.h	/^    uint64_t clk_;$/;"	m	class:dramsim3::BaseDRAMSystem
+clk_	refresh.h	/^    uint64_t clk_;$/;"	m	class:dramsim3::Refresh
+cmd_queue_	controller.h	/^    CommandQueue cmd_queue_;$/;"	m	class:dramsim3::Controller
+cmd_queue_size	configuration.h	/^    int cmd_queue_size;$/;"	m	class:dramsim3::Config
+cmd_timing_	bankstate.h	/^    std::vector<uint64_t> cmd_timing_;$/;"	m	class:dramsim3::BankState
+cmd_trace_	controller.h	/^    std::ofstream cmd_trace_;$/;"	m	class:dramsim3::Controller
+cmd_type	common.h	/^    CommandType cmd_type;$/;"	m	struct:dramsim3::Command
+co_mask	configuration.h	/^    uint64_t ch_mask, ra_mask, bg_mask, ba_mask, ro_mask, co_mask;$/;"	m	class:dramsim3::Config
+co_pos	configuration.h	/^    int ch_pos, ra_pos, bg_pos, ba_pos, ro_pos, co_pos;$/;"	m	class:dramsim3::Config
+column	common.h	/^    int column;$/;"	m	struct:dramsim3::Address
+columns	configuration.h	/^    int columns;$/;"	m	class:dramsim3::Config
+complete_cycle	common.h	/^    uint64_t complete_cycle;$/;"	m	struct:dramsim3::Transaction
+config_	channel_state.h	/^    const Config& config_;$/;"	m	class:dramsim3::ChannelState
+config_	command_queue.h	/^    const Config& config_;$/;"	m	class:dramsim3::CommandQueue
+config_	controller.h	/^    const Config &config_;$/;"	m	class:dramsim3::Controller
+config_	dram_system.h	/^    Config &config_;$/;"	m	class:dramsim3::BaseDRAMSystem
+config_	memory_system.h	/^    Config *config_;$/;"	m	class:dramsim3::MemorySystem
+config_	refresh.h	/^    const Config& config_;$/;"	m	class:dramsim3::Refresh
+config_	simple_stats.h	/^    const Config& config_;$/;"	m	class:dramsim3::SimpleStats
+config_	thermal.h	/^    const Config &config_;$/;"	m	class:dramsim3::ThermalCalculator
+config_	thermal_replay.h	/^    Config config_;$/;"	m	class:dramsim3::ThermalReplay
+const_logic_power	configuration.h	/^    double const_logic_power;$/;"	m	class:dramsim3::Config
+counters_	simple_stats.h	/^    std::unordered_map<std::string, uint64_t> counters_;$/;"	m	class:dramsim3::SimpleStats
+ctrls_	dram_system.h	/^    std::vector<Controller*> ctrls_;$/;"	m	class:dramsim3::BaseDRAMSystem
+cur_Pmap	thermal.h	/^    std::vector<std::vector<double>> cur_Pmap;   \/\/ current power map$/;"	m	class:dramsim3::ThermalCalculator
+determineXY	thermal.cc	/^int ThermalCalculator::determineXY(double xd, double yd, int total_grids_) {$/;"	f	class:dramsim3::ThermalCalculator
+device_width	configuration.h	/^    int device_width;$/;"	m	class:dramsim3::Config
+devices_per_rank	configuration.h	/^    int devices_per_rank;$/;"	m	class:dramsim3::Config
+dimX	thermal.h	/^    int dimX, dimY, numP;   \/\/ Dimension of the memory$/;"	m	class:dramsim3::ThermalCalculator
+dimY	thermal.h	/^    int dimX, dimY, numP;   \/\/ Dimension of the memory$/;"	m	class:dramsim3::ThermalCalculator
+doubles_	simple_stats.h	/^    std::unordered_map<std::string, double> doubles_;$/;"	m	class:dramsim3::SimpleStats
+dram_ps_	hmc.h	/^    uint64_t logic_clk_, ps_per_dram_, ps_per_logic_, logic_ps_, dram_ps_;$/;"	m	class:dramsim3::HMCMemorySystem
+dram_system_	memory_system.h	/^    BaseDRAMSystem *dram_system_;$/;"	m	class:dramsim3::MemorySystem
+dramsim3	bankstate.cc	/^namespace dramsim3 {$/;"	n	file:
+dramsim3	bankstate.h	/^namespace dramsim3 {$/;"	n
+dramsim3	channel_state.cc	/^namespace dramsim3 {$/;"	n	file:
+dramsim3	channel_state.h	/^namespace dramsim3 {$/;"	n
+dramsim3	command_queue.cc	/^namespace dramsim3 {$/;"	n	file:
+dramsim3	command_queue.h	/^namespace dramsim3 {$/;"	n
+dramsim3	common.cc	/^namespace dramsim3 {$/;"	n	file:
+dramsim3	common.h	/^namespace dramsim3 {$/;"	n
+dramsim3	configuration.cc	/^namespace dramsim3 {$/;"	n	file:
+dramsim3	configuration.h	/^namespace dramsim3 {$/;"	n
+dramsim3	controller.cc	/^namespace dramsim3 {$/;"	n	file:
+dramsim3	controller.h	/^namespace dramsim3 {$/;"	n
+dramsim3	cpu.cc	/^namespace dramsim3 {$/;"	n	file:
+dramsim3	cpu.h	/^namespace dramsim3 {$/;"	n
+dramsim3	dram_system.cc	/^namespace dramsim3 {$/;"	n	file:
+dramsim3	dram_system.h	/^namespace dramsim3 {$/;"	n
+dramsim3	dramsim3.h	/^namespace dramsim3 {$/;"	n
+dramsim3	hmc.cc	/^namespace dramsim3 {$/;"	n	file:
+dramsim3	hmc.h	/^namespace dramsim3 {$/;"	n
+dramsim3	memory_system.cc	/^namespace dramsim3 {$/;"	n	file:
+dramsim3	memory_system.h	/^namespace dramsim3 {$/;"	n
+dramsim3	refresh.cc	/^namespace dramsim3 {$/;"	n	file:
+dramsim3	refresh.h	/^namespace dramsim3 {$/;"	n
+dramsim3	simple_stats.cc	/^namespace dramsim3 {$/;"	n	file:
+dramsim3	simple_stats.h	/^namespace dramsim3 {$/;"	n
+dramsim3	thermal.cc	/^namespace dramsim3 {$/;"	n	file:
+dramsim3	thermal.h	/^namespace dramsim3 {$/;"	n
+dramsim3	thermal_replay.h	/^namespace dramsim3 {$/;"	n
+dramsim3	timing.cc	/^namespace dramsim3 {$/;"	n	file:
+dramsim3	timing.h	/^namespace dramsim3 {$/;"	n
+enable_hbm_dual_cmd	configuration.h	/^    bool enable_hbm_dual_cmd;$/;"	m	class:dramsim3::Config
+enable_self_refresh	configuration.h	/^    bool enable_self_refresh;$/;"	m	class:dramsim3::Config
+epoch_counters_	simple_stats.h	/^    std::unordered_map<std::string, uint64_t> epoch_counters_;$/;"	m	class:dramsim3::SimpleStats
+epoch_histo_bins_	simple_stats.h	/^    VecStat epoch_histo_bins_;$/;"	m	class:dramsim3::SimpleStats
+epoch_histo_counts_	simple_stats.h	/^    std::unordered_map<std::string, HistoCount> epoch_histo_counts_;$/;"	m	class:dramsim3::SimpleStats
+epoch_max_temp_file_csv_	thermal.h	/^    std::ofstream epoch_max_temp_file_csv_;$/;"	m	class:dramsim3::ThermalCalculator
+epoch_period	configuration.h	/^    int epoch_period;$/;"	m	class:dramsim3::Config
+epoch_temperature_file_csv_	thermal.h	/^    std::ofstream epoch_temperature_file_csv_;$/;"	m	class:dramsim3::ThermalCalculator
+epoch_vec_counters_	simple_stats.h	/^    VecStat epoch_vec_counters_;$/;"	m	class:dramsim3::SimpleStats
+exit_time	hmc.h	/^    uint64_t exit_time;$/;"	m	class:dramsim3::HMCRequest
+exit_time	hmc.h	/^    uint64_t exit_time;$/;"	m	class:dramsim3::HMCResponse
+final_temperature_file_csv_	thermal.h	/^    std::ofstream final_temperature_file_csv_;$/;"	m	class:dramsim3::ThermalCalculator
+flits	hmc.h	/^    int flits;$/;"	m	class:dramsim3::HMCRequest
+flits	hmc.h	/^    int flits;$/;"	m	class:dramsim3::HMCResponse
+four_aw_	channel_state.h	/^    std::vector<std::vector<uint64_t> > four_aw_;$/;"	m	class:dramsim3::ChannelState
+gen	cpu.h	/^    std::mt19937_64 gen;$/;"	m	class:dramsim3::RandomCPU
+gen	cpu.h	/^    std::mt19937_64 gen;$/;"	m	class:dramsim3::StreamCPU
+get_maxT	thermal_solver.c	/^double get_maxT(double *T, int Tsize) {$/;"	f
+get_next_	cpu.h	/^    bool get_next_ = true;$/;"	m	class:dramsim3::RandomCPU
+get_next_	cpu.h	/^    bool get_next_ = true;$/;"	m	class:dramsim3::TraceBasedCPU
+header_descs_	simple_stats.h	/^    std::unordered_map<std::string, std::string> header_descs_;$/;"	m	class:dramsim3::SimpleStats
+hex_addr	common.h	/^    uint64_t hex_addr;$/;"	m	struct:dramsim3::Command
+histo_bins_	simple_stats.h	/^    VecStat histo_bins_;$/;"	m	class:dramsim3::SimpleStats
+histo_bounds_	simple_stats.h	/^    std::unordered_map<std::string, std::pair<int, int> > histo_bounds_;$/;"	m	class:dramsim3::SimpleStats
+histo_counts_	simple_stats.h	/^    std::unordered_map<std::string, HistoCount> histo_counts_;$/;"	m	class:dramsim3::SimpleStats
+histo_headers_	simple_stats.h	/^    std::unordered_map<std::string, std::vector<std::string> > histo_headers_;$/;"	m	class:dramsim3::SimpleStats
+id_	dram_system.h	/^    uint64_t id_;$/;"	m	class:dramsim3::BaseDRAMSystem
+ideal_memory_latency	configuration.h	/^    int ideal_memory_latency;$/;"	m	class:dramsim3::Config
+infinite_buffer_q_	dram_system.h	/^    std::vector<Transaction> infinite_buffer_q_;$/;"	m	class:dramsim3::IdealDRAMSystem
+initialize_Temperature	thermal_solver.c	/^double *initialize_Temperature(double W, double Lc, int numP, int dimX,$/;"	f
+inserted_a_	cpu.h	/^    bool inserted_a_ = false;$/;"	m	class:dramsim3::StreamCPU
+inserted_b_	cpu.h	/^    bool inserted_b_ = false;$/;"	m	class:dramsim3::StreamCPU
+inserted_c_	cpu.h	/^    bool inserted_c_ = false;$/;"	m	class:dramsim3::StreamCPU
+is_in_ref_	command_queue.h	/^    bool is_in_ref_;$/;"	m	class:dramsim3::CommandQueue
+is_rw_denp_	controller.h	/^    bool is_rw_denp_;$/;"	m	class:dramsim3::Controller
+is_unified_queue_	controller.h	/^    bool is_unified_queue_;$/;"	m	class:dramsim3::Controller
+is_write	common.h	/^    bool is_write;$/;"	m	struct:dramsim3::Transaction
+is_write	hmc.h	/^    bool is_write;$/;"	m	class:dramsim3::HMCRequest
+j_data_	simple_stats.h	/^    Json j_data_;$/;"	m	class:dramsim3::SimpleStats
+json_epoch_name	configuration.h	/^    std::string json_epoch_name;$/;"	m	class:dramsim3::Config
+json_stats_name	configuration.h	/^    std::string json_stats_name;$/;"	m	class:dramsim3::Config
+last_addr_	cpu.h	/^    uint64_t last_addr_;$/;"	m	class:dramsim3::RandomCPU
+last_clk_	thermal_replay.h	/^    uint64_t last_clk_;$/;"	m	class:dramsim3::ThermalReplay
+last_req_clk_	dram_system.h	/^    uint64_t last_req_clk_;$/;"	m	class:dramsim3::BaseDRAMSystem
+last_trans_clk_	controller.h	/^    uint64_t last_trans_clk_;$/;"	m	class:dramsim3::Controller
+last_write_	cpu.h	/^    bool last_write_ = false;$/;"	m	class:dramsim3::RandomCPU
+latency_	dram_system.h	/^    int latency_;$/;"	m	class:dramsim3::IdealDRAMSystem
+layerP	thermal.h	/^    std::vector<int> layerP;$/;"	m	class:dramsim3::ThermalCalculator
+libdramsim3_is_present	memory_system.cc	/^void libdramsim3_is_present(void) { ; }$/;"	f
+link	hmc.h	/^    int link;$/;"	m	class:dramsim3::HMCRequest
+link	hmc.h	/^    int link;$/;"	m	class:dramsim3::HMCResponse
+link_age_counter_	hmc.h	/^    std::vector<int> link_age_counter_;$/;"	m	class:dramsim3::HMCMemorySystem
+link_busy_	hmc.h	/^    std::vector<int> link_busy_;$/;"	m	class:dramsim3::HMCMemorySystem
+link_req_queues_	hmc.h	/^    std::vector<std::vector<HMCRequest*>> link_req_queues_;$/;"	m	class:dramsim3::HMCMemorySystem
+link_resp_queues_	hmc.h	/^    std::vector<std::vector<HMCResponse*>> link_resp_queues_;$/;"	m	class:dramsim3::HMCMemorySystem
+link_speed	configuration.h	/^    int link_speed;$/;"	m	class:dramsim3::Config
+link_width	configuration.h	/^    int link_width;$/;"	m	class:dramsim3::Config
+links_	hmc.h	/^    int links_;$/;"	m	class:dramsim3::HMCMemorySystem
+loc_mapping	configuration.h	/^    std::string loc_mapping;$/;"	m	class:dramsim3::Config
+logic_clk_	hmc.h	/^    uint64_t logic_clk_, ps_per_dram_, ps_per_logic_, logic_ps_, dram_ps_;$/;"	m	class:dramsim3::HMCMemorySystem
+logic_ps_	hmc.h	/^    uint64_t logic_clk_, ps_per_dram_, ps_per_logic_, logic_ps_, dram_ps_;$/;"	m	class:dramsim3::HMCMemorySystem
+main	main.cc	/^int main(int argc, const char **argv) {$/;"	f
+main	thermal_replay.cc	/^int main(int argc, const char **argv) {$/;"	f
+mat_dim_x	configuration.h	/^    int mat_dim_x;$/;"	m	class:dramsim3::Config
+mat_dim_y	configuration.h	/^    int mat_dim_y;$/;"	m	class:dramsim3::Config
+mem_operand	hmc.h	/^    uint64_t mem_operand;$/;"	m	class:dramsim3::HMCRequest
+memory_system_	cpu.h	/^    MemorySystem memory_system_;$/;"	m	class:dramsim3::CPU
+next_bank_	refresh.h	/^    int next_rank_, next_bg_, next_bank_;$/;"	m	class:dramsim3::Refresh
+next_bg_	refresh.h	/^    int next_rank_, next_bg_, next_bank_;$/;"	m	class:dramsim3::Refresh
+next_link_	hmc.h	/^    int next_link_;$/;"	m	class:dramsim3::HMCMemorySystem
+next_rank_	refresh.h	/^    int next_rank_, next_bg_, next_bank_;$/;"	m	class:dramsim3::Refresh
+numP	thermal.h	/^    int dimX, dimY, numP;   \/\/ Dimension of the memory$/;"	m	class:dramsim3::ThermalCalculator
+num_case	thermal.h	/^    int num_case;  \/\/ number of different cases where the thermal simulation is$/;"	m	class:dramsim3::ThermalCalculator
+num_dies	configuration.h	/^    int num_dies;$/;"	m	class:dramsim3::Config
+num_dummy	thermal.h	/^    const int num_dummy = 2;  \/\/ dummy cells around the calculatd die$/;"	m	class:dramsim3::ThermalCalculator
+num_links	configuration.h	/^    int num_links;$/;"	m	class:dramsim3::Config
+num_queues_	command_queue.h	/^    int num_queues_;$/;"	m	class:dramsim3::CommandQueue
+num_row_refresh	configuration.h	/^    int num_row_refresh;       \/\/ number of rows to be refreshed for one time$/;"	m	class:dramsim3::Config
+num_vaults	configuration.h	/^    int num_vaults;$/;"	m	class:dramsim3::Config
+num_x_grids	configuration.h	/^    int num_x_grids;$/;"	m	class:dramsim3::Config
+num_y_grids	configuration.h	/^    int num_y_grids;$/;"	m	class:dramsim3::Config
+offset_	cpu.h	/^    uint64_t addr_a_, addr_b_, addr_c_, offset_ = 0;$/;"	m	class:dramsim3::StreamCPU
+open_row_	bankstate.h	/^    int open_row_;$/;"	m	class:dramsim3::BankState
+operator <<	common.cc	/^std::ostream& operator<<(std::ostream& os, const Command& cmd) {$/;"	f	namespace:dramsim3
+operator <<	common.cc	/^std::ostream& operator<<(std::ostream& os, const Transaction& trans) {$/;"	f	namespace:dramsim3
+operator >>	common.cc	/^std::istream& operator>>(std::istream& is, Transaction& trans) {$/;"	f	namespace:dramsim3
+other_bankgroups_same_rank	timing.h	/^        other_bankgroups_same_rank;$/;"	m	class:dramsim3::Timing
+other_banks_same_bankgroup	timing.h	/^        other_banks_same_bankgroup;$/;"	m	class:dramsim3::Timing
+other_ranks	timing.h	/^    std::vector<std::vector<std::pair<CommandType, int> > > other_ranks;$/;"	m	class:dramsim3::Timing
+output_dir	configuration.h	/^    std::string output_dir;$/;"	m	class:dramsim3::Config
+output_level	configuration.h	/^    int output_level;$/;"	m	class:dramsim3::Config
+output_prefix	configuration.h	/^    std::string output_prefix;$/;"	m	class:dramsim3::Config
+override	cpu.h	/^    bool IsTraceFileEOF()  override;$/;"	m	class:dramsim3::TraceBasedCPU
+override	cpu.h	/^    void ClockTick() override;$/;"	m	class:dramsim3::RandomCPU
+override	cpu.h	/^    void ClockTick() override;$/;"	m	class:dramsim3::StreamCPU
+override	cpu.h	/^    void ClockTick() override;$/;"	m	class:dramsim3::TraceBasedCPU
+override	dram_system.h	/^    bool AddTransaction(uint64_t hex_addr, bool is_write) override;$/;"	m	class:dramsim3::IdealDRAMSystem
+override	dram_system.h	/^    bool AddTransaction(uint64_t hex_addr, bool is_write) override;$/;"	m	class:dramsim3::JedecDRAMSystem
+override	dram_system.h	/^    bool WillAcceptTransaction(uint64_t hex_addr, bool is_write) const override;$/;"	m	class:dramsim3::JedecDRAMSystem
+override	dram_system.h	/^    void ClockTick() override;$/;"	m	class:dramsim3::IdealDRAMSystem
+override	dram_system.h	/^    void ClockTick() override;$/;"	m	class:dramsim3::JedecDRAMSystem
+override	hmc.h	/^    bool AddTransaction(uint64_t hex_addr, bool is_write) override;$/;"	m	class:dramsim3::HMCMemorySystem
+override	hmc.h	/^    bool WillAcceptTransaction(uint64_t hex_addr, bool is_write) const override;$/;"	m	class:dramsim3::HMCMemorySystem
+override	hmc.h	/^    void ClockTick() override;$/;"	m	class:dramsim3::HMCMemorySystem
+parallel_cycles_	dram_system.h	/^    uint64_t parallel_cycles_;$/;"	m	class:dramsim3::BaseDRAMSystem
+pending_rd_q_	controller.h	/^    std::multimap<uint64_t, Transaction> pending_rd_q_;$/;"	m	class:dramsim3::Controller
+pending_wr_q_	controller.h	/^    std::multimap<uint64_t, Transaction> pending_wr_q_;$/;"	m	class:dramsim3::Controller
+pre_energy_inc	configuration.h	/^    double pre_energy_inc;$/;"	m	class:dramsim3::Config
+pre_pd_energy_inc	configuration.h	/^    double pre_pd_energy_inc;$/;"	m	class:dramsim3::Config
+pre_stb_energy_inc	configuration.h	/^    double pre_stb_energy_inc;$/;"	m	class:dramsim3::Config
+print_pairs_	simple_stats.h	/^    std::vector<std::pair<std::string, std::string> > print_pairs_;$/;"	m	class:dramsim3::SimpleStats
+protocol	configuration.h	/^    DRAMProtocol protocol;$/;"	m	class:dramsim3::Config
+ps_per_dram_	hmc.h	/^    uint64_t logic_clk_, ps_per_dram_, ps_per_logic_, logic_ps_, dram_ps_;$/;"	m	class:dramsim3::HMCMemorySystem
+ps_per_logic_	hmc.h	/^    uint64_t logic_clk_, ps_per_dram_, ps_per_logic_, logic_ps_, dram_ps_;$/;"	m	class:dramsim3::HMCMemorySystem
+quad	hmc.h	/^    int quad;$/;"	m	class:dramsim3::HMCRequest
+quad	hmc.h	/^    int quad;$/;"	m	class:dramsim3::HMCResponse
+quad_age_counter_	hmc.h	/^    std::vector<int> quad_age_counter_ = {0, 0, 0, 0};$/;"	m	class:dramsim3::HMCMemorySystem
+quad_busy_	hmc.h	/^    std::vector<int> quad_busy_ = {0, 0, 0, 0};$/;"	m	class:dramsim3::HMCMemorySystem
+quad_req_queues_	hmc.h	/^    std::vector<std::vector<HMCRequest*>> quad_req_queues_;$/;"	m	class:dramsim3::HMCMemorySystem
+quad_resp_queues_	hmc.h	/^    std::vector<std::vector<HMCResponse*>> quad_resp_queues_;$/;"	m	class:dramsim3::HMCMemorySystem
+queue_depth_	hmc.h	/^    size_t queue_depth_;$/;"	m	class:dramsim3::HMCMemorySystem
+queue_idx_	command_queue.h	/^    int queue_idx_;$/;"	m	class:dramsim3::CommandQueue
+queue_size_	command_queue.h	/^    size_t queue_size_;$/;"	m	class:dramsim3::CommandQueue
+queue_structure	configuration.h	/^    std::string queue_structure;$/;"	m	class:dramsim3::Config
+queue_structure_	command_queue.h	/^    QueueStructure queue_structure_;$/;"	m	class:dramsim3::CommandQueue
+queues_	command_queue.h	/^    std::vector<CMDQueue> queues_;$/;"	m	class:dramsim3::CommandQueue
+ra_mask	configuration.h	/^    uint64_t ch_mask, ra_mask, bg_mask, ba_mask, ro_mask, co_mask;$/;"	m	class:dramsim3::Config
+ra_pos	configuration.h	/^    int ch_pos, ra_pos, bg_pos, ba_pos, ro_pos, co_pos;$/;"	m	class:dramsim3::Config
+rank	common.h	/^    int rank;$/;"	m	struct:dramsim3::Address
+rank_idle_cycles	channel_state.h	/^    std::vector<int> rank_idle_cycles;$/;"	m	class:dramsim3::ChannelState
+rank_is_sref_	channel_state.h	/^    std::vector<bool> rank_is_sref_;$/;"	m	class:dramsim3::ChannelState
+rank_q_empty	command_queue.h	/^    std::vector<bool> rank_q_empty;$/;"	m	class:dramsim3::CommandQueue
+ranks	configuration.h	/^    int ranks;$/;"	m	class:dramsim3::Config
+read_callback_	dram_system.h	/^    std::function<void(uint64_t req_id)> read_callback_, write_callback_;$/;"	m	class:dramsim3::BaseDRAMSystem
+read_delay	configuration.h	/^    int read_delay;$/;"	m	class:dramsim3::Config
+read_energy_inc	configuration.h	/^    double read_energy_inc;$/;"	m	class:dramsim3::Config
+read_queue_	controller.h	/^    std::vector<Transaction> read_queue_;$/;"	m	class:dramsim3::Controller
+reader_	configuration.h	/^    INIReader* reader_;$/;"	m	class:dramsim3::Config
+ref_energy_inc	configuration.h	/^    double ref_energy_inc;$/;"	m	class:dramsim3::Config
+ref_q_indices_	command_queue.h	/^    std::unordered_set<int> ref_q_indices_;$/;"	m	class:dramsim3::CommandQueue
+refb_energy_inc	configuration.h	/^    double refb_energy_inc;$/;"	m	class:dramsim3::Config
+refresh_	controller.h	/^    Refresh refresh_;$/;"	m	class:dramsim3::Controller
+refresh_count	thermal.h	/^    std::vector<std::vector<int>> refresh_count;$/;"	m	class:dramsim3::ThermalCalculator
+refresh_interval_	refresh.h	/^    int refresh_interval_;$/;"	m	class:dramsim3::Refresh
+refresh_policy	configuration.h	/^    RefreshPolicy refresh_policy;$/;"	m	class:dramsim3::Config
+refresh_policy_	refresh.h	/^    RefreshPolicy refresh_policy_;$/;"	m	class:dramsim3::Refresh
+refresh_q_	channel_state.h	/^    std::vector<Command> refresh_q_;$/;"	m	class:dramsim3::ChannelState
+repeat_	thermal_replay.h	/^    uint64_t repeat_;$/;"	m	class:dramsim3::ThermalReplay
+request_size_bytes	configuration.h	/^    int request_size_bytes;$/;"	m	class:dramsim3::Config
+resp_id	hmc.h	/^    uint64_t resp_id;$/;"	m	class:dramsim3::HMCResponse
+resp_lookup_table_	hmc.h	/^    std::multimap<uint64_t, HMCResponse*> resp_lookup_table_;$/;"	m	class:dramsim3::HMCMemorySystem
+return_queue_	controller.h	/^    std::vector<Transaction> return_queue_;$/;"	m	class:dramsim3::Controller
+ro_mask	configuration.h	/^    uint64_t ch_mask, ra_mask, bg_mask, ba_mask, ro_mask, co_mask;$/;"	m	class:dramsim3::Config
+ro_pos	configuration.h	/^    int ch_pos, ra_pos, bg_pos, ba_pos, ro_pos, co_pos;$/;"	m	class:dramsim3::Config
+row	common.h	/^    int row;$/;"	m	struct:dramsim3::Address
+row_buf_policy	configuration.h	/^    std::string row_buf_policy;$/;"	m	class:dramsim3::Config
+row_buf_policy_	controller.h	/^    RowBufPolicy row_buf_policy_;$/;"	m	class:dramsim3::Controller
+row_hit_count_	bankstate.h	/^    int row_hit_count_;$/;"	m	class:dramsim3::BankState
+row_tile	configuration.h	/^    int row_tile;$/;"	m	class:dramsim3::Config
+rows	configuration.h	/^    int rows;$/;"	m	class:dramsim3::Config
+same_bank	timing.h	/^    std::vector<std::vector<std::pair<CommandType, int> > > same_bank;$/;"	m	class:dramsim3::Timing
+same_rank	timing.h	/^    std::vector<std::vector<std::pair<CommandType, int> > > same_rank;$/;"	m	class:dramsim3::Timing
+sample_id	thermal.h	/^    int sample_id;  \/\/ index of the sampling power$/;"	m	class:dramsim3::ThermalCalculator
+serial_cycles_	dram_system.h	/^    uint64_t serial_cycles_;$/;"	m	class:dramsim3::BaseDRAMSystem
+shift_bits	configuration.h	/^    int shift_bits;$/;"	m	class:dramsim3::Config
+simple_stats_	command_queue.h	/^    SimpleStats& simple_stats_;$/;"	m	class:dramsim3::CommandQueue
+simple_stats_	controller.h	/^    SimpleStats simple_stats_;$/;"	m	class:dramsim3::Controller
+sp_ienv	sp_ienv.c	/^int_t sp_ienv(int_t ispec) {$/;"	f
+square_array	thermal.cc	/^int ThermalCalculator::square_array(int total_grids_) {$/;"	f	class:dramsim3::ThermalCalculator
+sref_energy_inc	configuration.h	/^    double sref_energy_inc;$/;"	m	class:dramsim3::Config
+sref_threshold	configuration.h	/^    int sref_threshold;$/;"	m	class:dramsim3::Config
+state_	bankstate.h	/^    State state_;$/;"	m	class:dramsim3::BankState
+steady_thermal_solver	thermal_solver.c	/^double *steady_thermal_solver(double ***powerM, double W, double Lc, int numP,$/;"	f
+stride_	cpu.h	/^    const int stride_ = 64;                \/\/ stride in bytes$/;"	m	class:dramsim3::StreamCPU
+t32AW	configuration.h	/^    int t32AW;$/;"	m	class:dramsim3::Config
+tCCD_L	configuration.h	/^    int tCCD_L;$/;"	m	class:dramsim3::Config
+tCCD_S	configuration.h	/^    int tCCD_S;$/;"	m	class:dramsim3::Config
+tCK	configuration.h	/^    double tCK;$/;"	m	class:dramsim3::Config
+tCKE	configuration.h	/^    int tCKE;$/;"	m	class:dramsim3::Config
+tCKESR	configuration.h	/^    int tCKESR;$/;"	m	class:dramsim3::Config
+tFAW	configuration.h	/^    int tFAW;$/;"	m	class:dramsim3::Config
+tPPD	configuration.h	/^    int tPPD;$/;"	m	class:dramsim3::Config
+tRAS	configuration.h	/^    int tRAS;$/;"	m	class:dramsim3::Config
+tRC	configuration.h	/^    int tRC;$/;"	m	class:dramsim3::Config
+tRCD	configuration.h	/^    int tRCD;$/;"	m	class:dramsim3::Config
+tRCDRD	configuration.h	/^    int tRCDRD;$/;"	m	class:dramsim3::Config
+tRCDWR	configuration.h	/^    int tRCDWR;$/;"	m	class:dramsim3::Config
+tREFI	configuration.h	/^    int tREFI;$/;"	m	class:dramsim3::Config
+tREFIb	configuration.h	/^    int tREFIb;$/;"	m	class:dramsim3::Config
+tRFC	configuration.h	/^    int tRFC;$/;"	m	class:dramsim3::Config
+tRFCb	configuration.h	/^    int tRFCb;$/;"	m	class:dramsim3::Config
+tRP	configuration.h	/^    int tRP;$/;"	m	class:dramsim3::Config
+tRPRE	configuration.h	/^    int tRPRE;  \/\/ read preamble and write preamble are important$/;"	m	class:dramsim3::Config
+tRRD_L	configuration.h	/^    int tRRD_L;$/;"	m	class:dramsim3::Config
+tRRD_S	configuration.h	/^    int tRRD_S;$/;"	m	class:dramsim3::Config
+tRTP	configuration.h	/^    int tRTP;$/;"	m	class:dramsim3::Config
+tRTRS	configuration.h	/^    int tRTRS;$/;"	m	class:dramsim3::Config
+tWPRE	configuration.h	/^    int tWPRE;$/;"	m	class:dramsim3::Config
+tWR	configuration.h	/^    int tWR;$/;"	m	class:dramsim3::Config
+tWTR_L	configuration.h	/^    int tWTR_L;$/;"	m	class:dramsim3::Config
+tWTR_S	configuration.h	/^    int tWTR_S;$/;"	m	class:dramsim3::Config
+tXP	configuration.h	/^    int tXP;$/;"	m	class:dramsim3::Config
+tXS	configuration.h	/^    int tXS;$/;"	m	class:dramsim3::Config
+thermal_calc_	controller.h	/^    ThermalCalculator &thermal_calc_;$/;"	m	class:dramsim3::Controller
+thermal_calc_	dram_system.h	/^    ThermalCalculator thermal_calc_;$/;"	m	class:dramsim3::BaseDRAMSystem
+thermal_calc_	thermal_replay.h	/^    ThermalCalculator thermal_calc_;$/;"	m	class:dramsim3::ThermalReplay
+thirty_two_aw_	channel_state.h	/^    std::vector<std::vector<uint64_t> > thirty_two_aw_;$/;"	m	class:dramsim3::ChannelState
+tile_row_num	configuration.h	/^    int tile_row_num;$/;"	m	class:dramsim3::Config
+time_iter	thermal.h	/^    int time_iter0, time_iter;$/;"	m	class:dramsim3::ThermalCalculator
+time_iter0	thermal.h	/^    int time_iter0, time_iter;$/;"	m	class:dramsim3::ThermalCalculator
+timed_commands_	thermal_replay.h	/^    std::vector<std::pair<uint64_t, Command>> timed_commands_;$/;"	m	class:dramsim3::ThermalReplay
+timing_	channel_state.h	/^    const Timing& timing_;$/;"	m	class:dramsim3::ChannelState
+timing_	dram_system.h	/^    Timing timing_;$/;"	m	class:dramsim3::BaseDRAMSystem
+total_channels_	dram_system.cc	/^int BaseDRAMSystem::total_channels_ = 0;$/;"	m	class:dramsim3::BaseDRAMSystem	file:
+total_channels_	dram_system.h	/^    static int total_channels_;$/;"	m	class:dramsim3::BaseDRAMSystem
+trace_file_	cpu.h	/^    std::ifstream trace_file_;$/;"	m	class:dramsim3::TraceBasedCPU
+trans_	cpu.h	/^    Transaction trans_;$/;"	m	class:dramsim3::TraceBasedCPU
+trans_queue_size	configuration.h	/^    int trans_queue_size;$/;"	m	class:dramsim3::Config
+transient_thermal_solver	thermal_solver.c	/^double *transient_thermal_solver(double ***powerM, double W, double Lc,$/;"	f
+txt_stats_name	configuration.h	/^    std::string txt_stats_name;$/;"	m	class:dramsim3::Config
+type	hmc.h	/^    HMCReqType type;$/;"	m	class:dramsim3::HMCRequest
+type	hmc.h	/^    HMCRespType type;$/;"	m	class:dramsim3::HMCResponse
+unified_queue	configuration.h	/^    bool unified_queue;$/;"	m	class:dramsim3::Config
+unified_queue_	controller.h	/^    std::vector<Transaction> unified_queue_;            \/\/读写请求共享同一队列$/;"	m	class:dramsim3::Controller
+vault	hmc.h	/^    int vault;$/;"	m	class:dramsim3::HMCRequest
+vault_x	thermal.h	/^    int vault_x, vault_y, bank_x, bank_y;$/;"	m	class:dramsim3::ThermalCalculator
+vault_y	thermal.h	/^    int vault_x, vault_y, bank_x, bank_y;$/;"	m	class:dramsim3::ThermalCalculator
+vec_counters_	simple_stats.h	/^    VecStat vec_counters_;$/;"	m	class:dramsim3::SimpleStats
+vec_doubles_	simple_stats.h	/^    std::unordered_map<std::string, std::vector<double> > vec_doubles_;$/;"	m	class:dramsim3::SimpleStats
+write_buf_size	configuration.h	/^    int write_buf_size;$/;"	m	class:dramsim3::Config
+write_buffer_	controller.h	/^    std::vector<Transaction> write_buffer_;$/;"	m	class:dramsim3::Controller
+write_callback_	dram_system.h	/^    std::function<void(uint64_t req_id)> read_callback_, write_callback_;$/;"	m	class:dramsim3::BaseDRAMSystem
+write_delay	configuration.h	/^    int write_delay;$/;"	m	class:dramsim3::Config
+write_draining_	controller.h	/^    int write_draining_;$/;"	m	class:dramsim3::Controller
+write_energy_inc	configuration.h	/^    double write_energy_inc;$/;"	m	class:dramsim3::Config
+xbar_bandwidth_	hmc.h	/^    const int xbar_bandwidth_ = 2;$/;"	m	class:dramsim3::HMCMemorySystem
+xbar_queue_depth	configuration.h	/^    int xbar_queue_depth;$/;"	m	class:dramsim3::Config
+~BaseDRAMSystem	dram_system.h	/^    virtual ~BaseDRAMSystem() {}$/;"	f	class:dramsim3::BaseDRAMSystem
+~HMCMemorySystem	hmc.cc	/^HMCMemorySystem::~HMCMemorySystem() {$/;"	f	class:dramsim3::HMCMemorySystem
+~IdealDRAMSystem	dram_system.cc	/^IdealDRAMSystem::~IdealDRAMSystem() {}$/;"	f	class:dramsim3::IdealDRAMSystem
+~JedecDRAMSystem	dram_system.cc	/^JedecDRAMSystem::~JedecDRAMSystem() {$/;"	f	class:dramsim3::JedecDRAMSystem
+~MemorySystem	memory_system.cc	/^MemorySystem::~MemorySystem() {$/;"	f	class:dramsim3::MemorySystem
+~ThermalCalculator	thermal.cc	/^ThermalCalculator::~ThermalCalculator() {}$/;"	f	class:dramsim3::ThermalCalculator
+~ThermalReplay	thermal_replay.cc	/^ThermalReplay::~ThermalReplay() {}$/;"	f	class:ThermalReplay
+~TraceBasedCPU	cpu.h	/^    ~TraceBasedCPU() { trace_file_.close(); }$/;"	f	class:dramsim3::TraceBasedCPU
