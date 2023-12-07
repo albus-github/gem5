@@ -50,14 +50,14 @@ std::pair<uint64_t, int> Controller::ReturnDoneTrans(uint64_t clk) {            
     auto it = return_queue_.begin();
     while (it != return_queue_.end()) {
         if (clk >= it->complete_cycle) {
+            UpdatePrefetchBuffer(*it);
             if (it->is_write) {
                 simple_stats_.Increment("num_writes_done");
             } else {
                 simple_stats_.Increment("num_reads_done");
-                simple_stats_.AddValue("read_latency", clk_ - it->added_cycle);
-            }
-            if (it->IsPrefetch){
-                
+                if (!it->IsPrefetch){
+                    simple_stats_.AddValue("read_latency", clk_ - it->added_cycle);
+                }
             }
             auto pair = std::make_pair(it->addr, it->is_write);
             std::cout<<"Addr: "<<it->addr<<", "<<"complete_cycle: "<<it->complete_cycle<<std::endl;
@@ -104,11 +104,10 @@ void Controller::ClockTick() {
             case CommandType::WRITE: cmd_type = "WRITE"; break;
             default: cmd_type = " ";
         }
-        //std::cout<<"IssueCommand: "<<cmd_type<<", "<<"Addr: "<<cmd.addr.bankgroup<<", "<<cmd.addr.bank<<", "<<cmd.addr.row<<", "<<cmd.addr.column<<", "<<"Cycle: "<<clk_<<std::endl;
+        std::cout<<"IssueCommand: "<<cmd_type<<", "<<"Addr: "<<cmd.hex_addr<<", "<<cmd.addr.bankgroup<<", "<<cmd.addr.bank<<", "<<cmd.addr.row<<", "<<cmd.addr.column<<", "<<"Cycle: "<<clk_<<std::endl;
         if (IssuePrefetch(cmd)){
-            GetPrefetch(cmd);
-            cmd_queue_.AddCommand(cmd);
-            prefetch_total++;
+            Transaction Prefetch_trans=GetPrefetch(cmd);
+            AddPrefetchTrans(Prefetch_trans);
         }
         if (cmd.cmd_type == CommandType::WRITE || cmd.cmd_type == CommandType::WRITE_PRECHARGE){
             W_ivicte(cmd);
@@ -152,7 +151,7 @@ void Controller::ClockTick() {
                 if (!cmd_queue_.rank_q_empty[i]) {
                     auto addr = Address();
                     addr.rank = i;
-                    auto cmd = Command(CommandType::SREF_EXIT, addr, -1);
+                    auto cmd = Command(CommandType::SREF_EXIT, addr, -1, false);
                     cmd = channel_state_.GetReadyCommand(cmd, clk_);
                     if (cmd.IsValid()) {
                         IssueCommand(cmd);
@@ -165,7 +164,7 @@ void Controller::ClockTick() {
                         config_.sref_threshold) {
                     auto addr = Address();
                     addr.rank = i;
-                    auto cmd = Command(CommandType::SREF_ENTER, addr, -1);
+                    auto cmd = Command(CommandType::SREF_ENTER, addr, -1, false);
                     cmd = channel_state_.GetReadyCommand(cmd, clk_);
                     if (cmd.IsValid()) {
                         IssueCommand(cmd);
@@ -177,6 +176,7 @@ void Controller::ClockTick() {
     }
 
     ScheduleTransaction();
+    std::cout<<"Issue Prefetch: "<<prefetch_total<<", "<<"Prefetch hit: "<<prefetch_hit<<std::endl;
     clk_++;
     cmd_queue_.ClockTick();
     simple_stats_.Increment("num_cycles");
@@ -194,6 +194,7 @@ bool Controller::WillAcceptTransaction(uint64_t hex_addr, bool is_write) const {
 }
 
 bool Controller::AddTransaction(Transaction trans) {
+    trans.IsPrefetch = false;
     trans.added_cycle = clk_;
     simple_stats_.AddValue("interarrival_latency", clk_ - last_trans_clk_);
     last_trans_clk_ = clk_;
@@ -311,6 +312,7 @@ void Controller::IssueCommand(const Command &cmd) {
 
 Command Controller::TransToCommand(const Transaction &trans) {
     auto addr = config_.AddressMapping(trans.addr);
+    bool IsPrefetch = trans.IsPrefetch;
     CommandType cmd_type;
     if (row_buf_policy_ == RowBufPolicy::OPEN_PAGE) {
         cmd_type = trans.is_write ? CommandType::WRITE : CommandType::READ;
@@ -318,7 +320,7 @@ Command Controller::TransToCommand(const Transaction &trans) {
         cmd_type = trans.is_write ? CommandType::WRITE_PRECHARGE
                                   : CommandType::READ_PRECHARGE;
     }
-    return Command(cmd_type, addr, trans.addr);
+    return Command(cmd_type, addr, trans.addr, IsPrefetch);
 }
 
 int Controller::QueueUsage() const { return cmd_queue_.QueueUsage(); }
@@ -402,32 +404,38 @@ void Controller::W_ivicte(const Command &cmd){
 }
 
 //When the prefetche-buffer is full, the least used entry will be ivicted
-void Controller::R_ivicte(const Command &cmd){
-    auto minIt = std::min_element(
+void Controller::R_ivicte(){
+    if (!PrefetchBuffer.empty()){
+        auto minIt = std::min_element(
         PrefetchBuffer.begin(), PrefetchBuffer.end(),
         [](const PrefetchEntry &a, const PrefetchEntry &b) {
             return a.hit_count < b.hit_count;
         }
-    );
-    PrefetchBuffer.erase(minIt);
+        );
+        PrefetchBuffer.erase(minIt);
+    }
 }
 
 //decide whether to issue prefetch(if the row is open)
 bool Controller::IssuePrefetch(const Command &cmd){
-    if  (cmd.cmd_type == CommandType::READ){
+    if (!cmd.IsPrefetch){
+        if (cmd.cmd_type == CommandType::READ){
         return true;
+        }
     }
-    else{
-        return false;
-    }
+    return false;
 }
 
 //Get the Perfetch command
 Transaction Controller::GetPrefetch(const Command &cmd){
     Transaction Prefetch;
-    Prefetch.addr=cmd.hex_addr+64;
-    Prefetch.IsPrefetch=true;
+    Prefetch.addr = cmd.hex_addr+64;
+    Prefetch.IsPrefetch = true;
+    Prefetch.is_write = false;
+    Prefetch.added_cycle = clk_;
+    Prefetch.complete_cycle = clk_+1;
     prefetch_total++;
+    std::cout<<"Prefetch Addr: "<<Prefetch.addr<<std::endl;
     return  Prefetch;
 }
 
@@ -445,20 +453,46 @@ bool Controller::PrefetchHit(uint64_t addr){
 }
 
 void Controller::IssueHitTrans(Transaction &trans){
-    trans.complete_cycle= clk_ + config_.read_delay;
+    trans.complete_cycle = clk_ + config_.burst_cycle;
     return_queue_.push_back(trans);
-    for (auto it = pending_rd_q_.begin(); it != pending_rd_q_.end(); it++){
+    auto it = pending_rd_q_.begin();
+    while (it != pending_rd_q_.end()) {
         if (it->second.addr == trans.addr && it->second.added_cycle == trans.added_cycle){
-            pending_rd_q_.erase(it);
+            it = pending_rd_q_.erase(it);
+        } else {
+            it++;
         }
     }
 }
 
-void Controller::AddPrefetchTrans(const Command &cmd){
-    Transaction trans;
-    trans.added_cycle=clk_;
-    trans.addr=cmd.hex_addr;
-    trans.complete_cycle=clk_+1;
+void Controller::AddPrefetchTrans(Transaction &trans){
     pending_rd_q_.insert(std::make_pair(trans.addr, trans));
+    if (pending_rd_q_.count(trans.addr) == 1) {
+        if (is_unified_queue_) {
+            unified_queue_.push_back(trans);
+        } else {
+            read_queue_.push_back(trans);
+        }
+    }
+}
+
+void Controller::UpdatePrefetchBuffer(Transaction &trans){
+    if (!trans.IsPrefetch){
+        return;
+    }
+    else{
+        for (auto it = PrefetchBuffer.begin(); it != PrefetchBuffer.end(); ++it){
+            if (it->addr == trans.addr){
+                return;
+            }
+        }
+        if (PrefetchBuffer.size() >= PrefetchBuffer.capacity()){
+            R_ivicte();
+        }
+        PrefetchEntry entry;
+        entry.addr = trans.addr;
+        entry.hit_count = 0;
+        PrefetchBuffer.push_back(entry);
+    }
 }
 }  // namespace dramsim3

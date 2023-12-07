@@ -89,7 +89,7 @@ void TraceBasedCPU::ClockTick() {
     return;
 }
 
-bool  TraceBasedCPU::IsSimOver(){
+bool TraceBasedCPU::IsSimOver(){
     if(trace_file_.eof()){
         return true;
     }

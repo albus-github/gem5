@@ -93,13 +93,13 @@ class Controller {
     void UpdateCommandStats(const Command &cmd);
 
     void W_ivicte(const Command &cmd);
-    void R_ivicte(const Command &cmd);
+    void R_ivicte();
     bool IssuePrefetch(const Command &cmd);
     Transaction GetPrefetch(const Command &cmd);
     bool PrefetchHit(uint64_t addr);
     void IssueHitTrans(Transaction &trans);
-    void UpdatePrefetchBuffer();
-    void AddPrefetchTrans(const Command &cmd);
+    void UpdatePrefetchBuffer(Transaction &trans);
+    void AddPrefetchTrans(Transaction &trans);
 };
 }  // namespace dramsim3
 #endif

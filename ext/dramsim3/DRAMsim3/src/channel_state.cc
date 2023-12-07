@@ -45,7 +45,7 @@ void ChannelState::BankNeedRefresh(int rank, int bankgroup, int bank,
                                    bool need) {
     if (need) {
         Address addr = Address(-1, rank, bankgroup, bank, -1, -1);
-        refresh_q_.emplace_back(CommandType::REFRESH_BANK, addr, -1);
+        refresh_q_.emplace_back(CommandType::REFRESH_BANK, addr, -1, false);
     } else {
         for (auto it = refresh_q_.begin(); it != refresh_q_.end(); it++) {
             if (it->Rank() == rank && it->Bankgroup() == bankgroup &&
@@ -61,7 +61,7 @@ void ChannelState::BankNeedRefresh(int rank, int bankgroup, int bank,
 void ChannelState::RankNeedRefresh(int rank, bool need) {
     if (need) {
         Address addr = Address(-1, rank, -1, -1, -1, -1);
-        refresh_q_.emplace_back(CommandType::REFRESH, addr, -1);
+        refresh_q_.emplace_back(CommandType::REFRESH, addr, -1, false);
     } else {
         for (auto it = refresh_q_.begin(); it != refresh_q_.end(); it++) {
             if (it->Rank() == rank) {
