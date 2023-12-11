@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <iostream>
 #include <limits>
+#include "../../../../../../../usr/include/c++/11/bits/ios_base.h"
 
 namespace dramsim3 {
 
@@ -46,23 +47,26 @@ Controller::Controller(int channel, const Config &config, const Timing &timing) 
 #endif  // CMD_TRACE
 }
 
-std::pair<uint64_t, int> Controller::ReturnDoneTrans(uint64_t clk) {                    //统计完成的读写请求数量及读延迟？
+std::pair<uint64_t, int> Controller::ReturnDoneTrans(uint64_t clk) {
     auto it = return_queue_.begin();
     while (it != return_queue_.end()) {
         if (clk >= it->complete_cycle) {
-            UpdatePrefetchBuffer(*it);
-            if (it->is_write) {
-                simple_stats_.Increment("num_writes_done");
+            std::cout<<"Addr: "<<it->addr<<", "<<"Add_ cycle: "<<it->added_cycle<<", "<<"complete_cycle: "<<it->complete_cycle<<", "<<"IsPrefetch: "<<it->IsPrefetch<<std::endl;
+            if (it->IsPrefetch){
+                UpdatePrefetchBuffer(*it);
+                it = return_queue_.erase(it);
+                return std::make_pair(-1, -1);
             } else {
-                simple_stats_.Increment("num_reads_done");
-                if (!it->IsPrefetch){
+                if (it->is_write) {
+                    simple_stats_.Increment("num_writes_done");
+                } else {
+                    simple_stats_.Increment("num_reads_done");
                     simple_stats_.AddValue("read_latency", clk_ - it->added_cycle);
                 }
+                auto pair = std::make_pair(it->addr, it->is_write);
+                it = return_queue_.erase(it);
+                return pair;
             }
-            auto pair = std::make_pair(it->addr, it->is_write);
-            std::cout<<"Addr: "<<it->addr<<", "<<"complete_cycle: "<<it->complete_cycle<<std::endl;
-            it = return_queue_.erase(it);
-            return pair;
         } else {
             ++it;
         }
@@ -248,6 +252,8 @@ void Controller::ScheduleTransaction() {
     for (auto it = queue.begin(); it != queue.end(); it++) {
         if (PrefetchHit(it->addr)){
             IssueHitTrans(*it);
+            queue.erase(it);
+            break;
         }
         else{
           auto cmd = TransToCommand(*it);
@@ -477,22 +483,17 @@ void Controller::AddPrefetchTrans(Transaction &trans){
 }
 
 void Controller::UpdatePrefetchBuffer(Transaction &trans){
-    if (!trans.IsPrefetch){
-        return;
-    }
-    else{
-        for (auto it = PrefetchBuffer.begin(); it != PrefetchBuffer.end(); ++it){
-            if (it->addr == trans.addr){
-                return;
-            }
+    for (auto it = PrefetchBuffer.begin(); it != PrefetchBuffer.end(); ++it){
+        if (it->addr == trans.addr){
+            return;
         }
-        if (PrefetchBuffer.size() >= PrefetchBuffer.capacity()){
-            R_ivicte();
-        }
-        PrefetchEntry entry;
-        entry.addr = trans.addr;
-        entry.hit_count = 0;
-        PrefetchBuffer.push_back(entry);
     }
+    if (PrefetchBuffer.size() >= PrefetchBuffer.capacity()){
+        R_ivicte();
+    }
+    PrefetchEntry entry;
+    entry.addr = trans.addr;
+    entry.hit_count = 0;
+    PrefetchBuffer.push_back(entry);
 }
 }  // namespace dramsim3
