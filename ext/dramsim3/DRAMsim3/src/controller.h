@@ -10,6 +10,7 @@
 #include "common.h"
 #include "refresh.h"
 #include "simple_stats.h"
+#include "prefetcher.h"
 
 #ifdef THERMAL
 #include "thermal.h"
@@ -19,11 +20,11 @@ namespace dramsim3 {
 
 enum class RowBufPolicy { OPEN_PAGE, CLOSE_PAGE, SIZE };
 
-class PrefetchEntry{
+/*class PrefetchEntry{
 public:
     uint64_t addr;
     int hit_count;
-};
+};*/
 
 class Controller {
    public:
@@ -54,9 +55,11 @@ class Controller {
     CommandQueue cmd_queue_;
     Refresh refresh_;
     bool is_rw_denp_;
-    std::vector<PrefetchEntry>PrefetchBuffer;
+    /*std::vector<PrefetchEntry>PrefetchBuffer;
     int prefetch_total;
-    int prefetch_hit;
+    int prefetch_hit;*/
+    bool prefetch_on;
+    NextLine_Prefetcher prefetcher;
 
 #ifdef THERMAL
     ThermalCalculator &thermal_calc_;
@@ -92,13 +95,13 @@ class Controller {
     Command TransToCommand(const Transaction &trans);
     void UpdateCommandStats(const Command &cmd);
 
-    void W_ivicte(const Command &cmd);
+    /*void W_ivicte(const Command &cmd);
     void R_ivicte();
     bool IssuePrefetch(const Command &cmd);
-    Transaction GetPrefetch(const Command &cmd);
+    Transaction GetPrefetch(const Command &cmd);*/
     bool PrefetchHit(uint64_t addr);
     void IssueHitTrans(Transaction &trans);
-    void UpdatePrefetchBuffer(Transaction &trans);
+    //void UpdatePrefetchBuffer(Transaction &trans);
     void AddPrefetchTrans(Transaction &trans);
 };
 }  // namespace dramsim3

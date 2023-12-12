@@ -2,7 +2,6 @@
 #include <iomanip>
 #include <iostream>
 #include <limits>
-#include "../../../../../../../usr/include/c++/11/bits/ios_base.h"
 
 namespace dramsim3 {
 
@@ -20,9 +19,10 @@ Controller::Controller(int channel, const Config &config, const Timing &timing) 
       cmd_queue_(channel_id_, config, channel_state_, simple_stats_),
       refresh_(config, channel_state_),
       is_rw_denp_(false),
-      PrefetchBuffer(32),
+      /*PrefetchBuffer(32),
       prefetch_total(0),
-      prefetch_hit(0),
+      prefetch_hit(0),*/
+      prefetch_on(false),
 #ifdef THERMAL
       thermal_calc_(thermal_calc),
 #endif  // THERMAL
@@ -53,7 +53,7 @@ std::pair<uint64_t, int> Controller::ReturnDoneTrans(uint64_t clk) {
         if (clk >= it->complete_cycle) {
             std::cout<<"Addr: "<<it->addr<<", "<<"Add_ cycle: "<<it->added_cycle<<", "<<"complete_cycle: "<<it->complete_cycle<<", "<<"IsPrefetch: "<<it->IsPrefetch<<std::endl;
             if (it->IsPrefetch){
-                UpdatePrefetchBuffer(*it);
+                prefetcher.UpdatePrefetchBuffer(*it);
                 it = return_queue_.erase(it);
                 return std::make_pair(-1, -1);
             } else {
@@ -109,12 +109,15 @@ void Controller::ClockTick() {
             default: cmd_type = " ";
         }
         std::cout<<"IssueCommand: "<<cmd_type<<", "<<"Addr: "<<cmd.hex_addr<<", "<<cmd.addr.bankgroup<<", "<<cmd.addr.bank<<", "<<cmd.addr.row<<", "<<cmd.addr.column<<", "<<"Cycle: "<<clk_<<std::endl;
-        if (IssuePrefetch(cmd)){
-            Transaction Prefetch_trans=GetPrefetch(cmd);
+
+        if (prefetcher.IssuePrefetch(cmd) && prefetch_on){
+            Transaction Prefetch_trans=prefetcher.GetPrefetch(cmd);
+            Prefetch_trans.added_cycle = clk_;
+            Prefetch_trans.complete_cycle = clk_+1;
             AddPrefetchTrans(Prefetch_trans);
         }
         if (cmd.cmd_type == CommandType::WRITE || cmd.cmd_type == CommandType::WRITE_PRECHARGE){
-            W_ivicte(cmd);
+            prefetcher.W_ivicte(cmd);
         }
         IssueCommand(cmd);
         cmd_issued = true;
@@ -180,7 +183,7 @@ void Controller::ClockTick() {
     }
 
     ScheduleTransaction();
-    std::cout<<"Issue Prefetch: "<<prefetch_total<<", "<<"Prefetch hit: "<<prefetch_hit<<std::endl;
+    std::cout<<"Issue Prefetch: "<<prefetcher.prefetch_total<<", "<<"Prefetch hit: "<<prefetcher.prefetch_hit<<std::endl;
     clk_++;
     cmd_queue_.ClockTick();
     simple_stats_.Increment("num_cycles");
@@ -396,7 +399,7 @@ void Controller::UpdateCommandStats(const Command &cmd) {                   //ไป
     }
 }
 
-//Maintain data consistency when write new datas in the same address of the entry in the prefetch-buffer
+/*//Maintain data consistency when write new datas in the same address of the entry in the prefetch-buffer
 void Controller::W_ivicte(const Command &cmd){
     auto it = PrefetchBuffer.begin();
     while (it != PrefetchBuffer.end()) {
@@ -443,13 +446,13 @@ Transaction Controller::GetPrefetch(const Command &cmd){
     prefetch_total++;
     std::cout<<"Prefetch Addr: "<<Prefetch.addr<<std::endl;
     return  Prefetch;
-}
+}*/
 
 bool Controller::PrefetchHit(uint64_t addr){
-    for (auto it = PrefetchBuffer.begin(); it != PrefetchBuffer.end(); it++){
+    for (auto it = prefetcher.PrefetchBuffer.begin(); it != prefetcher.PrefetchBuffer.end(); it++){
         if (addr == it->addr){
             if (it->hit_count == 0){
-                prefetch_hit++;
+                prefetcher.prefetch_hit++;
             }
             it->hit_count++;
             return true;
@@ -482,7 +485,7 @@ void Controller::AddPrefetchTrans(Transaction &trans){
     }
 }
 
-void Controller::UpdatePrefetchBuffer(Transaction &trans){
+/*void Controller::UpdatePrefetchBuffer(Transaction &trans){
     for (auto it = PrefetchBuffer.begin(); it != PrefetchBuffer.end(); ++it){
         if (it->addr == trans.addr){
             return;
@@ -495,5 +498,5 @@ void Controller::UpdatePrefetchBuffer(Transaction &trans){
     entry.addr = trans.addr;
     entry.hit_count = 0;
     PrefetchBuffer.push_back(entry);
-}
+}*/
 }  // namespace dramsim3
