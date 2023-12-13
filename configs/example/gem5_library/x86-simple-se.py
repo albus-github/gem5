@@ -98,7 +98,7 @@ board.set_se_binary_workload(
     # Any resource specified in this file will be automatically retrieved.
     # At the time of writing, this file is a WIP and does not contain all
     # resources. Jira ticket: https://gem5.atlassian.net/browse/GEM5-1096
-    BinaryResource("/home/albus/spec2017/benchspec/CPU/505.mcf_r/run/run_base_refrate_mytest-m64.0000/mcf_r_base.mytest-m64")
+    BinaryResource("/home/albus/spec2017/benchspec/CPU/531.deepsjeng_r/run/run_base_refrate_mytest-m64.0000/deepsjeng_r_base.mytest-m64")
 )
 
 # Lastly we run the simulation.
