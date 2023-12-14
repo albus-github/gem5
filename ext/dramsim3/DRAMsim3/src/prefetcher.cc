@@ -45,7 +45,6 @@ Transaction NextLine_Prefetcher::GetPrefetch(const Command &cmd){
     Prefetch.IsPrefetch = true;
     Prefetch.is_write = false;
     prefetch_total++;
-    std::cout<<"Prefetch Addr: "<<Prefetch.addr<<std::endl;
     return  Prefetch;
 }
 

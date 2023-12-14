@@ -2,6 +2,7 @@
 #define __CONTROLLER_H
 
 #include <fstream>
+#include <string>
 #include <map>
 #include <unordered_set>
 #include <vector>
@@ -19,12 +20,6 @@
 namespace dramsim3 {
 
 enum class RowBufPolicy { OPEN_PAGE, CLOSE_PAGE, SIZE };
-
-/*class PrefetchEntry{
-public:
-    uint64_t addr;
-    int hit_count;
-};*/
 
 class Controller {
    public:
@@ -55,9 +50,7 @@ class Controller {
     CommandQueue cmd_queue_;
     Refresh refresh_;
     bool is_rw_denp_;
-    /*std::vector<PrefetchEntry>PrefetchBuffer;
-    int prefetch_total;
-    int prefetch_hit;*/
+
     bool prefetch_on;
     NextLine_Prefetcher prefetcher;
 
@@ -95,14 +88,12 @@ class Controller {
     Command TransToCommand(const Transaction &trans);
     void UpdateCommandStats(const Command &cmd);
 
-    /*void W_ivicte(const Command &cmd);
-    void R_ivicte();
-    bool IssuePrefetch(const Command &cmd);
-    Transaction GetPrefetch(const Command &cmd);*/
+    // used to processing prefetch
     bool PrefetchHit(uint64_t addr);
     void IssueHitTrans(Transaction &trans);
-    //void UpdatePrefetchBuffer(Transaction &trans);
     void AddPrefetchTrans(Transaction &trans);
+
+    void TraceFile(const std::string& content);
 };
 }  // namespace dramsim3
 #endif

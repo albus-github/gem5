@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <iostream>
 #include <limits>
+#include <sstream>
 
 namespace dramsim3 {
 
@@ -22,7 +23,7 @@ Controller::Controller(int channel, const Config &config, const Timing &timing) 
       /*PrefetchBuffer(32),
       prefetch_total(0),
       prefetch_hit(0),*/
-      prefetch_on(false),
+      prefetch_on(true),
 #ifdef THERMAL
       thermal_calc_(thermal_calc),
 #endif  // THERMAL
@@ -51,7 +52,10 @@ std::pair<uint64_t, int> Controller::ReturnDoneTrans(uint64_t clk) {
     auto it = return_queue_.begin();
     while (it != return_queue_.end()) {
         if (clk >= it->complete_cycle) {
-            std::cout<<"Addr: "<<it->addr<<", "<<"Add_ cycle: "<<it->added_cycle<<", "<<"complete_cycle: "<<it->complete_cycle<<", "<<"IsPrefetch: "<<it->IsPrefetch<<std::endl;
+            std::stringstream complete_info;
+            complete_info<<"Cycle: "<<clk_<<", "<<"Complete_Trans: "<<"Addr: "<<it->addr<<", "<<"latency: "<<it->complete_cycle - it->added_cycle<<", "<<"IsPrefetch: "<<it->IsPrefetch<<'\n';
+            std::string complete_infostr = complete_info.str();
+            TraceFile(complete_infostr);
             if (it->IsPrefetch){
                 prefetcher.UpdatePrefetchBuffer(*it);
                 it = return_queue_.erase(it);
@@ -79,7 +83,6 @@ void Controller::ClockTick() {
     refresh_.ClockTick();
 
     bool cmd_issued = false;
-    //std::cout<<"Nember of trans in the return_queue: "<<return_queue_.size()<<", "<<clk_<<std::endl;
     Command cmd;
     if (channel_state_.IsRefreshWaiting()) {
         cmd = cmd_queue_.FinishRefresh();
@@ -88,15 +91,6 @@ void Controller::ClockTick() {
     // cannot find a refresh related command or there's no refresh
     if (!cmd.IsValid()) {
         cmd = cmd_queue_.GetCommandToIssue();
-        std::string cmd_type;
-        switch(cmd.cmd_type){
-            case CommandType::ACTIVATE: cmd_type = "ACTIVE"; break;
-            case CommandType::PRECHARGE: cmd_type = "PRECHARGE"; break;
-            case CommandType::READ: cmd_type = "READ"; break;
-            case CommandType::WRITE: cmd_type = "WRITE"; break;
-            default: cmd_type = " ";
-        }
-        //std::cout<<"GetCommand: "<<cmd_type<<", "<<"Addr: "<<cmd.addr.bankgroup<<", "<<cmd.addr.bank<<", "<<cmd.addr.row<<", "<<cmd.addr.column<<", "<<"Cycle: "<<clk_<<std::endl;
     }
 
     if (cmd.IsValid()) {
@@ -108,10 +102,19 @@ void Controller::ClockTick() {
             case CommandType::WRITE: cmd_type = "WRITE"; break;
             default: cmd_type = " ";
         }
-        std::cout<<"IssueCommand: "<<cmd_type<<", "<<"Addr: "<<cmd.hex_addr<<", "<<cmd.addr.bankgroup<<", "<<cmd.addr.bank<<", "<<cmd.addr.row<<", "<<cmd.addr.column<<", "<<"Cycle: "<<clk_<<std::endl;
+        std::stringstream issue_info;
+        issue_info<<"Cycle: "<<clk_<<", "<<"Issue_Command: "<<cmd_type<<", "<<"Addr: "<<cmd.hex_addr<<", bg: "<<cmd.addr.bankgroup<<", ba: "<<cmd.addr.bank<<", ro: "<<cmd.addr.row<<", co: "<<cmd.addr.column<<", "<<"IsPrefetch: "<<cmd.IsPrefetch<<'\n';
+        std::string issue_infostr = issue_info.str();
+        TraceFile(issue_infostr);
 
         if (prefetcher.IssuePrefetch(cmd) && prefetch_on){
             Transaction Prefetch_trans=prefetcher.GetPrefetch(cmd);
+
+            std::stringstream p_trans_info;
+            p_trans_info<<"Cycle: "<<clk_<<", "<<"Prefetch_Trans: "<<"Addr: "<<Prefetch_trans.addr<<'\n';
+            std::string p_trans_infostr = p_trans_info.str();
+            TraceFile(p_trans_infostr);
+
             Prefetch_trans.added_cycle = clk_;
             Prefetch_trans.complete_cycle = clk_+1;
             AddPrefetchTrans(Prefetch_trans);
@@ -183,7 +186,9 @@ void Controller::ClockTick() {
     }
 
     ScheduleTransaction();
-    std::cout<<"Issue Prefetch: "<<prefetcher.prefetch_total<<", "<<"Prefetch hit: "<<prefetcher.prefetch_hit<<std::endl;
+    if (clk_ % 10000 == 0){
+        std::cout<<"The program is running!    Prefetch_on: "<<prefetch_on<<"    Sim_Cycle: "<<clk_<<std::endl;
+    }
     clk_++;
     cmd_queue_.ClockTick();
     simple_stats_.Increment("num_cycles");
@@ -234,7 +239,10 @@ bool Controller::AddTransaction(Transaction trans) {
                 read_queue_.push_back(trans);
             }
         }
-        std::cout<<"Addr: "<<trans.addr<<", "<<"AddTrans cycle: "<<clk_<<std::endl;
+        std::stringstream add_info;
+        add_info<<"Cycle: "<<clk_<<", "<<"ADD_Trans: "<<"Addr: "<<trans.addr<<'\n';
+        std::string add_infostr = add_info.str();
+        TraceFile(add_infostr);
         return true;
     }
 }
@@ -399,60 +407,16 @@ void Controller::UpdateCommandStats(const Command &cmd) {                   //�
     }
 }
 
-/*//Maintain data consistency when write new datas in the same address of the entry in the prefetch-buffer
-void Controller::W_ivicte(const Command &cmd){
-    auto it = PrefetchBuffer.begin();
-    while (it != PrefetchBuffer.end()) {
-        if (it->addr == cmd.hex_addr){
-            it = PrefetchBuffer.erase(it);
-        } 
-        else {
-            it++;
-        }   
-    }
-}
-
-//When the prefetche-buffer is full, the least used entry will be ivicted
-void Controller::R_ivicte(){
-    if (!PrefetchBuffer.empty()){
-        auto minIt = std::min_element(
-        PrefetchBuffer.begin(), PrefetchBuffer.end(),
-        [](const PrefetchEntry &a, const PrefetchEntry &b) {
-            return a.hit_count < b.hit_count;
-        }
-        );
-        PrefetchBuffer.erase(minIt);
-    }
-}
-
-//decide whether to issue prefetch(if the row is open)
-bool Controller::IssuePrefetch(const Command &cmd){
-    if (!cmd.IsPrefetch){
-        if (cmd.cmd_type == CommandType::READ){
-        return true;
-        }
-    }
-    return false;
-}
-
-//Get the Perfetch command
-Transaction Controller::GetPrefetch(const Command &cmd){
-    Transaction Prefetch;
-    Prefetch.addr = cmd.hex_addr+64;
-    Prefetch.IsPrefetch = true;
-    Prefetch.is_write = false;
-    Prefetch.added_cycle = clk_;
-    Prefetch.complete_cycle = clk_+1;
-    prefetch_total++;
-    std::cout<<"Prefetch Addr: "<<Prefetch.addr<<std::endl;
-    return  Prefetch;
-}*/
-
+// determine if the trans has been hit in the prefetch-buffer
 bool Controller::PrefetchHit(uint64_t addr){
     for (auto it = prefetcher.PrefetchBuffer.begin(); it != prefetcher.PrefetchBuffer.end(); it++){
         if (addr == it->addr){
             if (it->hit_count == 0){
                 prefetcher.prefetch_hit++;
+                std::stringstream prefetch_info;
+                prefetch_info<<"Cycle: "<<clk_<<", "<<"Prefetcher_info: "<<"Issue Prefetch: "<<prefetcher.prefetch_total<<", "<<"Prefetch hit: "<<prefetcher.prefetch_hit<<'\n';
+                std::string prefetch_infostr = prefetch_info.str();
+                TraceFile(prefetch_infostr);
             }
             it->hit_count++;
             return true;
@@ -461,6 +425,7 @@ bool Controller::PrefetchHit(uint64_t addr){
     return false;
 }
 
+// issue the hit trans to the return_queue 
 void Controller::IssueHitTrans(Transaction &trans){
     trans.complete_cycle = clk_ + config_.burst_cycle;
     return_queue_.push_back(trans);
@@ -474,6 +439,7 @@ void Controller::IssueHitTrans(Transaction &trans){
     }
 }
 
+// add the prefetch trans to the read_queue and pending_rd_q
 void Controller::AddPrefetchTrans(Transaction &trans){
     pending_rd_q_.insert(std::make_pair(trans.addr, trans));
     if (pending_rd_q_.count(trans.addr) == 1) {
@@ -485,18 +451,15 @@ void Controller::AddPrefetchTrans(Transaction &trans){
     }
 }
 
-/*void Controller::UpdatePrefetchBuffer(Transaction &trans){
-    for (auto it = PrefetchBuffer.begin(); it != PrefetchBuffer.end(); ++it){
-        if (it->addr == trans.addr){
-            return;
-        }
+void Controller::TraceFile(const std::string& content){
+    std::string filename = "trace_output.txt"; // 固定的文件名
+    std::ofstream file(filename, std::ios::app);
+    if (file.is_open()) {
+        file << content;
+        file.close();
+    } else {
+        std::cout << "无法打开文件！" << std::endl;
     }
-    if (PrefetchBuffer.size() >= PrefetchBuffer.capacity()){
-        R_ivicte();
-    }
-    PrefetchEntry entry;
-    entry.addr = trans.addr;
-    entry.hit_count = 0;
-    PrefetchBuffer.push_back(entry);
-}*/
+}
+
 }  // namespace dramsim3
