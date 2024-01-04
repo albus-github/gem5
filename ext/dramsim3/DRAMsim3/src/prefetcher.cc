@@ -68,6 +68,7 @@ void Prefetcher::UpdatePrefetchBuffer(Transaction &trans, uint64_t clk){
     PrefetchEntry entry;
     entry.addr = trans.addr;
     entry.hit_count = 0;
+    entry.add_cycle = clk;
     PrefetchBuffer.push_back(entry);
 }
 
@@ -233,6 +234,7 @@ void SPP_Prefetcher::UpdatePrefetchBuffer(Transaction &trans, uint64_t clk){
     PrefetchEntry entry;
     entry.addr = trans.addr;
     entry.hit_count = 0;
+    entry.add_cycle = clk;
     PrefetchBuffer.push_back(entry);
 }
 }
