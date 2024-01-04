@@ -1,0 +1,726 @@
+Cycle: 21, ADD_Trans: Addr: 2778706784
+Cycle: 22, Issue_Command: ACTIVE, Addr: 2778706784, bg: 0, ba: 6, ro: 10599, co: 205, IsPrefetch: 0
+Cycle: 33, Issue_Command: READ, Addr: 2778706784, bg: 0, ba: 6, ro: 10599, co: 205, IsPrefetch: 0
+Cycle: 41, ADD_Trans: Addr: 2778706848
+Cycle: 21, ADD_Trans: Addr: 2778706784
+Cycle: 21, ADD_Trans: Addr: 2778706784
+Cycle: 21, ADD_Trans: Addr: 2778706784
+Cycle: 21, ADD_Trans: Addr: 2778706784
+Cycle: 21, ADD_Trans: Addr: 2778706784
+Cycle: 21, ADD_Trans: Addr: 2778706784
+Cycle: 21, ADD_Trans: Addr: 2778706784
+Cycle: 22, Issue_Command: ACTIVE, Addr: 2778706784, bg: 0, ba: 6, ro: 10599, co: 205, IsPrefetch: 0
+Cycle: 33, Issue_Command: READ, Addr: 2778706784, bg: 0, ba: 6, ro: 10599, co: 205, IsPrefetch: 0
+Cycle: 41, ADD_Trans: Addr: 2778706848
+Cycle: 21, ADD_Trans: Addr: 2778706784
+Cycle: 22, Issue_Command: ACTIVE, Addr: 2778706784, bg: 0, ba: 6, ro: 10599, co: 205, IsPrefetch: 0
+Cycle: 33, Issue_Command: READ, Addr: 2778706784, bg: 0, ba: 6, ro: 10599, co: 205, IsPrefetch: 0
+Cycle: 41, ADD_Trans: Addr: 2778706848
+Cycle: 42, Issue_Command: READ, Addr: 2778706848, bg: 0, ba: 6, ro: 10599, co: 206, IsPrefetch: 0
+Cycle: 48, Complete_Trans: Addr: 2778706784, latency: 27, IsPrefetch: 0
+Cycle: 57, Complete_Trans: Addr: 2778706848, latency: 16, IsPrefetch: 0
+Cycle: 61, ADD_Trans: Addr: 2778706912
+Cycle: 62, Issue_Command: READ, Addr: 2778706912, bg: 0, ba: 6, ro: 10599, co: 207, IsPrefetch: 0
+Cycle: 77, Complete_Trans: Addr: 2778706912, latency: 16, IsPrefetch: 0
+Cycle: 81, ADD_Trans: Addr: 2778706976
+Cycle: 21, ADD_Trans: Addr: 2778706784
+Cycle: 22, Issue_Command: ACTIVE, Addr: 2778706784, bg: 0, ba: 6, ro: 10599, co: 205, IsPrefetch: 0
+Cycle: 33, Issue_Command: READ, Addr: 2778706784, bg: 0, ba: 6, ro: 10599, co: 205, IsPrefetch: 0
+Cycle: 41, ADD_Trans: Addr: 2778706848
+Cycle: 42, Issue_Command: READ, Addr: 2778706848, bg: 0, ba: 6, ro: 10599, co: 206, IsPrefetch: 0
+Cycle: 48, Complete_Trans: Addr: 2778706784, latency: 27, IsPrefetch: 0
+Cycle: 57, Complete_Trans: Addr: 2778706848, latency: 16, IsPrefetch: 0
+Cycle: 61, ADD_Trans: Addr: 2778706912
+Cycle: 62, Issue_Command: READ, Addr: 2778706912, bg: 0, ba: 6, ro: 10599, co: 207, IsPrefetch: 0
+Cycle: 77, Complete_Trans: Addr: 2778706912, latency: 16, IsPrefetch: 0
+Cycle: 81, ADD_Trans: Addr: 2778706976
+Cycle: 82, Issue_Command: READ, Addr: 2778706976, bg: 0, ba: 6, ro: 10599, co: 208, IsPrefetch: 0
+Cycle: 97, Complete_Trans: Addr: 2778706976, latency: 16, IsPrefetch: 0
+Cycle: 101, ADD_Trans: Addr: 2778707040
+Cycle: 102, Issue_Command: READ, Addr: 2778707040, bg: 0, ba: 6, ro: 10599, co: 209, IsPrefetch: 0
+Cycle: 117, Complete_Trans: Addr: 2778707040, latency: 16, IsPrefetch: 0
+Cycle: 121, ADD_Trans: Addr: 2778707104
+Cycle: 122, Issue_Command: READ, Addr: 2778707104, bg: 0, ba: 6, ro: 10599, co: 210, IsPrefetch: 0
+Cycle: 137, Complete_Trans: Addr: 2778707104, latency: 16, IsPrefetch: 0
+Cycle: 141, ADD_Trans: Addr: 2778707168
+Cycle: 142, Issue_Command: READ, Addr: 2778707168, bg: 0, ba: 6, ro: 10599, co: 211, IsPrefetch: 0
+Cycle: 157, Complete_Trans: Addr: 2778707168, latency: 16, IsPrefetch: 0
+Cycle: 161, ADD_Trans: Addr: 2778707232
+Cycle: 162, Issue_Command: READ, Addr: 2778707232, bg: 0, ba: 6, ro: 10599, co: 212, IsPrefetch: 0
+Cycle: 177, Complete_Trans: Addr: 2778707232, latency: 16, IsPrefetch: 0
+Cycle: 181, ADD_Trans: Addr: 2778707296
+Cycle: 182, Issue_Command: READ, Addr: 2778707296, bg: 0, ba: 6, ro: 10599, co: 213, IsPrefetch: 0
+Cycle: 197, Complete_Trans: Addr: 2778707296, latency: 16, IsPrefetch: 0
+Cycle: 201, ADD_Trans: Addr: 2778707360
+Cycle: 202, Issue_Command: READ, Addr: 2778707360, bg: 0, ba: 6, ro: 10599, co: 214, IsPrefetch: 0
+Cycle: 217, Complete_Trans: Addr: 2778707360, latency: 16, IsPrefetch: 0
+Cycle: 221, ADD_Trans: Addr: 2778707424
+Cycle: 222, Issue_Command: READ, Addr: 2778707424, bg: 0, ba: 6, ro: 10599, co: 215, IsPrefetch: 0
+Cycle: 237, Complete_Trans: Addr: 2778707424, latency: 16, IsPrefetch: 0
+Cycle: 241, ADD_Trans: Addr: 2778707488
+Cycle: 242, Issue_Command: READ, Addr: 2778707488, bg: 0, ba: 6, ro: 10599, co: 216, IsPrefetch: 0
+Cycle: 257, Complete_Trans: Addr: 2778707488, latency: 16, IsPrefetch: 0
+Cycle: 261, ADD_Trans: Addr: 2778707552
+Cycle: 262, Issue_Command: READ, Addr: 2778707552, bg: 0, ba: 6, ro: 10599, co: 217, IsPrefetch: 0
+Cycle: 277, Complete_Trans: Addr: 2778707552, latency: 16, IsPrefetch: 0
+Cycle: 281, ADD_Trans: Addr: 2778707616
+Cycle: 282, Issue_Command: READ, Addr: 2778707616, bg: 0, ba: 6, ro: 10599, co: 218, IsPrefetch: 0
+Cycle: 297, Complete_Trans: Addr: 2778707616, latency: 16, IsPrefetch: 0
+Cycle: 301, ADD_Trans: Addr: 2778707680
+Cycle: 302, Issue_Command: READ, Addr: 2778707680, bg: 0, ba: 6, ro: 10599, co: 219, IsPrefetch: 0
+Cycle: 317, Complete_Trans: Addr: 2778707680, latency: 16, IsPrefetch: 0
+Cycle: 321, ADD_Trans: Addr: 2778707744
+Cycle: 322, Issue_Command: READ, Addr: 2778707744, bg: 0, ba: 6, ro: 10599, co: 220, IsPrefetch: 0
+Cycle: 337, Complete_Trans: Addr: 2778707744, latency: 16, IsPrefetch: 0
+Cycle: 341, ADD_Trans: Addr: 2778707808
+Cycle: 342, Issue_Command: READ, Addr: 2778707808, bg: 0, ba: 6, ro: 10599, co: 221, IsPrefetch: 0
+Cycle: 357, Complete_Trans: Addr: 2778707808, latency: 16, IsPrefetch: 0
+Cycle: 361, ADD_Trans: Addr: 2778707872
+Cycle: 362, Issue_Command: READ, Addr: 2778707872, bg: 0, ba: 6, ro: 10599, co: 222, IsPrefetch: 0
+Cycle: 377, Complete_Trans: Addr: 2778707872, latency: 16, IsPrefetch: 0
+Cycle: 381, ADD_Trans: Addr: 2778707936
+Cycle: 382, Issue_Command: READ, Addr: 2778707936, bg: 0, ba: 6, ro: 10599, co: 223, IsPrefetch: 0
+Cycle: 397, Complete_Trans: Addr: 2778707936, latency: 16, IsPrefetch: 0
+Cycle: 401, ADD_Trans: Addr: 2778708000
+Cycle: 402, Issue_Command: READ, Addr: 2778708000, bg: 0, ba: 6, ro: 10599, co: 224, IsPrefetch: 0
+Cycle: 417, Complete_Trans: Addr: 2778708000, latency: 16, IsPrefetch: 0
+Cycle: 421, ADD_Trans: Addr: 2778708064
+Cycle: 422, Issue_Command: READ, Addr: 2778708064, bg: 0, ba: 6, ro: 10599, co: 225, IsPrefetch: 0
+Cycle: 437, Complete_Trans: Addr: 2778708064, latency: 16, IsPrefetch: 0
+Cycle: 441, ADD_Trans: Addr: 2778708128
+Cycle: 442, Issue_Command: READ, Addr: 2778708128, bg: 0, ba: 6, ro: 10599, co: 226, IsPrefetch: 0
+Cycle: 457, Complete_Trans: Addr: 2778708128, latency: 16, IsPrefetch: 0
+Cycle: 461, ADD_Trans: Addr: 2778708192
+Cycle: 462, Issue_Command: READ, Addr: 2778708192, bg: 0, ba: 6, ro: 10599, co: 227, IsPrefetch: 0
+Cycle: 477, Complete_Trans: Addr: 2778708192, latency: 16, IsPrefetch: 0
+Cycle: 481, ADD_Trans: Addr: 2778708256
+Cycle: 482, Issue_Command: READ, Addr: 2778708256, bg: 0, ba: 6, ro: 10599, co: 228, IsPrefetch: 0
+Cycle: 497, Complete_Trans: Addr: 2778708256, latency: 16, IsPrefetch: 0
+Cycle: 501, ADD_Trans: Addr: 2778708320
+Cycle: 502, Issue_Command: READ, Addr: 2778708320, bg: 0, ba: 6, ro: 10599, co: 229, IsPrefetch: 0
+Cycle: 517, Complete_Trans: Addr: 2778708320, latency: 16, IsPrefetch: 0
+Cycle: 521, ADD_Trans: Addr: 2778708384
+Cycle: 522, Issue_Command: READ, Addr: 2778708384, bg: 0, ba: 6, ro: 10599, co: 230, IsPrefetch: 0
+Cycle: 537, Complete_Trans: Addr: 2778708384, latency: 16, IsPrefetch: 0
+Cycle: 541, ADD_Trans: Addr: 2778708448
+Cycle: 542, Issue_Command: READ, Addr: 2778708448, bg: 0, ba: 6, ro: 10599, co: 231, IsPrefetch: 0
+Cycle: 557, Complete_Trans: Addr: 2778708448, latency: 16, IsPrefetch: 0
+Cycle: 561, ADD_Trans: Addr: 2778708512
+Cycle: 562, Issue_Command: READ, Addr: 2778708512, bg: 0, ba: 6, ro: 10599, co: 232, IsPrefetch: 0
+Cycle: 577, Complete_Trans: Addr: 2778708512, latency: 16, IsPrefetch: 0
+Cycle: 581, ADD_Trans: Addr: 2778708576
+Cycle: 582, Issue_Command: READ, Addr: 2778708576, bg: 0, ba: 6, ro: 10599, co: 233, IsPrefetch: 0
+Cycle: 597, Complete_Trans: Addr: 2778708576, latency: 16, IsPrefetch: 0
+Cycle: 601, ADD_Trans: Addr: 2778708640
+Cycle: 602, Issue_Command: READ, Addr: 2778708640, bg: 0, ba: 6, ro: 10599, co: 234, IsPrefetch: 0
+Cycle: 617, Complete_Trans: Addr: 2778708640, latency: 16, IsPrefetch: 0
+Cycle: 621, ADD_Trans: Addr: 2778708704
+Cycle: 622, Issue_Command: READ, Addr: 2778708704, bg: 0, ba: 6, ro: 10599, co: 235, IsPrefetch: 0
+Cycle: 637, Complete_Trans: Addr: 2778708704, latency: 16, IsPrefetch: 0
+Cycle: 641, ADD_Trans: Addr: 2778708768
+Cycle: 642, Issue_Command: READ, Addr: 2778708768, bg: 0, ba: 6, ro: 10599, co: 236, IsPrefetch: 0
+Cycle: 657, Complete_Trans: Addr: 2778708768, latency: 16, IsPrefetch: 0
+Cycle: 661, ADD_Trans: Addr: 2778708832
+Cycle: 662, Issue_Command: READ, Addr: 2778708832, bg: 0, ba: 6, ro: 10599, co: 237, IsPrefetch: 0
+Cycle: 677, Complete_Trans: Addr: 2778708832, latency: 16, IsPrefetch: 0
+Cycle: 681, ADD_Trans: Addr: 2778708896
+Cycle: 682, Issue_Command: READ, Addr: 2778708896, bg: 0, ba: 6, ro: 10599, co: 238, IsPrefetch: 0
+Cycle: 697, Complete_Trans: Addr: 2778708896, latency: 16, IsPrefetch: 0
+Cycle: 701, ADD_Trans: Addr: 2778708960
+Cycle: 702, Issue_Command: READ, Addr: 2778708960, bg: 0, ba: 6, ro: 10599, co: 239, IsPrefetch: 0
+Cycle: 717, Complete_Trans: Addr: 2778708960, latency: 16, IsPrefetch: 0
+Cycle: 721, ADD_Trans: Addr: 2778709024
+Cycle: 722, Issue_Command: READ, Addr: 2778709024, bg: 0, ba: 6, ro: 10599, co: 240, IsPrefetch: 0
+Cycle: 737, Complete_Trans: Addr: 2778709024, latency: 16, IsPrefetch: 0
+Cycle: 741, ADD_Trans: Addr: 2778709088
+Cycle: 742, Issue_Command: READ, Addr: 2778709088, bg: 0, ba: 6, ro: 10599, co: 241, IsPrefetch: 0
+Cycle: 757, Complete_Trans: Addr: 2778709088, latency: 16, IsPrefetch: 0
+Cycle: 761, ADD_Trans: Addr: 2778709152
+Cycle: 762, Issue_Command: READ, Addr: 2778709152, bg: 0, ba: 6, ro: 10599, co: 242, IsPrefetch: 0
+Cycle: 777, Complete_Trans: Addr: 2778709152, latency: 16, IsPrefetch: 0
+Cycle: 781, ADD_Trans: Addr: 2778709216
+Cycle: 782, Issue_Command: READ, Addr: 2778709216, bg: 0, ba: 6, ro: 10599, co: 243, IsPrefetch: 0
+Cycle: 797, Complete_Trans: Addr: 2778709216, latency: 16, IsPrefetch: 0
+Cycle: 801, ADD_Trans: Addr: 2778709280
+Cycle: 802, Issue_Command: READ, Addr: 2778709280, bg: 0, ba: 6, ro: 10599, co: 244, IsPrefetch: 0
+Cycle: 817, Complete_Trans: Addr: 2778709280, latency: 16, IsPrefetch: 0
+Cycle: 821, ADD_Trans: Addr: 2778709344
+Cycle: 822, Issue_Command: READ, Addr: 2778709344, bg: 0, ba: 6, ro: 10599, co: 245, IsPrefetch: 0
+Cycle: 837, Complete_Trans: Addr: 2778709344, latency: 16, IsPrefetch: 0
+Cycle: 841, ADD_Trans: Addr: 2778709408
+Cycle: 842, Issue_Command: READ, Addr: 2778709408, bg: 0, ba: 6, ro: 10599, co: 246, IsPrefetch: 0
+Cycle: 857, Complete_Trans: Addr: 2778709408, latency: 16, IsPrefetch: 0
+Cycle: 861, ADD_Trans: Addr: 2778709472
+Cycle: 862, Issue_Command: READ, Addr: 2778709472, bg: 0, ba: 6, ro: 10599, co: 247, IsPrefetch: 0
+Cycle: 877, Complete_Trans: Addr: 2778709472, latency: 16, IsPrefetch: 0
+Cycle: 881, ADD_Trans: Addr: 2778709536
+Cycle: 882, Issue_Command: READ, Addr: 2778709536, bg: 0, ba: 6, ro: 10599, co: 248, IsPrefetch: 0
+Cycle: 897, Complete_Trans: Addr: 2778709536, latency: 16, IsPrefetch: 0
+Cycle: 901, ADD_Trans: Addr: 2778709600
+Cycle: 902, Issue_Command: READ, Addr: 2778709600, bg: 0, ba: 6, ro: 10599, co: 249, IsPrefetch: 0
+Cycle: 917, Complete_Trans: Addr: 2778709600, latency: 16, IsPrefetch: 0
+Cycle: 921, ADD_Trans: Addr: 2778709664
+Cycle: 922, Issue_Command: READ, Addr: 2778709664, bg: 0, ba: 6, ro: 10599, co: 250, IsPrefetch: 0
+Cycle: 937, Complete_Trans: Addr: 2778709664, latency: 16, IsPrefetch: 0
+Cycle: 941, ADD_Trans: Addr: 2778709728
+Cycle: 942, Issue_Command: READ, Addr: 2778709728, bg: 0, ba: 6, ro: 10599, co: 251, IsPrefetch: 0
+Cycle: 957, Complete_Trans: Addr: 2778709728, latency: 16, IsPrefetch: 0
+Cycle: 961, ADD_Trans: Addr: 2778709792
+Cycle: 962, Issue_Command: READ, Addr: 2778709792, bg: 0, ba: 6, ro: 10599, co: 252, IsPrefetch: 0
+Cycle: 977, Complete_Trans: Addr: 2778709792, latency: 16, IsPrefetch: 0
+Cycle: 981, ADD_Trans: Addr: 2778709856
+Cycle: 982, Issue_Command: READ, Addr: 2778709856, bg: 0, ba: 6, ro: 10599, co: 253, IsPrefetch: 0
+Cycle: 997, Complete_Trans: Addr: 2778709856, latency: 16, IsPrefetch: 0
+Cycle: 1001, ADD_Trans: Addr: 2778709920
+Cycle: 1002, Issue_Command: READ, Addr: 2778709920, bg: 0, ba: 6, ro: 10599, co: 254, IsPrefetch: 0
+Cycle: 1017, Complete_Trans: Addr: 2778709920, latency: 16, IsPrefetch: 0
+Cycle: 1021, ADD_Trans: Addr: 2778709984
+Cycle: 1022, Issue_Command: READ, Addr: 2778709984, bg: 0, ba: 6, ro: 10599, co: 255, IsPrefetch: 0
+Cycle: 1037, Complete_Trans: Addr: 2778709984, latency: 16, IsPrefetch: 0
+Cycle: 1041, ADD_Trans: Addr: 2778710048
+Cycle: 1042, Issue_Command: ACTIVE, Addr: 2778710048, bg: 0, ba: 7, ro: 10599, co: 0, IsPrefetch: 0
+Cycle: 1053, Issue_Command: READ, Addr: 2778710048, bg: 0, ba: 7, ro: 10599, co: 0, IsPrefetch: 0
+Cycle: 1061, ADD_Trans: Addr: 2778710112
+Cycle: 1062, Issue_Command: READ, Addr: 2778710112, bg: 0, ba: 7, ro: 10599, co: 1, IsPrefetch: 0
+Cycle: 1068, Complete_Trans: Addr: 2778710048, latency: 27, IsPrefetch: 0
+Cycle: 1077, Complete_Trans: Addr: 2778710112, latency: 16, IsPrefetch: 0
+Cycle: 1081, ADD_Trans: Addr: 2778710176
+Cycle: 1082, Issue_Command: READ, Addr: 2778710176, bg: 0, ba: 7, ro: 10599, co: 2, IsPrefetch: 0
+Cycle: 1097, Complete_Trans: Addr: 2778710176, latency: 16, IsPrefetch: 0
+Cycle: 1101, ADD_Trans: Addr: 2778710240
+Cycle: 1102, Issue_Command: READ, Addr: 2778710240, bg: 0, ba: 7, ro: 10599, co: 3, IsPrefetch: 0
+Cycle: 1117, Complete_Trans: Addr: 2778710240, latency: 16, IsPrefetch: 0
+Cycle: 1121, ADD_Trans: Addr: 2778710304
+Cycle: 1122, Issue_Command: READ, Addr: 2778710304, bg: 0, ba: 7, ro: 10599, co: 4, IsPrefetch: 0
+Cycle: 1137, Complete_Trans: Addr: 2778710304, latency: 16, IsPrefetch: 0
+Cycle: 1141, ADD_Trans: Addr: 2778710368
+Cycle: 1142, Issue_Command: READ, Addr: 2778710368, bg: 0, ba: 7, ro: 10599, co: 5, IsPrefetch: 0
+Cycle: 1157, Complete_Trans: Addr: 2778710368, latency: 16, IsPrefetch: 0
+Cycle: 1161, ADD_Trans: Addr: 2778710432
+Cycle: 1162, Issue_Command: READ, Addr: 2778710432, bg: 0, ba: 7, ro: 10599, co: 6, IsPrefetch: 0
+Cycle: 1177, Complete_Trans: Addr: 2778710432, latency: 16, IsPrefetch: 0
+Cycle: 1181, ADD_Trans: Addr: 2778710496
+Cycle: 1182, Issue_Command: READ, Addr: 2778710496, bg: 0, ba: 7, ro: 10599, co: 7, IsPrefetch: 0
+Cycle: 1197, Complete_Trans: Addr: 2778710496, latency: 16, IsPrefetch: 0
+Cycle: 1201, ADD_Trans: Addr: 2778710560
+Cycle: 1202, Issue_Command: READ, Addr: 2778710560, bg: 0, ba: 7, ro: 10599, co: 8, IsPrefetch: 0
+Cycle: 1217, Complete_Trans: Addr: 2778710560, latency: 16, IsPrefetch: 0
+Cycle: 1221, ADD_Trans: Addr: 2778710624
+Cycle: 1222, Issue_Command: READ, Addr: 2778710624, bg: 0, ba: 7, ro: 10599, co: 9, IsPrefetch: 0
+Cycle: 1237, Complete_Trans: Addr: 2778710624, latency: 16, IsPrefetch: 0
+Cycle: 1241, ADD_Trans: Addr: 2778710688
+Cycle: 1242, Issue_Command: READ, Addr: 2778710688, bg: 0, ba: 7, ro: 10599, co: 10, IsPrefetch: 0
+Cycle: 1257, Complete_Trans: Addr: 2778710688, latency: 16, IsPrefetch: 0
+Cycle: 1261, ADD_Trans: Addr: 2778710752
+Cycle: 1262, Issue_Command: READ, Addr: 2778710752, bg: 0, ba: 7, ro: 10599, co: 11, IsPrefetch: 0
+Cycle: 1277, Complete_Trans: Addr: 2778710752, latency: 16, IsPrefetch: 0
+Cycle: 1281, ADD_Trans: Addr: 2778710816
+Cycle: 1282, Issue_Command: READ, Addr: 2778710816, bg: 0, ba: 7, ro: 10599, co: 12, IsPrefetch: 0
+Cycle: 1297, Complete_Trans: Addr: 2778710816, latency: 16, IsPrefetch: 0
+Cycle: 1301, ADD_Trans: Addr: 2778710880
+Cycle: 1302, Issue_Command: READ, Addr: 2778710880, bg: 0, ba: 7, ro: 10599, co: 13, IsPrefetch: 0
+Cycle: 1317, Complete_Trans: Addr: 2778710880, latency: 16, IsPrefetch: 0
+Cycle: 1321, ADD_Trans: Addr: 2778710944
+Cycle: 1322, Issue_Command: READ, Addr: 2778710944, bg: 0, ba: 7, ro: 10599, co: 14, IsPrefetch: 0
+Cycle: 1337, Complete_Trans: Addr: 2778710944, latency: 16, IsPrefetch: 0
+Cycle: 1341, ADD_Trans: Addr: 2778711008
+Cycle: 1342, Issue_Command: READ, Addr: 2778711008, bg: 0, ba: 7, ro: 10599, co: 15, IsPrefetch: 0
+Cycle: 1357, Complete_Trans: Addr: 2778711008, latency: 16, IsPrefetch: 0
+Cycle: 1361, ADD_Trans: Addr: 2778711072
+Cycle: 1362, Issue_Command: READ, Addr: 2778711072, bg: 0, ba: 7, ro: 10599, co: 16, IsPrefetch: 0
+Cycle: 1377, Complete_Trans: Addr: 2778711072, latency: 16, IsPrefetch: 0
+Cycle: 1381, ADD_Trans: Addr: 2778711136
+Cycle: 1382, Issue_Command: READ, Addr: 2778711136, bg: 0, ba: 7, ro: 10599, co: 17, IsPrefetch: 0
+Cycle: 1397, Complete_Trans: Addr: 2778711136, latency: 16, IsPrefetch: 0
+Cycle: 1401, ADD_Trans: Addr: 2778711200
+Cycle: 1402, Issue_Command: READ, Addr: 2778711200, bg: 0, ba: 7, ro: 10599, co: 18, IsPrefetch: 0
+Cycle: 1417, Complete_Trans: Addr: 2778711200, latency: 16, IsPrefetch: 0
+Cycle: 1421, ADD_Trans: Addr: 2778711264
+Cycle: 1422, Issue_Command: READ, Addr: 2778711264, bg: 0, ba: 7, ro: 10599, co: 19, IsPrefetch: 0
+Cycle: 1437, Complete_Trans: Addr: 2778711264, latency: 16, IsPrefetch: 0
+Cycle: 1441, ADD_Trans: Addr: 2778711328
+Cycle: 1442, Issue_Command: READ, Addr: 2778711328, bg: 0, ba: 7, ro: 10599, co: 20, IsPrefetch: 0
+Cycle: 1457, Complete_Trans: Addr: 2778711328, latency: 16, IsPrefetch: 0
+Cycle: 1461, ADD_Trans: Addr: 2778711392
+Cycle: 1462, Issue_Command: READ, Addr: 2778711392, bg: 0, ba: 7, ro: 10599, co: 21, IsPrefetch: 0
+Cycle: 1477, Complete_Trans: Addr: 2778711392, latency: 16, IsPrefetch: 0
+Cycle: 1481, ADD_Trans: Addr: 2778711456
+Cycle: 1482, Issue_Command: READ, Addr: 2778711456, bg: 0, ba: 7, ro: 10599, co: 22, IsPrefetch: 0
+Cycle: 1497, Complete_Trans: Addr: 2778711456, latency: 16, IsPrefetch: 0
+Cycle: 1501, ADD_Trans: Addr: 2778711520
+Cycle: 1502, Issue_Command: READ, Addr: 2778711520, bg: 0, ba: 7, ro: 10599, co: 23, IsPrefetch: 0
+Cycle: 1517, Complete_Trans: Addr: 2778711520, latency: 16, IsPrefetch: 0
+Cycle: 1521, ADD_Trans: Addr: 2778711584
+Cycle: 1522, Issue_Command: READ, Addr: 2778711584, bg: 0, ba: 7, ro: 10599, co: 24, IsPrefetch: 0
+Cycle: 1537, Complete_Trans: Addr: 2778711584, latency: 16, IsPrefetch: 0
+Cycle: 1541, ADD_Trans: Addr: 2778711648
+Cycle: 1542, Issue_Command: READ, Addr: 2778711648, bg: 0, ba: 7, ro: 10599, co: 25, IsPrefetch: 0
+Cycle: 1557, Complete_Trans: Addr: 2778711648, latency: 16, IsPrefetch: 0
+Cycle: 1561, ADD_Trans: Addr: 2778711712
+Cycle: 1562, Issue_Command: READ, Addr: 2778711712, bg: 0, ba: 7, ro: 10599, co: 26, IsPrefetch: 0
+Cycle: 1577, Complete_Trans: Addr: 2778711712, latency: 16, IsPrefetch: 0
+Cycle: 1581, ADD_Trans: Addr: 2778711776
+Cycle: 1582, Issue_Command: READ, Addr: 2778711776, bg: 0, ba: 7, ro: 10599, co: 27, IsPrefetch: 0
+Cycle: 1597, Complete_Trans: Addr: 2778711776, latency: 16, IsPrefetch: 0
+Cycle: 1601, ADD_Trans: Addr: 2778711840
+Cycle: 1602, Issue_Command: READ, Addr: 2778711840, bg: 0, ba: 7, ro: 10599, co: 28, IsPrefetch: 0
+Cycle: 1617, Complete_Trans: Addr: 2778711840, latency: 16, IsPrefetch: 0
+Cycle: 1621, ADD_Trans: Addr: 2778711904
+Cycle: 1622, Issue_Command: READ, Addr: 2778711904, bg: 0, ba: 7, ro: 10599, co: 29, IsPrefetch: 0
+Cycle: 1637, Complete_Trans: Addr: 2778711904, latency: 16, IsPrefetch: 0
+Cycle: 1641, ADD_Trans: Addr: 2778711968
+Cycle: 1642, Issue_Command: READ, Addr: 2778711968, bg: 0, ba: 7, ro: 10599, co: 30, IsPrefetch: 0
+Cycle: 1657, Complete_Trans: Addr: 2778711968, latency: 16, IsPrefetch: 0
+Cycle: 1661, ADD_Trans: Addr: 2778712032
+Cycle: 1662, Issue_Command: READ, Addr: 2778712032, bg: 0, ba: 7, ro: 10599, co: 31, IsPrefetch: 0
+Cycle: 1677, Complete_Trans: Addr: 2778712032, latency: 16, IsPrefetch: 0
+Cycle: 1681, ADD_Trans: Addr: 2778712096
+Cycle: 1682, Issue_Command: READ, Addr: 2778712096, bg: 0, ba: 7, ro: 10599, co: 32, IsPrefetch: 0
+Cycle: 1697, Complete_Trans: Addr: 2778712096, latency: 16, IsPrefetch: 0
+Cycle: 1701, ADD_Trans: Addr: 2778712160
+Cycle: 1702, Issue_Command: READ, Addr: 2778712160, bg: 0, ba: 7, ro: 10599, co: 33, IsPrefetch: 0
+Cycle: 1717, Complete_Trans: Addr: 2778712160, latency: 16, IsPrefetch: 0
+Cycle: 1721, ADD_Trans: Addr: 2778712224
+Cycle: 1722, Issue_Command: READ, Addr: 2778712224, bg: 0, ba: 7, ro: 10599, co: 34, IsPrefetch: 0
+Cycle: 1737, Complete_Trans: Addr: 2778712224, latency: 16, IsPrefetch: 0
+Cycle: 1741, ADD_Trans: Addr: 2778712288
+Cycle: 1742, Issue_Command: READ, Addr: 2778712288, bg: 0, ba: 7, ro: 10599, co: 35, IsPrefetch: 0
+Cycle: 1757, Complete_Trans: Addr: 2778712288, latency: 16, IsPrefetch: 0
+Cycle: 1761, ADD_Trans: Addr: 2778712352
+Cycle: 1762, Issue_Command: READ, Addr: 2778712352, bg: 0, ba: 7, ro: 10599, co: 36, IsPrefetch: 0
+Cycle: 1777, Complete_Trans: Addr: 2778712352, latency: 16, IsPrefetch: 0
+Cycle: 1781, ADD_Trans: Addr: 2778712416
+Cycle: 1782, Issue_Command: READ, Addr: 2778712416, bg: 0, ba: 7, ro: 10599, co: 37, IsPrefetch: 0
+Cycle: 1797, Complete_Trans: Addr: 2778712416, latency: 16, IsPrefetch: 0
+Cycle: 1801, ADD_Trans: Addr: 2778712480
+Cycle: 1802, Issue_Command: READ, Addr: 2778712480, bg: 0, ba: 7, ro: 10599, co: 38, IsPrefetch: 0
+Cycle: 1817, Complete_Trans: Addr: 2778712480, latency: 16, IsPrefetch: 0
+Cycle: 1821, ADD_Trans: Addr: 2778712544
+Cycle: 1822, Issue_Command: READ, Addr: 2778712544, bg: 0, ba: 7, ro: 10599, co: 39, IsPrefetch: 0
+Cycle: 1837, Complete_Trans: Addr: 2778712544, latency: 16, IsPrefetch: 0
+Cycle: 1841, ADD_Trans: Addr: 2778712608
+Cycle: 1842, Issue_Command: READ, Addr: 2778712608, bg: 0, ba: 7, ro: 10599, co: 40, IsPrefetch: 0
+Cycle: 1857, Complete_Trans: Addr: 2778712608, latency: 16, IsPrefetch: 0
+Cycle: 1861, ADD_Trans: Addr: 2778712672
+Cycle: 1862, Issue_Command: READ, Addr: 2778712672, bg: 0, ba: 7, ro: 10599, co: 41, IsPrefetch: 0
+Cycle: 1877, Complete_Trans: Addr: 2778712672, latency: 16, IsPrefetch: 0
+Cycle: 1881, ADD_Trans: Addr: 2778712736
+Cycle: 1882, Issue_Command: READ, Addr: 2778712736, bg: 0, ba: 7, ro: 10599, co: 42, IsPrefetch: 0
+Cycle: 1897, Complete_Trans: Addr: 2778712736, latency: 16, IsPrefetch: 0
+Cycle: 1901, ADD_Trans: Addr: 2778712800
+Cycle: 1902, Issue_Command: READ, Addr: 2778712800, bg: 0, ba: 7, ro: 10599, co: 43, IsPrefetch: 0
+Cycle: 1917, Complete_Trans: Addr: 2778712800, latency: 16, IsPrefetch: 0
+Cycle: 1921, ADD_Trans: Addr: 2778712864
+Cycle: 1922, Issue_Command: READ, Addr: 2778712864, bg: 0, ba: 7, ro: 10599, co: 44, IsPrefetch: 0
+Cycle: 1937, Complete_Trans: Addr: 2778712864, latency: 16, IsPrefetch: 0
+Cycle: 1941, ADD_Trans: Addr: 2778712928
+Cycle: 1942, Issue_Command: READ, Addr: 2778712928, bg: 0, ba: 7, ro: 10599, co: 45, IsPrefetch: 0
+Cycle: 1957, Complete_Trans: Addr: 2778712928, latency: 16, IsPrefetch: 0
+Cycle: 1961, ADD_Trans: Addr: 2778712992
+Cycle: 1962, Issue_Command: READ, Addr: 2778712992, bg: 0, ba: 7, ro: 10599, co: 46, IsPrefetch: 0
+Cycle: 1977, Complete_Trans: Addr: 2778712992, latency: 16, IsPrefetch: 0
+Cycle: 1981, ADD_Trans: Addr: 2778713056
+Cycle: 1982, Issue_Command: READ, Addr: 2778713056, bg: 0, ba: 7, ro: 10599, co: 47, IsPrefetch: 0
+Cycle: 1997, Complete_Trans: Addr: 2778713056, latency: 16, IsPrefetch: 0
+Cycle: 2001, ADD_Trans: Addr: 2778713120
+Cycle: 2002, ADD_Trans: Addr: 2778713120
+Cycle: 21, ADD_Trans: Addr: 2778706784
+Cycle: 22, Issue_Command: ACTIVE, Addr: 2778706784, bg: 0, ba: 6, ro: 10599, co: 205, IsPrefetch: 0
+Cycle: 33, Issue_Command: READ, Addr: 2778706784, bg: 0, ba: 6, ro: 10599, co: 205, IsPrefetch: 0
+Cycle: 41, ADD_Trans: Addr: 2778706848
+Cycle: 42, Issue_Command: READ, Addr: 2778706848, bg: 0, ba: 6, ro: 10599, co: 206, IsPrefetch: 0
+Cycle: 48, Complete_Trans: Addr: 2778706784, latency: 27, IsPrefetch: 0
+Cycle: 57, Complete_Trans: Addr: 2778706848, latency: 16, IsPrefetch: 0
+Cycle: 61, ADD_Trans: Addr: 2778706912
+Cycle: 62, Issue_Command: READ, Addr: 2778706912, bg: 0, ba: 6, ro: 10599, co: 207, IsPrefetch: 0
+Cycle: 77, Complete_Trans: Addr: 2778706912, latency: 16, IsPrefetch: 0
+Cycle: 81, ADD_Trans: Addr: 2778706976
+Cycle: 82, Issue_Command: READ, Addr: 2778706976, bg: 0, ba: 6, ro: 10599, co: 208, IsPrefetch: 0
+Cycle: 97, Complete_Trans: Addr: 2778706976, latency: 16, IsPrefetch: 0
+Cycle: 101, ADD_Trans: Addr: 2778707040
+Cycle: 102, Issue_Command: READ, Addr: 2778707040, bg: 0, ba: 6, ro: 10599, co: 209, IsPrefetch: 0
+Cycle: 117, Complete_Trans: Addr: 2778707040, latency: 16, IsPrefetch: 0
+Cycle: 121, ADD_Trans: Addr: 2778707104
+Cycle: 121, Prefetch_Trans: Addr: 2778707168
+Cycle: 121, Prefetch_Trans: Addr: 2778707232
+Cycle: 121, Prefetch_Trans: Addr: 2778707296
+Cycle: 121, Prefetch_Trans: Addr: 2778707360
+Cycle: 121, Prefetch_Trans: Addr: 2778707424
+Cycle: 121, Prefetch_Trans: Addr: 2778707488
+Cycle: 122, Issue_Command: READ, Addr: 2778707104, bg: 0, ba: 6, ro: 10599, co: 210, IsPrefetch: 0
+Cycle: 122, Prefetch_Trans: Addr: 2778707232
+Cycle: 122, Prefetch_Trans: Addr: 2778707296
+Cycle: 122, Prefetch_Trans: Addr: 2778707360
+Cycle: 122, Prefetch_Trans: Addr: 2778707424
+Cycle: 122, Prefetch_Trans: Addr: 2778707488
+Cycle: 122, Prefetch_Trans: Addr: 2778707552
+Cycle: 123, Prefetch_Trans: Addr: 2778707296
+Cycle: 123, Prefetch_Trans: Addr: 2778707360
+Cycle: 123, Prefetch_Trans: Addr: 2778707424
+Cycle: 123, Prefetch_Trans: Addr: 2778707488
+Cycle: 123, Prefetch_Trans: Addr: 2778707552
+Cycle: 123, Prefetch_Trans: Addr: 2778707616
+Cycle: 124, Prefetch_Trans: Addr: 2778707360
+Cycle: 124, Prefetch_Trans: Addr: 2778707424
+Cycle: 124, Prefetch_Trans: Addr: 2778707488
+Cycle: 124, Prefetch_Trans: Addr: 2778707552
+Cycle: 124, Prefetch_Trans: Addr: 2778707616
+Cycle: 124, Prefetch_Trans: Addr: 2778707680
+Cycle: 125, Prefetch_Trans: Addr: 2778707424
+Cycle: 125, Prefetch_Trans: Addr: 2778707488
+Cycle: 125, Prefetch_Trans: Addr: 2778707552
+Cycle: 125, Prefetch_Trans: Addr: 2778707616
+Cycle: 125, Prefetch_Trans: Addr: 2778707680
+Cycle: 125, Prefetch_Trans: Addr: 2778707744
+Cycle: 126, Issue_Command: READ, Addr: 2778707168, bg: 0, ba: 6, ro: 10599, co: 211, IsPrefetch: 1
+Cycle: 126, Prefetch_Trans: Addr: 2778707488
+Cycle: 126, Prefetch_Trans: Addr: 2778707552
+Cycle: 126, Prefetch_Trans: Addr: 2778707616
+Cycle: 126, Prefetch_Trans: Addr: 2778707680
+Cycle: 126, Prefetch_Trans: Addr: 2778707744
+Cycle: 126, Prefetch_Trans: Addr: 2778707808
+Cycle: 127, Prefetch_Trans: Addr: 2778707552
+Cycle: 127, Prefetch_Trans: Addr: 2778707616
+Cycle: 127, Prefetch_Trans: Addr: 2778707680
+Cycle: 127, Prefetch_Trans: Addr: 2778707744
+Cycle: 127, Prefetch_Trans: Addr: 2778707808
+Cycle: 127, Prefetch_Trans: Addr: 2778707872
+Cycle: 128, Prefetch_Trans: Addr: 2778707616
+Cycle: 128, Prefetch_Trans: Addr: 2778707680
+Cycle: 128, Prefetch_Trans: Addr: 2778707744
+Cycle: 128, Prefetch_Trans: Addr: 2778707808
+Cycle: 128, Prefetch_Trans: Addr: 2778707872
+Cycle: 128, Prefetch_Trans: Addr: 2778707936
+Cycle: 129, Prefetch_Trans: Addr: 2778707680
+Cycle: 129, Prefetch_Trans: Addr: 2778707744
+Cycle: 129, Prefetch_Trans: Addr: 2778707808
+Cycle: 129, Prefetch_Trans: Addr: 2778707872
+Cycle: 129, Prefetch_Trans: Addr: 2778707936
+Cycle: 129, Prefetch_Trans: Addr: 2778708000
+Cycle: 130, Issue_Command: READ, Addr: 2778707232, bg: 0, ba: 6, ro: 10599, co: 212, IsPrefetch: 1
+Cycle: 130, Prefetch_Trans: Addr: 2778707744
+Cycle: 130, Prefetch_Trans: Addr: 2778707808
+Cycle: 130, Prefetch_Trans: Addr: 2778707872
+Cycle: 130, Prefetch_Trans: Addr: 2778707936
+Cycle: 130, Prefetch_Trans: Addr: 2778708000
+Cycle: 130, Prefetch_Trans: Addr: 2778708064
+Cycle: 131, Prefetch_Trans: Addr: 2778707808
+Cycle: 131, Prefetch_Trans: Addr: 2778707872
+Cycle: 131, Prefetch_Trans: Addr: 2778707936
+Cycle: 131, Prefetch_Trans: Addr: 2778708000
+Cycle: 131, Prefetch_Trans: Addr: 2778708064
+Cycle: 131, Prefetch_Trans: Addr: 2778708128
+Cycle: 132, Prefetch_Trans: Addr: 2778707872
+Cycle: 132, Prefetch_Trans: Addr: 2778707936
+Cycle: 132, Prefetch_Trans: Addr: 2778708000
+Cycle: 132, Prefetch_Trans: Addr: 2778708064
+Cycle: 132, Prefetch_Trans: Addr: 2778708128
+Cycle: 132, Prefetch_Trans: Addr: 2778708192
+Cycle: 21, ADD_Trans: Addr: 2778706784
+Cycle: 22, Issue_Command: ACTIVE, Addr: 2778706784, bg: 0, ba: 6, ro: 10599, co: 205, IsPrefetch: 0
+Cycle: 33, Issue_Command: READ, Addr: 2778706784, bg: 0, ba: 6, ro: 10599, co: 205, IsPrefetch: 0
+Cycle: 41, ADD_Trans: Addr: 2778706848
+Cycle: 42, Issue_Command: READ, Addr: 2778706848, bg: 0, ba: 6, ro: 10599, co: 206, IsPrefetch: 0
+Cycle: 48, Complete_Trans: Addr: 2778706784, latency: 27, IsPrefetch: 0
+Cycle: 57, Complete_Trans: Addr: 2778706848, latency: 16, IsPrefetch: 0
+Cycle: 61, ADD_Trans: Addr: 2778706912
+Cycle: 62, Issue_Command: READ, Addr: 2778706912, bg: 0, ba: 6, ro: 10599, co: 207, IsPrefetch: 0
+Cycle: 77, Complete_Trans: Addr: 2778706912, latency: 16, IsPrefetch: 0
+Cycle: 81, ADD_Trans: Addr: 2778706976
+Cycle: 82, Issue_Command: READ, Addr: 2778706976, bg: 0, ba: 6, ro: 10599, co: 208, IsPrefetch: 0
+Cycle: 97, Complete_Trans: Addr: 2778706976, latency: 16, IsPrefetch: 0
+Cycle: 101, ADD_Trans: Addr: 2778707040
+Cycle: 102, Issue_Command: READ, Addr: 2778707040, bg: 0, ba: 6, ro: 10599, co: 209, IsPrefetch: 0
+Cycle: 117, Complete_Trans: Addr: 2778707040, latency: 16, IsPrefetch: 0
+Cycle: 121, ADD_Trans: Addr: 2778707104
+Cycle: 121, Prefetch_Trans: Addr: 2778707168
+Cycle: 121, Prefetch_Trans: Addr: 2778707232
+Cycle: 121, Prefetch_Trans: Addr: 2778707296
+Cycle: 121, Prefetch_Trans: Addr: 2778707360
+Cycle: 121, Prefetch_Trans: Addr: 2778707424
+Cycle: 121, Prefetch_Trans: Addr: 2778707488
+Cycle: 122, Issue_Command: READ, Addr: 2778707104, bg: 0, ba: 6, ro: 10599, co: 210, IsPrefetch: 0
+Cycle: 122, Prefetch_Trans: Addr: 2778707552
+Cycle: 123, Prefetch_Trans: Addr: 2778707616
+Cycle: 124, Prefetch_Trans: Addr: 2778707680
+Cycle: 21, ADD_Trans: Addr: 2778706784
+Cycle: 22, Issue_Command: ACTIVE, Addr: 2778706784, bg: 0, ba: 6, ro: 10599, co: 205, IsPrefetch: 0
+Cycle: 33, Issue_Command: READ, Addr: 2778706784, bg: 0, ba: 6, ro: 10599, co: 205, IsPrefetch: 0
+Cycle: 41, ADD_Trans: Addr: 2778706848
+Cycle: 42, Issue_Command: READ, Addr: 2778706848, bg: 0, ba: 6, ro: 10599, co: 206, IsPrefetch: 0
+Cycle: 48, Complete_Trans: Addr: 2778706784, latency: 27, IsPrefetch: 0
+Cycle: 57, Complete_Trans: Addr: 2778706848, latency: 16, IsPrefetch: 0
+Cycle: 61, ADD_Trans: Addr: 2778706912
+Cycle: 62, Issue_Command: READ, Addr: 2778706912, bg: 0, ba: 6, ro: 10599, co: 207, IsPrefetch: 0
+Cycle: 77, Complete_Trans: Addr: 2778706912, latency: 16, IsPrefetch: 0
+Cycle: 81, ADD_Trans: Addr: 2778706976
+Cycle: 82, Issue_Command: READ, Addr: 2778706976, bg: 0, ba: 6, ro: 10599, co: 208, IsPrefetch: 0
+Cycle: 97, Complete_Trans: Addr: 2778706976, latency: 16, IsPrefetch: 0
+Cycle: 101, ADD_Trans: Addr: 2778707040
+Cycle: 102, Issue_Command: READ, Addr: 2778707040, bg: 0, ba: 6, ro: 10599, co: 209, IsPrefetch: 0
+Cycle: 117, Complete_Trans: Addr: 2778707040, latency: 16, IsPrefetch: 0
+Cycle: 121, ADD_Trans: Addr: 2778707104
+Cycle: 121, Prefetch_Trans: Addr: 2778707168
+Cycle: 121, Prefetch_Trans: Addr: 2778707232
+Cycle: 121, Prefetch_Trans: Addr: 2778707296
+Cycle: 121, Prefetch_Trans: Addr: 2778707360
+Cycle: 121, Prefetch_Trans: Addr: 2778707424
+Cycle: 121, Prefetch_Trans: Addr: 2778707488
+Cycle: 122, Issue_Command: READ, Addr: 2778707104, bg: 0, ba: 6, ro: 10599, co: 210, IsPrefetch: 0
+Cycle: 126, Issue_Command: READ, Addr: 2778707168, bg: 0, ba: 6, ro: 10599, co: 211, IsPrefetch: 1
+Cycle: 130, Issue_Command: READ, Addr: 2778707232, bg: 0, ba: 6, ro: 10599, co: 212, IsPrefetch: 1
+Cycle: 134, Issue_Command: READ, Addr: 2778707296, bg: 0, ba: 6, ro: 10599, co: 213, IsPrefetch: 1
+Cycle: 137, Complete_Trans: Addr: 2778707104, latency: 16, IsPrefetch: 0
+Cycle: 138, Issue_Command: READ, Addr: 2778707360, bg: 0, ba: 6, ro: 10599, co: 214, IsPrefetch: 1
+Cycle: 141, ADD_Trans: Addr: 2778707168
+Cycle: 141, Complete_Trans: Addr: 2778707168, latency: 20, IsPrefetch: 1
+Cycle: 141, Prefetch_Trans: Addr: 2778707552
+Cycle: 141, Prefetcher_info: Issue Prefetch: 7, Prefetch hit: 1
+Cycle: 142, Issue_Command: READ, Addr: 2778707424, bg: 0, ba: 6, ro: 10599, co: 215, IsPrefetch: 1
+Cycle: 145, Complete_Trans: Addr: 2778707232, latency: 24, IsPrefetch: 1
+Cycle: 146, Complete_Trans: Addr: 2778707168, latency: 4, IsPrefetch: 0
+Cycle: 146, Issue_Command: READ, Addr: 2778707488, bg: 0, ba: 6, ro: 10599, co: 216, IsPrefetch: 1
+Cycle: 149, Complete_Trans: Addr: 2778707296, latency: 28, IsPrefetch: 1
+Cycle: 150, Issue_Command: READ, Addr: 2778707552, bg: 0, ba: 6, ro: 10599, co: 217, IsPrefetch: 1
+Cycle: 153, Complete_Trans: Addr: 2778707360, latency: 32, IsPrefetch: 1
+Cycle: 157, Complete_Trans: Addr: 2778707424, latency: 36, IsPrefetch: 1
+Cycle: 161, ADD_Trans: Addr: 2778707232
+Cycle: 161, Complete_Trans: Addr: 2778707488, latency: 40, IsPrefetch: 1
+Cycle: 21, ADD_Trans: Addr: 2778706784
+Cycle: 22, Issue_Command: ACTIVE, Addr: 2778706784, bg: 0, ba: 6, ro: 10599, co: 205, IsPrefetch: 0
+Cycle: 33, Issue_Command: READ, Addr: 2778706784, bg: 0, ba: 6, ro: 10599, co: 205, IsPrefetch: 0
+Cycle: 41, ADD_Trans: Addr: 2778706848
+Cycle: 42, Issue_Command: READ, Addr: 2778706848, bg: 0, ba: 6, ro: 10599, co: 206, IsPrefetch: 0
+Cycle: 48, Complete_Trans: Addr: 2778706784, latency: 27, IsPrefetch: 0
+Cycle: 57, Complete_Trans: Addr: 2778706848, latency: 16, IsPrefetch: 0
+Cycle: 61, ADD_Trans: Addr: 2778706912
+Cycle: 62, Issue_Command: READ, Addr: 2778706912, bg: 0, ba: 6, ro: 10599, co: 207, IsPrefetch: 0
+Cycle: 77, Complete_Trans: Addr: 2778706912, latency: 16, IsPrefetch: 0
+Cycle: 81, ADD_Trans: Addr: 2778706976
+Cycle: 82, Issue_Command: READ, Addr: 2778706976, bg: 0, ba: 6, ro: 10599, co: 208, IsPrefetch: 0
+Cycle: 97, Complete_Trans: Addr: 2778706976, latency: 16, IsPrefetch: 0
+Cycle: 101, ADD_Trans: Addr: 2778707040
+Cycle: 102, Issue_Command: READ, Addr: 2778707040, bg: 0, ba: 6, ro: 10599, co: 209, IsPrefetch: 0
+Cycle: 117, Complete_Trans: Addr: 2778707040, latency: 16, IsPrefetch: 0
+Cycle: 121, ADD_Trans: Addr: 2778707104
+Cycle: 121, Prefetch_Trans: Addr: 2778707168
+Cycle: 121, Prefetch_Trans: Addr: 2778707232
+Cycle: 121, Prefetch_Trans: Addr: 2778707296
+Cycle: 121, Prefetch_Trans: Addr: 2778707360
+Cycle: 121, Prefetch_Trans: Addr: 2778707424
+Cycle: 121, Prefetch_Trans: Addr: 2778707488
+Cycle: 122, Issue_Command: READ, Addr: 2778707104, bg: 0, ba: 6, ro: 10599, co: 210, IsPrefetch: 0
+Cycle: 126, Issue_Command: READ, Addr: 2778707168, bg: 0, ba: 6, ro: 10599, co: 211, IsPrefetch: 1
+Cycle: 130, Issue_Command: READ, Addr: 2778707232, bg: 0, ba: 6, ro: 10599, co: 212, IsPrefetch: 1
+Cycle: 134, Issue_Command: READ, Addr: 2778707296, bg: 0, ba: 6, ro: 10599, co: 213, IsPrefetch: 1
+Cycle: 137, Complete_Trans: Addr: 2778707104, latency: 16, IsPrefetch: 0
+Cycle: 138, Issue_Command: READ, Addr: 2778707360, bg: 0, ba: 6, ro: 10599, co: 214, IsPrefetch: 1
+Cycle: 141, ADD_Trans: Addr: 2778707168
+Cycle: 141, Complete_Trans: Addr: 2778707168, latency: 20, IsPrefetch: 1
+Cycle: 141, Prefetch_Trans: Addr: 2778707552
+Cycle: 141, Prefetcher_info: Issue Prefetch: 7, Prefetch hit: 1
+Cycle: 142, Issue_Command: READ, Addr: 2778707424, bg: 0, ba: 6, ro: 10599, co: 215, IsPrefetch: 1
+Cycle: 145, Complete_Trans: Addr: 2778707232, latency: 24, IsPrefetch: 1
+Cycle: 21, ADD_Trans: Addr: 2778706784
+Cycle: 22, Issue_Command: ACTIVE, Addr: 2778706784, bg: 0, ba: 6, ro: 10599, co: 205, IsPrefetch: 0
+Cycle: 33, Issue_Command: READ, Addr: 2778706784, bg: 0, ba: 6, ro: 10599, co: 205, IsPrefetch: 0
+Cycle: 41, ADD_Trans: Addr: 2778706848
+Cycle: 42, Issue_Command: READ, Addr: 2778706848, bg: 0, ba: 6, ro: 10599, co: 206, IsPrefetch: 0
+Cycle: 48, Complete_Trans: Addr: 2778706784, latency: 27, IsPrefetch: 0
+Cycle: 57, Complete_Trans: Addr: 2778706848, latency: 16, IsPrefetch: 0
+Cycle: 61, ADD_Trans: Addr: 2778706912
+Cycle: 62, Issue_Command: READ, Addr: 2778706912, bg: 0, ba: 6, ro: 10599, co: 207, IsPrefetch: 0
+Cycle: 77, Complete_Trans: Addr: 2778706912, latency: 16, IsPrefetch: 0
+Cycle: 81, ADD_Trans: Addr: 2778706976
+Cycle: 82, Issue_Command: READ, Addr: 2778706976, bg: 0, ba: 6, ro: 10599, co: 208, IsPrefetch: 0
+Cycle: 97, Complete_Trans: Addr: 2778706976, latency: 16, IsPrefetch: 0
+Cycle: 101, ADD_Trans: Addr: 2778707040
+Cycle: 102, Issue_Command: READ, Addr: 2778707040, bg: 0, ba: 6, ro: 10599, co: 209, IsPrefetch: 0
+Cycle: 117, Complete_Trans: Addr: 2778707040, latency: 16, IsPrefetch: 0
+Cycle: 121, ADD_Trans: Addr: 2778707104
+Cycle: 121, Prefetch_Trans: Addr: 2778707168
+Cycle: 121, Prefetch_Trans: Addr: 2778707232
+Cycle: 121, Prefetch_Trans: Addr: 2778707296
+Cycle: 121, Prefetch_Trans: Addr: 2778707360
+Cycle: 121, Prefetch_Trans: Addr: 2778707424
+Cycle: 121, Prefetch_Trans: Addr: 2778707488
+Cycle: 122, Issue_Command: READ, Addr: 2778707104, bg: 0, ba: 6, ro: 10599, co: 210, IsPrefetch: 0
+Cycle: 126, Issue_Command: READ, Addr: 2778707168, bg: 0, ba: 6, ro: 10599, co: 211, IsPrefetch: 1
+Cycle: 130, Issue_Command: READ, Addr: 2778707232, bg: 0, ba: 6, ro: 10599, co: 212, IsPrefetch: 1
+Cycle: 134, Issue_Command: READ, Addr: 2778707296, bg: 0, ba: 6, ro: 10599, co: 213, IsPrefetch: 1
+Cycle: 137, Complete_Trans: Addr: 2778707104, latency: 16, IsPrefetch: 0
+Cycle: 138, Issue_Command: READ, Addr: 2778707360, bg: 0, ba: 6, ro: 10599, co: 214, IsPrefetch: 1
+Cycle: 141, ADD_Trans: Addr: 2778707168
+Cycle: 141, Complete_Trans: Addr: 2778707168, latency: 20, IsPrefetch: 1
+Cycle: 141, Prefetch_Trans: Addr: 2778707552
+Cycle: 141, Prefetcher_info: Issue Prefetch: 7, Prefetch hit: 1
+Cycle: 142, Issue_Command: READ, Addr: 2778707424, bg: 0, ba: 6, ro: 10599, co: 215, IsPrefetch: 1
+Cycle: 145, Complete_Trans: Addr: 2778707232, latency: 24, IsPrefetch: 1
+Cycle: 146, Complete_Trans: Addr: 2778707168, latency: 4, IsPrefetch: 0
+Cycle: 146, Issue_Command: READ, Addr: 2778707488, bg: 0, ba: 6, ro: 10599, co: 216, IsPrefetch: 1
+Cycle: 149, Complete_Trans: Addr: 2778707296, latency: 28, IsPrefetch: 1
+Cycle: 150, Issue_Command: READ, Addr: 2778707552, bg: 0, ba: 6, ro: 10599, co: 217, IsPrefetch: 1
+Cycle: 153, Complete_Trans: Addr: 2778707360, latency: 32, IsPrefetch: 1
+Cycle: 157, Complete_Trans: Addr: 2778707424, latency: 36, IsPrefetch: 1
+Cycle: 161, ADD_Trans: Addr: 2778707232
+Cycle: 161, Complete_Trans: Addr: 2778707488, latency: 40, IsPrefetch: 1
+Cycle: 161, Prefetch_Trans: Addr: 2778707616
+Cycle: 161, Prefetcher_info: Issue Prefetch: 8, Prefetch hit: 2
+Cycle: 163, Issue_Command: READ, Addr: 2778707616, bg: 0, ba: 6, ro: 10599, co: 218, IsPrefetch: 1
+Cycle: 165, Complete_Trans: Addr: 2778707552, latency: 24, IsPrefetch: 1
+Cycle: 166, Complete_Trans: Addr: 2778707232, latency: 4, IsPrefetch: 0
+Cycle: 178, Complete_Trans: Addr: 2778707616, latency: 17, IsPrefetch: 1
+Cycle: 181, ADD_Trans: Addr: 2778707296
+Cycle: 181, Prefetch_Trans: Addr: 2778707680
+Cycle: 181, Prefetcher_info: Issue Prefetch: 9, Prefetch hit: 3
+Cycle: 183, Issue_Command: READ, Addr: 2778707680, bg: 0, ba: 6, ro: 10599, co: 219, IsPrefetch: 1
+Cycle: 185, Complete_Trans: Addr: 2778707296, latency: 4, IsPrefetch: 0
+Cycle: 198, Complete_Trans: Addr: 2778707680, latency: 17, IsPrefetch: 1
+Cycle: 201, ADD_Trans: Addr: 2778707360
+Cycle: 201, Prefetch_Trans: Addr: 2778707744
+Cycle: 201, Prefetcher_info: Issue Prefetch: 10, Prefetch hit: 4
+Cycle: 203, Issue_Command: READ, Addr: 2778707744, bg: 0, ba: 6, ro: 10599, co: 220, IsPrefetch: 1
+Cycle: 205, Complete_Trans: Addr: 2778707360, latency: 4, IsPrefetch: 0
+Cycle: 218, Complete_Trans: Addr: 2778707744, latency: 17, IsPrefetch: 1
+Cycle: 221, ADD_Trans: Addr: 2778707424
+Cycle: 221, Prefetch_Trans: Addr: 2778707808
+Cycle: 221, Prefetcher_info: Issue Prefetch: 11, Prefetch hit: 5
+Cycle: 223, Issue_Command: READ, Addr: 2778707808, bg: 0, ba: 6, ro: 10599, co: 221, IsPrefetch: 1
+Cycle: 225, Complete_Trans: Addr: 2778707424, latency: 4, IsPrefetch: 0
+Cycle: 238, Complete_Trans: Addr: 2778707808, latency: 17, IsPrefetch: 1
+Cycle: 241, ADD_Trans: Addr: 2778707488
+Cycle: 241, Prefetch_Trans: Addr: 2778707872
+Cycle: 241, Prefetcher_info: Issue Prefetch: 12, Prefetch hit: 6
+Cycle: 243, Issue_Command: READ, Addr: 2778707872, bg: 0, ba: 6, ro: 10599, co: 222, IsPrefetch: 1
+Cycle: 245, Complete_Trans: Addr: 2778707488, latency: 4, IsPrefetch: 0
+Cycle: 258, Complete_Trans: Addr: 2778707872, latency: 17, IsPrefetch: 1
+Cycle: 261, ADD_Trans: Addr: 2778707552
+Cycle: 261, Prefetch_Trans: Addr: 2778707936
+Cycle: 261, Prefetcher_info: Issue Prefetch: 13, Prefetch hit: 7
+Cycle: 263, Issue_Command: READ, Addr: 2778707936, bg: 0, ba: 6, ro: 10599, co: 223, IsPrefetch: 1
+Cycle: 265, Complete_Trans: Addr: 2778707552, latency: 4, IsPrefetch: 0
+Cycle: 278, Complete_Trans: Addr: 2778707936, latency: 17, IsPrefetch: 1
+Cycle: 281, ADD_Trans: Addr: 2778707616
+Cycle: 281, Prefetch_Trans: Addr: 2778708000
+Cycle: 281, Prefetcher_info: Issue Prefetch: 14, Prefetch hit: 8
+Cycle: 283, Issue_Command: READ, Addr: 2778708000, bg: 0, ba: 6, ro: 10599, co: 224, IsPrefetch: 1
+Cycle: 285, Complete_Trans: Addr: 2778707616, latency: 4, IsPrefetch: 0
+Cycle: 298, Complete_Trans: Addr: 2778708000, latency: 17, IsPrefetch: 1
+Cycle: 301, ADD_Trans: Addr: 2778707680
+Cycle: 301, Prefetch_Trans: Addr: 2778708064
+Cycle: 301, Prefetcher_info: Issue Prefetch: 15, Prefetch hit: 9
+Cycle: 303, Issue_Command: READ, Addr: 2778708064, bg: 0, ba: 6, ro: 10599, co: 225, IsPrefetch: 1
+Cycle: 305, Complete_Trans: Addr: 2778707680, latency: 4, IsPrefetch: 0
+Cycle: 318, Complete_Trans: Addr: 2778708064, latency: 17, IsPrefetch: 1
+Cycle: 321, ADD_Trans: Addr: 2778707744
+Cycle: 321, Prefetch_Trans: Addr: 2778708128
+Cycle: 321, Prefetcher_info: Issue Prefetch: 16, Prefetch hit: 10
+Cycle: 323, Issue_Command: READ, Addr: 2778708128, bg: 0, ba: 6, ro: 10599, co: 226, IsPrefetch: 1
+Cycle: 325, Complete_Trans: Addr: 2778707744, latency: 4, IsPrefetch: 0
+Cycle: 338, Complete_Trans: Addr: 2778708128, latency: 17, IsPrefetch: 1
+Cycle: 341, ADD_Trans: Addr: 2778707808
+Cycle: 341, Prefetch_Trans: Addr: 2778708192
+Cycle: 341, Prefetcher_info: Issue Prefetch: 17, Prefetch hit: 11
+Cycle: 343, Issue_Command: READ, Addr: 2778708192, bg: 0, ba: 6, ro: 10599, co: 227, IsPrefetch: 1
+Cycle: 345, Complete_Trans: Addr: 2778707808, latency: 4, IsPrefetch: 0
+Cycle: 358, Complete_Trans: Addr: 2778708192, latency: 17, IsPrefetch: 1
+Cycle: 361, ADD_Trans: Addr: 2778707872
+Cycle: 361, Prefetch_Trans: Addr: 2778708256
+Cycle: 361, Prefetcher_info: Issue Prefetch: 18, Prefetch hit: 12
+Cycle: 363, Issue_Command: READ, Addr: 2778708256, bg: 0, ba: 6, ro: 10599, co: 228, IsPrefetch: 1
+Cycle: 365, Complete_Trans: Addr: 2778707872, latency: 4, IsPrefetch: 0
+Cycle: 378, Complete_Trans: Addr: 2778708256, latency: 17, IsPrefetch: 1
+Cycle: 381, ADD_Trans: Addr: 2778707936
+Cycle: 381, Prefetch_Trans: Addr: 2778708320
+Cycle: 381, Prefetcher_info: Issue Prefetch: 19, Prefetch hit: 13
+Cycle: 383, Issue_Command: READ, Addr: 2778708320, bg: 0, ba: 6, ro: 10599, co: 229, IsPrefetch: 1
+Cycle: 385, Complete_Trans: Addr: 2778707936, latency: 4, IsPrefetch: 0
+Cycle: 398, Complete_Trans: Addr: 2778708320, latency: 17, IsPrefetch: 1
+Cycle: 401, ADD_Trans: Addr: 2778708000
+Cycle: 401, Prefetch_Trans: Addr: 2778708384
+Cycle: 401, Prefetcher_info: Issue Prefetch: 20, Prefetch hit: 14
+Cycle: 403, Issue_Command: READ, Addr: 2778708384, bg: 0, ba: 6, ro: 10599, co: 230, IsPrefetch: 1
+Cycle: 405, Complete_Trans: Addr: 2778708000, latency: 4, IsPrefetch: 0
+Cycle: 418, Complete_Trans: Addr: 2778708384, latency: 17, IsPrefetch: 1
+Cycle: 421, ADD_Trans: Addr: 2778708064
+Cycle: 421, Prefetch_Trans: Addr: 2778708448
+Cycle: 421, Prefetcher_info: Issue Prefetch: 21, Prefetch hit: 15
+Cycle: 423, Issue_Command: READ, Addr: 2778708448, bg: 0, ba: 6, ro: 10599, co: 231, IsPrefetch: 1
+Cycle: 425, Complete_Trans: Addr: 2778708064, latency: 4, IsPrefetch: 0
+Cycle: 438, Complete_Trans: Addr: 2778708448, latency: 17, IsPrefetch: 1
+Cycle: 441, ADD_Trans: Addr: 2778708128
+Cycle: 441, Prefetch_Trans: Addr: 2778708512
+Cycle: 441, Prefetcher_info: Issue Prefetch: 22, Prefetch hit: 16
+Cycle: 443, Issue_Command: READ, Addr: 2778708512, bg: 0, ba: 6, ro: 10599, co: 232, IsPrefetch: 1
+Cycle: 445, Complete_Trans: Addr: 2778708128, latency: 4, IsPrefetch: 0
+Cycle: 458, Complete_Trans: Addr: 2778708512, latency: 17, IsPrefetch: 1
+Cycle: 461, ADD_Trans: Addr: 2778708192
+Cycle: 461, Prefetch_Trans: Addr: 2778708576
+Cycle: 461, Prefetcher_info: Issue Prefetch: 23, Prefetch hit: 17
+Cycle: 463, Issue_Command: READ, Addr: 2778708576, bg: 0, ba: 6, ro: 10599, co: 233, IsPrefetch: 1
+Cycle: 465, Complete_Trans: Addr: 2778708192, latency: 4, IsPrefetch: 0
+Cycle: 478, Complete_Trans: Addr: 2778708576, latency: 17, IsPrefetch: 1
+Cycle: 481, ADD_Trans: Addr: 2778708256
+Cycle: 481, Prefetch_Trans: Addr: 2778708640
+Cycle: 481, Prefetcher_info: Issue Prefetch: 24, Prefetch hit: 18
+Cycle: 483, Issue_Command: READ, Addr: 2778708640, bg: 0, ba: 6, ro: 10599, co: 234, IsPrefetch: 1
+Cycle: 485, Complete_Trans: Addr: 2778708256, latency: 4, IsPrefetch: 0
+Cycle: 498, Complete_Trans: Addr: 2778708640, latency: 17, IsPrefetch: 1
+Cycle: 501, ADD_Trans: Addr: 2778708320
+Cycle: 501, Prefetch_Trans: Addr: 2778708704
+Cycle: 501, Prefetcher_info: Issue Prefetch: 25, Prefetch hit: 19
+Cycle: 503, Issue_Command: READ, Addr: 2778708704, bg: 0, ba: 6, ro: 10599, co: 235, IsPrefetch: 1
+Cycle: 505, Complete_Trans: Addr: 2778708320, latency: 4, IsPrefetch: 0
+Cycle: 518, Complete_Trans: Addr: 2778708704, latency: 17, IsPrefetch: 1
+Cycle: 521, ADD_Trans: Addr: 2778708384
+Cycle: 521, Prefetch_Trans: Addr: 2778708768
+Cycle: 521, Prefetcher_info: Issue Prefetch: 26, Prefetch hit: 20
+Cycle: 523, Issue_Command: READ, Addr: 2778708768, bg: 0, ba: 6, ro: 10599, co: 236, IsPrefetch: 1
+Cycle: 525, Complete_Trans: Addr: 2778708384, latency: 4, IsPrefetch: 0
+Cycle: 538, Complete_Trans: Addr: 2778708768, latency: 17, IsPrefetch: 1
+Cycle: 541, ADD_Trans: Addr: 2778708448
+Cycle: 541, Prefetch_Trans: Addr: 2778708832
+Cycle: 541, Prefetcher_info: Issue Prefetch: 27, Prefetch hit: 21
+Cycle: 543, Issue_Command: READ, Addr: 2778708832, bg: 0, ba: 6, ro: 10599, co: 237, IsPrefetch: 1
+Cycle: 545, Complete_Trans: Addr: 2778708448, latency: 4, IsPrefetch: 0
+Cycle: 558, Complete_Trans: Addr: 2778708832, latency: 17, IsPrefetch: 1
+Cycle: 561, ADD_Trans: Addr: 2778708512
+Cycle: 561, Prefetch_Trans: Addr: 2778708896
+Cycle: 561, Prefetcher_info: Issue Prefetch: 28, Prefetch hit: 22
+Cycle: 563, Issue_Command: READ, Addr: 2778708896, bg: 0, ba: 6, ro: 10599, co: 238, IsPrefetch: 1
+Cycle: 565, Complete_Trans: Addr: 2778708512, latency: 4, IsPrefetch: 0
+Cycle: 578, Complete_Trans: Addr: 2778708896, latency: 17, IsPrefetch: 1
+Cycle: 581, ADD_Trans: Addr: 2778708576
+Cycle: 581, Prefetch_Trans: Addr: 2778708960
+Cycle: 581, Prefetcher_info: Issue Prefetch: 29, Prefetch hit: 23
+Cycle: 583, Issue_Command: READ, Addr: 2778708960, bg: 0, ba: 6, ro: 10599, co: 239, IsPrefetch: 1
+Cycle: 585, Complete_Trans: Addr: 2778708576, latency: 4, IsPrefetch: 0
+Cycle: 598, Complete_Trans: Addr: 2778708960, latency: 17, IsPrefetch: 1
+Cycle: 601, ADD_Trans: Addr: 2778708640
+Cycle: 601, Prefetch_Trans: Addr: 2778709024
+Cycle: 601, Prefetcher_info: Issue Prefetch: 30, Prefetch hit: 24
+Cycle: 603, Issue_Command: READ, Addr: 2778709024, bg: 0, ba: 6, ro: 10599, co: 240, IsPrefetch: 1
+Cycle: 605, Complete_Trans: Addr: 2778708640, latency: 4, IsPrefetch: 0
+Cycle: 618, Complete_Trans: Addr: 2778709024, latency: 17, IsPrefetch: 1
+Cycle: 621, ADD_Trans: Addr: 2778708704
+Cycle: 621, Prefetch_Trans: Addr: 2778709088
+Cycle: 621, Prefetcher_info: Issue Prefetch: 31, Prefetch hit: 25
+Cycle: 623, Issue_Command: READ, Addr: 2778709088, bg: 0, ba: 6, ro: 10599, co: 241, IsPrefetch: 1
+Cycle: 625, Complete_Trans: Addr: 2778708704, latency: 4, IsPrefetch: 0
+Cycle: 638, Complete_Trans: Addr: 2778709088, latency: 17, IsPrefetch: 1
+Cycle: 641, ADD_Trans: Addr: 2778708768
+Cycle: 641, Prefetch_Trans: Addr: 2778709152
+Cycle: 641, Prefetcher_info: Issue Prefetch: 32, Prefetch hit: 26
+Cycle: 643, Issue_Command: READ, Addr: 2778709152, bg: 0, ba: 6, ro: 10599, co: 242, IsPrefetch: 1
+Cycle: 645, Complete_Trans: Addr: 2778708768, latency: 4, IsPrefetch: 0
+Cycle: 658, Complete_Trans: Addr: 2778709152, latency: 17, IsPrefetch: 1
+Cycle: 661, ADD_Trans: Addr: 2778708832
+Cycle: 661, Prefetch_Trans: Addr: 2778709216
+Cycle: 661, Prefetcher_info: Issue Prefetch: 33, Prefetch hit: 27
+Cycle: 663, Issue_Command: READ, Addr: 2778709216, bg: 0, ba: 6, ro: 10599, co: 243, IsPrefetch: 1
+Cycle: 665, Complete_Trans: Addr: 2778708832, latency: 4, IsPrefetch: 0
+Cycle: 678, Complete_Trans: Addr: 2778709216, latency: 17, IsPrefetch: 1
+Cycle: 681, ADD_Trans: Addr: 2778708896
+Cycle: 681, Prefetch_Trans: Addr: 2778708960
+Cycle: 681, Prefetch_Trans: Addr: 2778709280
+Cycle: 682, Issue_Command: READ, Addr: 2778708896, bg: 0, ba: 6, ro: 10599, co: 238, IsPrefetch: 0

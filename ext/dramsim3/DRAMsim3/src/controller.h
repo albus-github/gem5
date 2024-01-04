@@ -52,7 +52,8 @@ class Controller {
     bool is_rw_denp_;
 
     bool prefetch_on;
-    NextLine_Prefetcher prefetcher;
+    //Prefetcher prefetcher;
+    SPP_Prefetcher prefetcher;
 
 #ifdef THERMAL
     ThermalCalculator &thermal_calc_;
@@ -91,7 +92,7 @@ class Controller {
     // used to processing prefetch
     bool PrefetchHit(uint64_t addr);
     void IssueHitTrans(Transaction &trans);
-    void AddPrefetchTrans(Transaction &trans);
+    void AddPrefetchTrans(Transaction &prefetch_trans);
 
     void TraceFile(const std::string& content);
 };

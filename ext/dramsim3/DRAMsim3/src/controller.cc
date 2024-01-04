@@ -24,6 +24,7 @@ Controller::Controller(int channel, const Config &config, const Timing &timing) 
       prefetch_total(0),
       prefetch_hit(0),*/
       prefetch_on(true),
+      prefetcher(config),
 #ifdef THERMAL
       thermal_calc_(thermal_calc),
 #endif  // THERMAL
@@ -57,7 +58,7 @@ std::pair<uint64_t, int> Controller::ReturnDoneTrans(uint64_t clk) {
             std::string complete_infostr = complete_info.str();
             TraceFile(complete_infostr);
             if (it->IsPrefetch){
-                prefetcher.UpdatePrefetchBuffer(*it);
+                prefetcher.UpdatePrefetchBuffer(*it, clk_);
                 it = return_queue_.erase(it);
                 return std::make_pair(-1, -1);
             } else {
@@ -107,20 +108,18 @@ void Controller::ClockTick() {
         std::string issue_infostr = issue_info.str();
         TraceFile(issue_infostr);
 
-        if (prefetcher.IssuePrefetch(cmd) && prefetch_on){
+        /*if (prefetcher.IssuePrefetch(cmd) && prefetch_on){
             Transaction Prefetch_trans=prefetcher.GetPrefetch(cmd);
 
             std::stringstream p_trans_info;
             p_trans_info<<"Cycle: "<<clk_<<", "<<"Prefetch_Trans: "<<"Addr: "<<Prefetch_trans.addr<<'\n';
             std::string p_trans_infostr = p_trans_info.str();
             TraceFile(p_trans_infostr);
-
-            Prefetch_trans.added_cycle = clk_;
-            Prefetch_trans.complete_cycle = clk_+1;
             AddPrefetchTrans(Prefetch_trans);
-        }
+        }*/
         if (cmd.cmd_type == CommandType::WRITE || cmd.cmd_type == CommandType::WRITE_PRECHARGE){
             prefetcher.W_ivicte(cmd);
+            prefetcher.PF.ivicte_entry(cmd.hex_addr);
         }
         IssueCommand(cmd);
         cmd_issued = true;
@@ -186,7 +185,7 @@ void Controller::ClockTick() {
     }
 
     ScheduleTransaction();
-    if (clk_ % 10000 == 0){
+    if (clk_ % 1000000 == 0){
         std::cout<<"The program is running!    Prefetch_on: "<<prefetch_on<<"    Sim_Cycle: "<<clk_<<std::endl;
     }
     clk_++;
@@ -261,6 +260,29 @@ void Controller::ScheduleTransaction() {
         is_unified_queue_ ? unified_queue_
                           : write_draining_ > 0 ? write_buffer_ : read_queue_;
     for (auto it = queue.begin(); it != queue.end(); it++) {
+        if (prefetch_on && !it->IsPrefetch){
+            prefetcher.PF.update_useful(*it);
+            prefetcher.prefetch_trans = *it;
+            trans_info transinfo = prefetcher.get_info(*it);
+            prefetcher.updateSTandPT(transinfo);
+            prefetcher.P = 1;
+            while (prefetcher.P > prefetcher.Tp && read_queue_.size() < read_queue_.capacity()){
+                prefetcher.GetPrefetch(prefetcher.sig);
+                if (prefetcher.IssuePrefetch(prefetcher.prefetch_trans)){
+                    std::stringstream p_trans_info;
+                    p_trans_info<<"Cycle: "<<clk_<<", "<<"Prefetch_Trans: "<<"Addr: "<<prefetcher.prefetch_trans.addr<<'\n';
+                    std::string p_trans_infostr = p_trans_info.str();
+                    TraceFile(p_trans_infostr);
+                    AddPrefetchTrans(prefetcher.prefetch_trans);
+                    prefetcher.PF.add_entry(prefetcher.prefetch_trans.addr);
+                    prefetcher.prefetch_total++;
+                } else{
+                    continue;
+                }
+            }
+
+        }
+
         if (PrefetchHit(it->addr)){
             IssueHitTrans(*it);
             queue.erase(it);
@@ -440,13 +462,15 @@ void Controller::IssueHitTrans(Transaction &trans){
 }
 
 // add the prefetch trans to the read_queue and pending_rd_q
-void Controller::AddPrefetchTrans(Transaction &trans){
-    pending_rd_q_.insert(std::make_pair(trans.addr, trans));
-    if (pending_rd_q_.count(trans.addr) == 1) {
+void Controller::AddPrefetchTrans(Transaction &prefetch_trans){
+    prefetch_trans.added_cycle = clk_;
+    prefetch_trans.complete_cycle = clk_+1;
+    pending_rd_q_.insert(std::make_pair(prefetch_trans.addr, prefetch_trans));
+    if (pending_rd_q_.count(prefetch_trans.addr) == 1) {
         if (is_unified_queue_) {
-            unified_queue_.push_back(trans);
+            unified_queue_.push_back(prefetch_trans);
         } else {
-            read_queue_.push_back(trans);
+            read_queue_.push_back(prefetch_trans);
         }
     }
 }
