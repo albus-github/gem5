@@ -37,9 +37,9 @@ uint64_t Prefetcher::R_ivicte(uint64_t clk){
 }
 
 //decide whether to issue prefetch(if the row is open)
-bool NextLine_Prefetcher::IssuePrefetch(const Command &cmd){
-    if (!cmd.IsPrefetch){
-        if (cmd.cmd_type == CommandType::READ){
+bool NextLine_Prefetcher::IssuePrefetch(const Transaction &trans){
+    if (!trans.IsPrefetch){
+        if (trans.is_write == false){
         return true;
         }
     }
@@ -47,9 +47,9 @@ bool NextLine_Prefetcher::IssuePrefetch(const Command &cmd){
 }
 
 //Get the Perfetch command
-Transaction NextLine_Prefetcher::GetPrefetch(const Command &cmd){
+Transaction NextLine_Prefetcher::GetPrefetch(const Transaction &trans){
     Transaction Prefetch;
-    Prefetch.addr = cmd.hex_addr+64;
+    Prefetch.addr = trans.addr+64;
     Prefetch.IsPrefetch = true;
     Prefetch.is_write = false;
     prefetch_total++;

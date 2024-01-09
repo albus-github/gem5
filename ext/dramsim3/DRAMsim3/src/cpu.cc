@@ -90,7 +90,7 @@ void TraceBasedCPU::ClockTick() {
 }
 
 bool TraceBasedCPU::IsSimOver(){
-    if(trace_file_.eof()){
+    if(trace_file_.eof() && memory_system_.IsComplete()){
         return true;
     }
     else

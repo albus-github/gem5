@@ -38,7 +38,7 @@ class Controller {
     void PrintFinalStats();
     void ResetStats() { simple_stats_.Reset(); }
     std::pair<uint64_t, int> ReturnDoneTrans(uint64_t clock);
-    bool IsComplete(){return return_queue_.empty();}
+    bool IsComplete(){return (return_queue_.empty() && pending_rd_q_.empty() && pending_wr_q_.empty());}
 
     int channel_id_;
 
@@ -53,6 +53,7 @@ class Controller {
 
     bool prefetch_on;
     //Prefetcher prefetcher;
+    //NextLine_Prefetcher prefetcher;
     SPP_Prefetcher prefetcher;
 
 #ifdef THERMAL

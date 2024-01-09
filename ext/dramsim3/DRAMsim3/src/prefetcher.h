@@ -38,8 +38,9 @@ public:
     NextLine_Prefetcher() : Prefetcher() {}
     ~NextLine_Prefetcher(){};
 
-    bool IssuePrefetch(const Command &cmd);
-    Transaction GetPrefetch(const Command &cmd);
+    int distance = 5;
+    bool IssuePrefetch(const Transaction &trans);
+    Transaction GetPrefetch(const Transaction &trans);
 };
 
 struct trans_info {

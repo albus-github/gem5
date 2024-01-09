@@ -54,7 +54,7 @@ std::pair<uint64_t, int> Controller::ReturnDoneTrans(uint64_t clk) {
     while (it != return_queue_.end()) {
         if (clk >= it->complete_cycle) {
             std::stringstream complete_info;
-            complete_info<<"Cycle: "<<clk_<<", "<<"Complete_Trans: "<<"Addr: "<<it->addr<<", "<<"latency: "<<it->complete_cycle - it->added_cycle<<", "<<"IsPrefetch: "<<it->IsPrefetch<<'\n';
+            complete_info<<"Cycle: "<<clk_<<", "<<"Complete_Trans: "<<"Addr: "<<it->addr<<", "<<"latency: "<<it->complete_cycle - it->added_cycle<<", Add_Cycle: "<<it->added_cycle<<", IsWrite: "<<it->is_write<<", IsPrefetch: "<<it->IsPrefetch<<'\n';
             std::string complete_infostr = complete_info.str();
             TraceFile(complete_infostr);
             if (it->IsPrefetch){
@@ -108,15 +108,6 @@ void Controller::ClockTick() {
         std::string issue_infostr = issue_info.str();
         TraceFile(issue_infostr);
 
-        /*if (prefetcher.IssuePrefetch(cmd) && prefetch_on){
-            Transaction Prefetch_trans=prefetcher.GetPrefetch(cmd);
-
-            std::stringstream p_trans_info;
-            p_trans_info<<"Cycle: "<<clk_<<", "<<"Prefetch_Trans: "<<"Addr: "<<Prefetch_trans.addr<<'\n';
-            std::string p_trans_infostr = p_trans_info.str();
-            TraceFile(p_trans_infostr);
-            AddPrefetchTrans(Prefetch_trans);
-        }*/
         if (cmd.cmd_type == CommandType::WRITE || cmd.cmd_type == CommandType::WRITE_PRECHARGE){
             prefetcher.W_ivicte(cmd);
             prefetcher.PF.ivicte_entry(cmd.hex_addr);
@@ -209,6 +200,10 @@ bool Controller::AddTransaction(Transaction trans) {
     trans.added_cycle = clk_;
     simple_stats_.AddValue("interarrival_latency", clk_ - last_trans_clk_);
     last_trans_clk_ = clk_;
+    std::stringstream add_info;
+    add_info<<"Cycle: "<<clk_<<", "<<"ADD_Trans: "<<"Addr: "<<trans.addr<<", IsWrite: "<<trans.is_write<<'\n';
+    std::string add_infostr = add_info.str();
+    TraceFile(add_infostr);
 
     if (trans.is_write) {
         if (pending_wr_q_.count(trans.addr) == 0) {  // can not merge writes
@@ -218,7 +213,6 @@ bool Controller::AddTransaction(Transaction trans) {
             } else {
                 write_buffer_.push_back(trans);
             }
-        //std::cout<<"Addr: "<<trans.addr<<", "<<"AddTrans cycle: "<<clk_<<std::endl;
         }
         trans.complete_cycle = clk_ + 1;
         return_queue_.push_back(trans);
@@ -238,10 +232,6 @@ bool Controller::AddTransaction(Transaction trans) {
                 read_queue_.push_back(trans);
             }
         }
-        std::stringstream add_info;
-        add_info<<"Cycle: "<<clk_<<", "<<"ADD_Trans: "<<"Addr: "<<trans.addr<<'\n';
-        std::string add_infostr = add_info.str();
-        TraceFile(add_infostr);
         return true;
     }
 }
@@ -260,7 +250,8 @@ void Controller::ScheduleTransaction() {
         is_unified_queue_ ? unified_queue_
                           : write_draining_ > 0 ? write_buffer_ : read_queue_;
     for (auto it = queue.begin(); it != queue.end(); it++) {
-        if (prefetch_on && !it->IsPrefetch){
+        //SPP Prefetcher
+        if (prefetch_on && !it->IsPrefetch && !it->is_write){
             prefetcher.PF.update_useful(*it);
             prefetcher.prefetch_trans = *it;
             trans_info transinfo = prefetcher.get_info(*it);
@@ -283,7 +274,20 @@ void Controller::ScheduleTransaction() {
 
         }
 
-        if (PrefetchHit(it->addr)){
+        // Next-Line Prefetcher
+        /*if (prefetcher.IssuePrefetch(*it) && prefetch_on){
+            for (i = 0; i < prefetcher.distance; i++){
+                Transaction Prefetch_trans=prefetcher.GetPrefetch(*it);
+
+                std::stringstream p_trans_info;
+                p_trans_info<<"Cycle: "<<clk_<<", "<<"Prefetch_Trans: "<<"Addr: "<<Prefetch_trans.addr<<'\n';
+                std::string p_trans_infostr = p_trans_info.str();
+                TraceFile(p_trans_infostr);
+                AddPrefetchTrans(Prefetch_trans);
+            }
+        }*/
+
+        if (PrefetchHit(it->addr) && !it->is_write){
             IssueHitTrans(*it);
             queue.erase(it);
             break;

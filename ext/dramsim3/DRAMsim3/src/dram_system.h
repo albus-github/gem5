@@ -68,6 +68,8 @@ class JedecDRAMSystem : public BaseDRAMSystem {
     bool WillAcceptTransaction(uint64_t hex_addr, bool is_write) const override;
     bool AddTransaction(uint64_t hex_addr, bool is_write) override;
     void ClockTick() override;
+
+    bool IsComplete() override;
 };
 
 // Model a memorysystem with an infinite bandwidth and a fixed latency (possibly
