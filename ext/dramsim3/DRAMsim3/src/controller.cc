@@ -58,7 +58,7 @@ std::pair<uint64_t, int> Controller::ReturnDoneTrans(uint64_t clk) {
             std::string complete_infostr = complete_info.str();
             TraceFile(complete_infostr);
             if (it->IsPrefetch){
-                prefetcher.UpdatePrefetchBuffer(*it, clk_);
+                prefetcher.UpdatePrefetchBuffer(*it);
                 it = return_queue_.erase(it);
                 return std::make_pair(-1, -1);
             } else {
@@ -108,12 +108,12 @@ void Controller::ClockTick() {
         std::string issue_infostr = issue_info.str();
         TraceFile(issue_infostr);
 
-        if (cmd.cmd_type == CommandType::WRITE || cmd.cmd_type == CommandType::WRITE_PRECHARGE){
-            prefetcher.W_ivicte(cmd);
-            prefetcher.PF.ivicte_entry(cmd.hex_addr);
-        }
         IssueCommand(cmd);
         cmd_issued = true;
+
+        if (cmd.cmd_type == CommandType::WRITE || cmd.cmd_type == CommandType::WRITE_PRECHARGE){
+            prefetcher.W_ivicte(cmd.hex_addr);
+        }
 
         if (config_.enable_hbm_dual_cmd) {
             auto second_cmd = cmd_queue_.GetCommandToIssue();
@@ -176,7 +176,10 @@ void Controller::ClockTick() {
     }
 
     ScheduleTransaction();
-    if (clk_ % 1000000 == 0){
+    if (clk_ % 100 ==0 && clk_ != 0){
+        prefetcher.UpdateaDistance();
+    }
+    if (clk_ % 1000000 == 0 && clk_ != 0){
         std::cout<<"The program is running!    Prefetch_on: "<<prefetch_on<<"    Sim_Cycle: "<<clk_<<std::endl;
     }
     clk_++;
@@ -250,16 +253,20 @@ void Controller::ScheduleTransaction() {
         is_unified_queue_ ? unified_queue_
                           : write_draining_ > 0 ? write_buffer_ : read_queue_;
     for (auto it = queue.begin(); it != queue.end(); it++) {
+        if (it->is_write){
+            prefetcher.W_ivicte(it->addr);
+        }
+
         //SPP Prefetcher
         if (prefetch_on && !it->IsPrefetch && !it->is_write){
-            prefetcher.PF.update_useful(*it);
+            prefetcher.PF.update_useful(it->addr);
             prefetcher.prefetch_trans = *it;
             trans_info transinfo = prefetcher.get_info(*it);
             prefetcher.updateSTandPT(transinfo);
             prefetcher.P = 1;
             while (prefetcher.P > prefetcher.Tp && read_queue_.size() < read_queue_.capacity()){
                 prefetcher.GetPrefetch(prefetcher.sig);
-                if (prefetcher.IssuePrefetch(prefetcher.prefetch_trans)){
+                if (prefetcher.IssuePrefetch(*it, prefetcher.prefetch_trans)){
                     std::stringstream p_trans_info;
                     p_trans_info<<"Cycle: "<<clk_<<", "<<"Prefetch_Trans: "<<"Addr: "<<prefetcher.prefetch_trans.addr<<'\n';
                     std::string p_trans_infostr = p_trans_info.str();
@@ -271,19 +278,27 @@ void Controller::ScheduleTransaction() {
                     continue;
                 }
             }
-
         }
 
         // Next-Line Prefetcher
-        /*if (prefetcher.IssuePrefetch(*it) && prefetch_on){
-            for (i = 0; i < prefetcher.distance; i++){
-                Transaction Prefetch_trans=prefetcher.GetPrefetch(*it);
-
-                std::stringstream p_trans_info;
-                p_trans_info<<"Cycle: "<<clk_<<", "<<"Prefetch_Trans: "<<"Addr: "<<Prefetch_trans.addr<<'\n';
-                std::string p_trans_infostr = p_trans_info.str();
-                TraceFile(p_trans_infostr);
-                AddPrefetchTrans(Prefetch_trans);
+        /*if (prefetch_on && !it->IsPrefetch && !it->is_write){
+            int i = 0;
+            prefetcher.prefetch_trans = *it;
+            while (i < prefetcher.distance){
+                prefetcher.GetPrefetch();
+                i++;
+                if (prefetcher.IssuePrefetch(*it, prefetcher.prefetch_trans) && read_queue_.size() < read_queue_.capacity()){
+                    std::stringstream p_trans_info;
+                    p_trans_info<<"Cycle: "<<clk_<<", "<<"Prefetch_Trans: "<<"Addr: "<<prefetcher.prefetch_trans.addr<<'\n';
+                    std::string p_trans_infostr = p_trans_info.str();
+                    TraceFile(p_trans_infostr);
+                    AddPrefetchTrans(prefetcher.prefetch_trans);
+                    prefetcher.PF.add_entry(prefetcher.prefetch_trans.addr);
+                    prefetcher.prefetch_total++;
+                    prefetcher.epoch_total++;
+                } else {
+                    continue;
+                }
             }
         }*/
 
@@ -435,20 +450,15 @@ void Controller::UpdateCommandStats(const Command &cmd) {                   //ไป
 
 // determine if the trans has been hit in the prefetch-buffer
 bool Controller::PrefetchHit(uint64_t addr){
-    for (auto it = prefetcher.PrefetchBuffer.begin(); it != prefetcher.PrefetchBuffer.end(); it++){
-        if (addr == it->addr){
-            if (it->hit_count == 0){
-                prefetcher.prefetch_hit++;
-                std::stringstream prefetch_info;
-                prefetch_info<<"Cycle: "<<clk_<<", "<<"Prefetcher_info: "<<"Issue Prefetch: "<<prefetcher.prefetch_total<<", "<<"Prefetch hit: "<<prefetcher.prefetch_hit<<'\n';
-                std::string prefetch_infostr = prefetch_info.str();
-                TraceFile(prefetch_infostr);
-            }
-            it->hit_count++;
-            return true;
-        }
+    if (prefetcher.PrefetchHit(addr)){
+        std::stringstream prefetch_info;
+        prefetch_info<<"Cycle: "<<clk_<<", "<<"Prefetcher_info: "<<"Issue Prefetch: "<<prefetcher.prefetch_total<<", "<<"Prefetch hit: "<<prefetcher.prefetch_hit<<'\n';
+        std::string prefetch_infostr = prefetch_info.str();
+        TraceFile(prefetch_infostr);
+        return true;
+    } else {
+        return false;
     }
-    return false;
 }
 
 // issue the hit trans to the return_queue 

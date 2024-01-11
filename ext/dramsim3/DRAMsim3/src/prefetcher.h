@@ -1,5 +1,6 @@
 #include <fstream>
 #include <map>
+#include <list>
 #include <unordered_set>
 #include <vector>
 #include <unordered_map>
@@ -12,35 +13,37 @@
 
 namespace dramsim3 {
 
+class Prefetch_Filter {
+public:
+    std::unordered_map<uint64_t, int>PrefetchFilter;
+
+    void add_entry(uint64_t addr);
+    void ivicte_entry(uint64_t addr);
+    void update_useful(uint64_t addr);
+
+friend class Prefetch_Buffer;
+};
+
 struct PrefetchEntry{
     uint64_t addr;
     int hit_count;
-    uint64_t add_cycle;
 };
 
-class Prefetcher
-{
+class Prefetch_Buffer {
+private:
+    std::list<PrefetchEntry*> l; // 双向链表
+    std::unordered_map<uint64_t, std::list<PrefetchEntry*>::iterator> m; // 哈希表
+    int capacity;
+
 public:
-    Prefetcher():prefetch_total(0), prefetch_hit(0), PrefetchBuffer(32){}
-    ~Prefetcher(){}
-    
-    int prefetch_total;
-    int prefetch_hit;
-    std::vector<PrefetchEntry>PrefetchBuffer;
+    Prefetch_Buffer(int capacity) { // 构造函数
+        this->capacity = capacity;
+        l.push_back(new PrefetchEntry()); // 初始化空列表
+    }
 
-    virtual void W_ivicte(const Command &cmd);
-    virtual uint64_t R_ivicte(uint64_t clk);
-    virtual void UpdatePrefetchBuffer(Transaction &trans, uint64_t clk);
-};
-
-class NextLine_Prefetcher : public Prefetcher { 
-public:
-    NextLine_Prefetcher() : Prefetcher() {}
-    ~NextLine_Prefetcher(){};
-
-    int distance = 5;
-    bool IssuePrefetch(const Transaction &trans);
-    Transaction GetPrefetch(const Transaction &trans);
+    void set(uint64_t addr, Prefetch_Filter PF);
+    void ivicte(uint64_t addr);
+    int hit(uint64_t addr);
 };
 
 struct trans_info {
@@ -91,21 +94,54 @@ public:
 
 };
 
-class Prefetch_Filter {
+class Prefetcher
+{
 public:
-    std::unordered_map<uint64_t, int>PrefetchFilter;
+    Prefetcher(const Config &config, double Tl, double Th, int distance):
+    prefetch_total(0),
+    prefetch_hit(0),
+    epoch_total(0),
+    epoch_hit(0),
+    PrefetchBuffer(32),
+    config_(config),
+    Tl(Tl),
+    Th(Th),
+    distance(distance)
+    {}
+    ~Prefetcher(){}
 
-    void add_entry(uint64_t addr);
-    void ivicte_entry(uint64_t addr);
-    void update_useful(const Transaction &trans);
+    double Tl;
+    double Th;
+    int prefetch_total;
+    int prefetch_hit;
+    double epoch_total;
+    double epoch_hit;
+    int distance;
+
+    Transaction prefetch_trans;
+    Prefetch_Buffer PrefetchBuffer;
+    Prefetch_Filter PF;
+    const Config &config_;
+
+    virtual void W_ivicte(uint64_t addr);
+    virtual void UpdatePrefetchBuffer(Transaction &trans);
+    virtual bool PrefetchHit(uint64_t addr);
+    virtual bool IssuePrefetch(const Transaction &trans, Transaction &prefetch_trans);
+    virtual double Updatea();
+    virtual void UpdateaDistance();
+};
+
+class NextLine_Prefetcher : public Prefetcher {
+public:
+    NextLine_Prefetcher(const Config &config) : Prefetcher(config, 0.25, 0.75, 5) {}
+    ~NextLine_Prefetcher(){};
+    
+    void GetPrefetch();
 };
 
 class SPP_Prefetcher : public Prefetcher {
-private:
-    const Config &config_;
-
 public:
-    SPP_Prefetcher(const Config &config) : Prefetcher(), config_(config) {}
+    SPP_Prefetcher(const Config &config) : Prefetcher(config, 0.25, 0.75, 5) {}
     ~SPP_Prefetcher(){};
 
     Signature_Table ST;
@@ -120,10 +156,10 @@ public:
     Transaction prefetch_trans;
 
     void GetPrefetch(uint16_t signaure);
-    bool IssuePrefetch(const Transaction &trans);
+    bool IssuePrefetch(const Transaction &trans, Transaction &prefetch_trans) override;
     void updateSTandPT(trans_info info);
     trans_info get_info(const Transaction &trans);
-    void UpdatePrefetchBuffer(Transaction &trans, uint64_t clk) override;
+    //void UpdateaDistance() override;
 };
 
 }

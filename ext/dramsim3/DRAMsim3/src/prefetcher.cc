@@ -3,20 +3,81 @@
 namespace dramsim3 {
 
 //Maintain data consistency when write new datas in the same address of the entry in the prefetch-buffer
-void Prefetcher::W_ivicte(const Command &cmd){
-    auto it = PrefetchBuffer.begin();
+void Prefetcher::W_ivicte(uint64_t addr){
+    PrefetchBuffer.ivicte(addr);
+    PF.ivicte_entry(addr);
+    /*auto it = PrefetchBuffer.begin();
     while (it != PrefetchBuffer.end()) {
-        if (it->addr == cmd.hex_addr){
+        if (it->addr == addr){
             it = PrefetchBuffer.erase(it);
         } 
         else {
             it++;
         }   
+    }*/
+}
+
+void Prefetch_Buffer::set(uint64_t addr, Prefetch_Filter PF) {
+    if (m.find(addr) != m.end()) {
+        PrefetchEntry* p = *(m[addr]);
+        l.erase(m[addr]);
+        m.erase(addr);
+        l.push_front(p);
+        m[addr] = l.begin();
+    } else {
+        PrefetchEntry* p = new PrefetchEntry();
+        p->addr = addr;
+        p->hit_count = 0;
+        if (l.size() >= capacity){
+            auto last = l.back();
+            m.erase(last->addr);
+            l.push_front(p);
+            m.insert({addr, l.begin()});
+            PF.ivicte_entry(last->addr);
+        } else {
+            l.push_front(p);
+            m.insert({addr, l.begin()});               
+        }
     }
 }
 
+int Prefetch_Buffer::hit(uint64_t addr){
+    if (m.find(addr) != m.end()){
+        PrefetchEntry* p = *(m[addr]);
+        p->hit_count ++;
+        if (p->hit_count ==1){
+            return 1;
+        } else {
+            return 2;
+        }
+    } else{
+        return 3;
+    }
+}
+
+void Prefetch_Buffer::ivicte(uint64_t addr){
+    if (m.find(addr) != m.end()){
+        m.erase(addr);
+        l.erase(m[addr]);
+    }
+}
+
+bool Prefetcher::PrefetchHit(uint64_t addr){
+    int i = PrefetchBuffer.hit(addr);
+    PF.update_useful(addr);
+    if (i == 1) {
+        prefetch_hit ++;
+        epoch_hit ++;
+        return true;
+    } else if (i == 2) {
+        return true;
+    } else {
+        return false;
+    } 
+}
+
 //When the prefetche-buffer is full, the least used entry will be ivicted
-uint64_t Prefetcher::R_ivicte(uint64_t clk){
+/*uint64_t Prefetcher::R_ivicte(uint64_t clk){
     if (!PrefetchBuffer.empty()){
         for (auto it = PrefetchBuffer.begin(); it != PrefetchBuffer.end(); it++){
             if ((clk - it->add_cycle) > 200){
@@ -34,47 +95,66 @@ uint64_t Prefetcher::R_ivicte(uint64_t clk){
         PrefetchBuffer.erase(minIt);
         return minIt->addr;
     }
-}
+}*/
 
-//decide whether to issue prefetch(if the row is open)
-bool NextLine_Prefetcher::IssuePrefetch(const Transaction &trans){
-    if (!trans.IsPrefetch){
-        if (trans.is_write == false){
-        return true;
+//decide whether to issue prefetch
+bool Prefetcher::IssuePrefetch(const Transaction &trans, Transaction &prefetch_trans){
+    Address trans_addr = config_.AddressMapping(trans.addr);
+    Address prefetch_addr = config_.AddressMapping(prefetch_trans.addr);
+    if (trans_addr.bank == prefetch_addr.bank && trans_addr.row == prefetch_addr.row && trans_addr.bankgroup == prefetch_addr.bankgroup){
+        if (PF.PrefetchFilter.find(prefetch_trans.addr) == PF.PrefetchFilter.end()){
+            return true;
         }
     }
     return false;
 }
 
-//Get the Perfetch command
-Transaction NextLine_Prefetcher::GetPrefetch(const Transaction &trans){
-    Transaction Prefetch;
-    Prefetch.addr = trans.addr+64;
-    Prefetch.IsPrefetch = true;
-    Prefetch.is_write = false;
-    prefetch_total++;
-    return  Prefetch;
+double Prefetcher::Updatea(){
+    double a;
+    if (epoch_total != 0){
+        a = epoch_hit / epoch_total;
+    } else {
+        a = 0.5;
+    }
+    epoch_hit = 0;
+    epoch_total = 0;
+    return a;
 }
 
-void Prefetcher::UpdatePrefetchBuffer(Transaction &trans, uint64_t clk){
-    for (auto it = PrefetchBuffer.begin(); it != PrefetchBuffer.end(); ++it){
-        if (it->addr == trans.addr){
-            return;
+void Prefetcher::UpdateaDistance(){
+    double epcoh_a = Updatea();
+    if (epcoh_a > Th){
+        if (distance < 5){
+            distance = 5;
+        } else if (distance <10){
+            distance ++;
+        }
+    } else if (epcoh_a > Tl){
+            distance = 5;
+    } else {
+        if (distance > 5){
+            distance = 5;
+        } else{
+            distance --;
         }
     }
-    if (PrefetchBuffer.size() >= PrefetchBuffer.capacity()){
-        R_ivicte(clk);
-    }
-    PrefetchEntry entry;
-    entry.addr = trans.addr;
-    entry.hit_count = 0;
-    entry.add_cycle = clk;
-    PrefetchBuffer.push_back(entry);
+}
+
+void Prefetcher::UpdatePrefetchBuffer(Transaction &trans){
+    PrefetchBuffer.set(trans.addr, PF);
+}
+
+//Get the Perfetch command
+void NextLine_Prefetcher::GetPrefetch(){
+    prefetch_trans.addr += 64;
+    prefetch_trans.IsPrefetch = true;
+    prefetch_trans.is_write = false;
 }
 
 trans_info SPP_Prefetcher::get_info(const Transaction &trans){
     auto addr = config_.AddressMapping(trans.addr);
-    int tag = 100000 * addr.bank + addr.row;
+    //int tag = 100000 * addr.bank + addr.row;    //v1
+    int tag = trans.addr >> 12;    //v2
     trans_info info = {tag, trans.addr, addr};
     return info;
 }
@@ -184,8 +264,8 @@ void Prefetch_Filter::ivicte_entry(uint64_t addr){
     }
 }
 
-void Prefetch_Filter::update_useful(const Transaction &trans){
-    auto it = PrefetchFilter.find(trans.addr);
+void Prefetch_Filter::update_useful(uint64_t addr){
+    auto it = PrefetchFilter.find(addr);
     if (it != PrefetchFilter.end()){
         it->second = 1;
     }
@@ -208,33 +288,19 @@ void SPP_Prefetcher::GetPrefetch(uint16_t signature){
     sig = ST.newsignature(sig, prefetch_delta.delta);
 }
 
-bool SPP_Prefetcher::IssuePrefetch(const Transaction &trans){
+bool SPP_Prefetcher::IssuePrefetch(const Transaction &trans, Transaction &prefetch_trans){
     if (P < Tp){
         return false;
     } else {
-        auto it = PF.PrefetchFilter.find(trans.addr);
-        if (it != PF.PrefetchFilter.end()){
-            return false;
-        } else {
-            return true;
+        Address trans_addr = config_.AddressMapping(trans.addr);
+        Address prefetch_addr = config_.AddressMapping(prefetch_trans.addr);
+        if (trans_addr.bank == prefetch_addr.bank && trans_addr.row == prefetch_addr.row && trans_addr.bankgroup == prefetch_addr.bankgroup){
+            auto it = PF.PrefetchFilter.find(prefetch_trans.addr);
+            if (it != PF.PrefetchFilter.end()){
+                return false;
+            }
+        return true;
         }
     }
-}
-
-void SPP_Prefetcher::UpdatePrefetchBuffer(Transaction &trans, uint64_t clk){
-    for (auto it = PrefetchBuffer.begin(); it != PrefetchBuffer.end(); ++it){
-        if (it->addr == trans.addr){
-            return;
-        }
-    }
-    if (PrefetchBuffer.size() >= PrefetchBuffer.capacity()){
-        uint64_t ivite_addr = R_ivicte(clk);
-        PF.ivicte_entry(ivite_addr);
-    }
-    PrefetchEntry entry;
-    entry.addr = trans.addr;
-    entry.hit_count = 0;
-    entry.add_cycle = clk;
-    PrefetchBuffer.push_back(entry);
 }
 }
