@@ -280,6 +280,7 @@ void SPP_Prefetcher::updateSTandPT(trans_info info){
 }
 
 void SPP_Prefetcher::GetPrefetch(uint16_t signature){
+    double a = Updatea();
     prefetch_delta = PT.prefetch_delta(signature);
     prefetch_trans.addr = prefetch_trans.addr + 64 * prefetch_delta.delta;
     prefetch_trans.IsPrefetch = true;
@@ -289,18 +290,21 @@ void SPP_Prefetcher::GetPrefetch(uint16_t signature){
 }
 
 bool SPP_Prefetcher::IssuePrefetch(const Transaction &trans, Transaction &prefetch_trans){
-    if (P < Tp){
+    if (P < Th){
         return false;
     } else {
         Address trans_addr = config_.AddressMapping(trans.addr);
         Address prefetch_addr = config_.AddressMapping(prefetch_trans.addr);
         if (trans_addr.bank == prefetch_addr.bank && trans_addr.row == prefetch_addr.row && trans_addr.bankgroup == prefetch_addr.bankgroup){
-            auto it = PF.PrefetchFilter.find(prefetch_trans.addr);
-            if (it != PF.PrefetchFilter.end()){
-                return false;
+            if (PF.PrefetchFilter.find(prefetch_trans.addr) == PF.PrefetchFilter.end()){
+                return true;
             }
-        return true;
+        return false;
         }
     }
+}
+
+void SPP_Prefetcher::UpdateaDistance(){
+    
 }
 }

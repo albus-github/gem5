@@ -264,7 +264,7 @@ void Controller::ScheduleTransaction() {
             trans_info transinfo = prefetcher.get_info(*it);
             prefetcher.updateSTandPT(transinfo);
             prefetcher.P = 1;
-            while (prefetcher.P > prefetcher.Tp && read_queue_.size() < read_queue_.capacity()){
+            while (prefetcher.P > prefetcher.Th && read_queue_.size() < read_queue_.capacity()){
                 prefetcher.GetPrefetch(prefetcher.sig);
                 if (prefetcher.IssuePrefetch(*it, prefetcher.prefetch_trans)){
                     std::stringstream p_trans_info;
@@ -274,6 +274,7 @@ void Controller::ScheduleTransaction() {
                     AddPrefetchTrans(prefetcher.prefetch_trans);
                     prefetcher.PF.add_entry(prefetcher.prefetch_trans.addr);
                     prefetcher.prefetch_total++;
+                    prefetcher.epoch_total++;
                 } else{
                     continue;
                 }

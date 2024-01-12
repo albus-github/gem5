@@ -13,6 +13,7 @@
 
 namespace dramsim3 {
 
+
 class Prefetch_Filter {
 public:
     std::unordered_map<uint64_t, int>PrefetchFilter;
@@ -146,20 +147,16 @@ public:
 
     Signature_Table ST;
     Pattern_Table PT;
-    Prefetch_Filter PF;
 
-    double Tp = 0.25;
     double P = 1;
-    double a = 0.8;
     uint16_t sig;
     prefetch_info prefetch_delta;
-    Transaction prefetch_trans;
 
     void GetPrefetch(uint16_t signaure);
     bool IssuePrefetch(const Transaction &trans, Transaction &prefetch_trans) override;
     void updateSTandPT(trans_info info);
     trans_info get_info(const Transaction &trans);
-    //void UpdateaDistance() override;
+    void UpdateaDistance() override;
 };
 
 }
