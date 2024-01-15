@@ -53,8 +53,8 @@ class Controller {
 
     bool prefetch_on;
     //Prefetcher prefetcher;
-    //NextLine_Prefetcher prefetcher;
-    SPP_Prefetcher prefetcher;
+    NextLine_Prefetcher prefetcher;
+    //SPP_Prefetcher prefetcher;
 
 #ifdef THERMAL
     ThermalCalculator &thermal_calc_;

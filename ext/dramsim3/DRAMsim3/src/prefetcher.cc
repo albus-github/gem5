@@ -6,15 +6,6 @@ namespace dramsim3 {
 void Prefetcher::W_ivicte(uint64_t addr){
     PrefetchBuffer.ivicte(addr);
     PF.ivicte_entry(addr);
-    /*auto it = PrefetchBuffer.begin();
-    while (it != PrefetchBuffer.end()) {
-        if (it->addr == addr){
-            it = PrefetchBuffer.erase(it);
-        } 
-        else {
-            it++;
-        }   
-    }*/
 }
 
 void Prefetch_Buffer::set(uint64_t addr, Prefetch_Filter PF) {
@@ -28,6 +19,7 @@ void Prefetch_Buffer::set(uint64_t addr, Prefetch_Filter PF) {
         PrefetchEntry* p = new PrefetchEntry();
         p->addr = addr;
         p->hit_count = 0;
+        p->valid = 0;
         if (l.size() >= capacity){
             auto last = l.back();
             m.erase(last->addr);
@@ -41,18 +33,24 @@ void Prefetch_Buffer::set(uint64_t addr, Prefetch_Filter PF) {
     }
 }
 
-int Prefetch_Buffer::hit(uint64_t addr){
+bool Prefetch_Buffer::hit(uint64_t addr){
     if (m.find(addr) != m.end()){
         PrefetchEntry* p = *(m[addr]);
-        p->hit_count ++;
-        if (p->hit_count ==1){
-            return 1;
-        } else {
-            return 2;
+        l.erase(m[addr]);
+        m.erase(addr);
+        auto insert_pos = l.begin();
+        for (; insert_pos != l.end(); ++insert_pos) {
+            if ((*insert_pos)->valid == 1) {
+                break;
+            }
         }
-    } else{
-        return 3;
+        l.insert(insert_pos, p);
+        m.insert({addr, --insert_pos});
+        p->valid = 1;
+        p->hit_count ++;
+        return true;
     }
+    return false;
 }
 
 void Prefetch_Buffer::ivicte(uint64_t addr){
@@ -63,17 +61,10 @@ void Prefetch_Buffer::ivicte(uint64_t addr){
 }
 
 bool Prefetcher::PrefetchHit(uint64_t addr){
-    int i = PrefetchBuffer.hit(addr);
-    PF.update_useful(addr);
-    if (i == 1) {
-        prefetch_hit ++;
+    if (PF.update_useful(addr)){
         epoch_hit ++;
-        return true;
-    } else if (i == 2) {
-        return true;
-    } else {
-        return false;
-    } 
+    }
+    return PrefetchBuffer.hit(addr);
 }
 
 //When the prefetche-buffer is full, the least used entry will be ivicted
@@ -101,7 +92,7 @@ bool Prefetcher::PrefetchHit(uint64_t addr){
 bool Prefetcher::IssuePrefetch(const Transaction &trans, Transaction &prefetch_trans){
     Address trans_addr = config_.AddressMapping(trans.addr);
     Address prefetch_addr = config_.AddressMapping(prefetch_trans.addr);
-    if (trans_addr.bank == prefetch_addr.bank && trans_addr.row == prefetch_addr.row && trans_addr.bankgroup == prefetch_addr.bankgroup){
+    if (trans_addr.bank == prefetch_addr.bank && trans_addr.row == prefetch_addr.row && trans_addr.bankgroup == prefetch_addr.bankgroup && trans.addr != prefetch_trans.addr){
         if (PF.PrefetchFilter.find(prefetch_trans.addr) == PF.PrefetchFilter.end()){
             return true;
         }
@@ -118,6 +109,7 @@ double Prefetcher::Updatea(){
     }
     epoch_hit = 0;
     epoch_total = 0;
+    PF.update_valid();
     return a;
 }
 
@@ -254,7 +246,7 @@ prefetch_info Pattern_Table::prefetch_delta(uint16_t signature){
 }
 
 void Prefetch_Filter::add_entry(uint64_t addr){
-    PrefetchFilter.insert({addr, 0});
+    PrefetchFilter.insert({addr, {1,0}});
 }
 
 void Prefetch_Filter::ivicte_entry(uint64_t addr){
@@ -264,10 +256,21 @@ void Prefetch_Filter::ivicte_entry(uint64_t addr){
     }
 }
 
-void Prefetch_Filter::update_useful(uint64_t addr){
+bool Prefetch_Filter::update_useful(uint64_t addr){
     auto it = PrefetchFilter.find(addr);
     if (it != PrefetchFilter.end()){
-        it->second = 1;
+        if (it->second.useful == 0){
+            it->second.useful = 1;
+            if (it->second.valid == 1)
+            return true;
+        }
+    }
+    return false;
+}
+
+void Prefetch_Filter::update_valid(){
+     for (auto& entry : PrefetchFilter) {
+        entry.second.valid = 0;
     }
 }
 
@@ -280,7 +283,6 @@ void SPP_Prefetcher::updateSTandPT(trans_info info){
 }
 
 void SPP_Prefetcher::GetPrefetch(uint16_t signature){
-    double a = Updatea();
     prefetch_delta = PT.prefetch_delta(signature);
     prefetch_trans.addr = prefetch_trans.addr + 64 * prefetch_delta.delta;
     prefetch_trans.IsPrefetch = true;
@@ -289,7 +291,7 @@ void SPP_Prefetcher::GetPrefetch(uint16_t signature){
     sig = ST.newsignature(sig, prefetch_delta.delta);
 }
 
-bool SPP_Prefetcher::IssuePrefetch(const Transaction &trans, Transaction &prefetch_trans){
+/*bool SPP_Prefetcher::IssuePrefetch(const Transaction &trans, Transaction &prefetch_trans){
     if (P < Th){
         return false;
     } else {
@@ -302,9 +304,9 @@ bool SPP_Prefetcher::IssuePrefetch(const Transaction &trans, Transaction &prefet
         return false;
         }
     }
-}
+}*/
 
 void SPP_Prefetcher::UpdateaDistance(){
-    
+    a = Updatea();
 }
 }

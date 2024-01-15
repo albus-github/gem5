@@ -13,14 +13,19 @@
 
 namespace dramsim3 {
 
+struct PF_entry{
+    int valid;
+    int useful;
+};
 
 class Prefetch_Filter {
 public:
-    std::unordered_map<uint64_t, int>PrefetchFilter;
+    std::unordered_map<uint64_t, PF_entry>PrefetchFilter;
 
     void add_entry(uint64_t addr);
     void ivicte_entry(uint64_t addr);
-    void update_useful(uint64_t addr);
+    bool update_useful(uint64_t addr);
+    void update_valid();
 
 friend class Prefetch_Buffer;
 };
@@ -28,6 +33,7 @@ friend class Prefetch_Buffer;
 struct PrefetchEntry{
     uint64_t addr;
     int hit_count;
+    int valid;
 };
 
 class Prefetch_Buffer {
@@ -44,7 +50,7 @@ public:
 
     void set(uint64_t addr, Prefetch_Filter PF);
     void ivicte(uint64_t addr);
-    int hit(uint64_t addr);
+    bool hit(uint64_t addr);
 };
 
 struct trans_info {
@@ -103,6 +109,7 @@ public:
     prefetch_hit(0),
     epoch_total(0),
     epoch_hit(0),
+    i(0),
     PrefetchBuffer(32),
     config_(config),
     Tl(Tl),
@@ -118,6 +125,7 @@ public:
     double epoch_total;
     double epoch_hit;
     int distance;
+    int i;
 
     Transaction prefetch_trans;
     Prefetch_Buffer PrefetchBuffer;
@@ -142,18 +150,19 @@ public:
 
 class SPP_Prefetcher : public Prefetcher {
 public:
-    SPP_Prefetcher(const Config &config) : Prefetcher(config, 0.25, 0.75, 5) {}
+    SPP_Prefetcher(const Config &config) : Prefetcher(config, 0.25, 0.75, 10) {}
     ~SPP_Prefetcher(){};
 
     Signature_Table ST;
     Pattern_Table PT;
 
     double P = 1;
+    double a = 0.8;
     uint16_t sig;
     prefetch_info prefetch_delta;
 
     void GetPrefetch(uint16_t signaure);
-    bool IssuePrefetch(const Transaction &trans, Transaction &prefetch_trans) override;
+    //bool IssuePrefetch(const Transaction &trans, Transaction &prefetch_trans) override;
     void updateSTandPT(trans_info info);
     trans_info get_info(const Transaction &trans);
     void UpdateaDistance() override;
