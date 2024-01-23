@@ -15,13 +15,16 @@ void Prefetch_Buffer::set(uint64_t addr, Prefetch_Filter PF) {
         m.erase(addr);
         l.push_front(p);
         m[addr] = l.begin();
+        p->life = 0;
     } else {
         PrefetchEntry* p = new PrefetchEntry();
         p->addr = addr;
         p->hit_count = 0;
         p->valid = 0;
+        p->life = 0;
         if (l.size() >= capacity){
             auto last = l.back();
+            l.pop_back();
             m.erase(last->addr);
             l.push_front(p);
             m.insert({addr, l.begin()});
@@ -38,6 +41,7 @@ bool Prefetch_Buffer::hit(uint64_t addr){
         PrefetchEntry* p = *(m[addr]);
         l.erase(m[addr]);
         m.erase(addr);
+
         auto insert_pos = l.begin();
         for (; insert_pos != l.end(); ++insert_pos) {
             if ((*insert_pos)->valid == 1) {
@@ -46,8 +50,15 @@ bool Prefetch_Buffer::hit(uint64_t addr){
         }
         l.insert(insert_pos, p);
         m.insert({addr, --insert_pos});
+
+        /*l.push_front(p);
+        m[addr] = l.begin();*/
+
         p->valid = 1;
         p->hit_count ++;
+        if (p->hit_count > 1){
+            std::cout<<"Addr: "<<addr<<std::endl;
+        }
         return true;
     }
     return false;
@@ -55,8 +66,27 @@ bool Prefetch_Buffer::hit(uint64_t addr){
 
 void Prefetch_Buffer::ivicte(uint64_t addr){
     if (m.find(addr) != m.end()){
-        m.erase(addr);
         l.erase(m[addr]);
+        m.erase(addr);
+    }
+}
+
+void Prefetch_Buffer::epoch_update(Prefetch_Filter PF){
+    for (auto it = l.begin(); it != l.end();){
+        (*it)->life ++;
+        if ((*it)->life == 5){
+            PF.ivicte_entry((*it)->addr);
+            m.erase((*it)->addr);
+            it = l.erase(it);
+        } else
+            it ++;
+    }
+}
+
+int Prefetch_Buffer::prefetch_latency(uint64_t addr){
+    if (m.find(addr) != m.end()){
+        PrefetchEntry* p = *(m[addr]);
+        return p->life;
     }
 }
 
@@ -109,6 +139,7 @@ double Prefetcher::Updatea(){
     }
     epoch_hit = 0;
     epoch_total = 0;
+    //PrefetchBuffer.epoch_update(PF);
     PF.update_valid();
     return a;
 }
@@ -126,6 +157,8 @@ void Prefetcher::UpdateaDistance(){
     } else {
         if (distance > 5){
             distance = 5;
+        } else if (distance == 1){
+            distance = 1;
         } else{
             distance --;
         }
@@ -134,6 +167,17 @@ void Prefetcher::UpdateaDistance(){
 
 void Prefetcher::UpdatePrefetchBuffer(Transaction &trans){
     PrefetchBuffer.set(trans.addr, PF);
+}
+
+void Prefetcher::initial(const Transaction &trans){
+    i = 0;
+    prefetch_trans = trans;
+}
+
+bool Prefetcher::Continue(){
+    if (i < distance)
+        return true;
+    return false;
 }
 
 //Get the Perfetch command
@@ -269,9 +313,15 @@ bool Prefetch_Filter::update_useful(uint64_t addr){
 }
 
 void Prefetch_Filter::update_valid(){
-     for (auto& entry : PrefetchFilter) {
+    for (auto& entry : PrefetchFilter) {
         entry.second.valid = 0;
     }
+}
+
+bool Prefetch_Filter::hit(uint64_t addr){
+    if (PrefetchFilter.find(addr) != PrefetchFilter.end())
+        return true;
+    return false;
 }
 
 void SPP_Prefetcher::updateSTandPT(trans_info info){
@@ -282,8 +332,8 @@ void SPP_Prefetcher::updateSTandPT(trans_info info){
     sig = ST.getsignature(info);
 }
 
-void SPP_Prefetcher::GetPrefetch(uint16_t signature){
-    prefetch_delta = PT.prefetch_delta(signature);
+void SPP_Prefetcher::GetPrefetch(){
+    prefetch_delta = PT.prefetch_delta(sig);
     prefetch_trans.addr = prefetch_trans.addr + 64 * prefetch_delta.delta;
     prefetch_trans.IsPrefetch = true;
     prefetch_trans.is_write = false;
@@ -291,22 +341,21 @@ void SPP_Prefetcher::GetPrefetch(uint16_t signature){
     sig = ST.newsignature(sig, prefetch_delta.delta);
 }
 
-/*bool SPP_Prefetcher::IssuePrefetch(const Transaction &trans, Transaction &prefetch_trans){
-    if (P < Th){
-        return false;
-    } else {
-        Address trans_addr = config_.AddressMapping(trans.addr);
-        Address prefetch_addr = config_.AddressMapping(prefetch_trans.addr);
-        if (trans_addr.bank == prefetch_addr.bank && trans_addr.row == prefetch_addr.row && trans_addr.bankgroup == prefetch_addr.bankgroup){
-            if (PF.PrefetchFilter.find(prefetch_trans.addr) == PF.PrefetchFilter.end()){
-                return true;
-            }
-        return false;
-        }
-    }
-}*/
-
 void SPP_Prefetcher::UpdateaDistance(){
     a = Updatea();
+}
+
+void SPP_Prefetcher::initial(const Transaction &trans){
+    prefetch_trans = trans;
+    trans_info transinfo = get_info(trans);
+    updateSTandPT(transinfo);
+    P = 1;
+    i = 0;
+}
+
+bool SPP_Prefetcher::Continue(){
+    if (P > Th && i < distance)
+        return true;
+    return false;
 }
 }

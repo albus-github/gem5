@@ -38,7 +38,7 @@ class Controller {
     void PrintFinalStats();
     void ResetStats() { simple_stats_.Reset(); }
     std::pair<uint64_t, int> ReturnDoneTrans(uint64_t clock);
-    bool IsComplete(){return (return_queue_.empty() && pending_rd_q_.empty() && pending_wr_q_.empty());}
+    bool IsComplete(){return (return_queue_.empty() && pending_rd_q_.empty());}
 
     int channel_id_;
 
@@ -52,9 +52,8 @@ class Controller {
     bool is_rw_denp_;
 
     bool prefetch_on;
-    //Prefetcher prefetcher;
-    NextLine_Prefetcher prefetcher;
-    //SPP_Prefetcher prefetcher;
+    //NextLine_Prefetcher prefetcher;
+    SPP_Prefetcher prefetcher;
 
 #ifdef THERMAL
     ThermalCalculator &thermal_calc_;
@@ -94,6 +93,7 @@ class Controller {
     bool PrefetchHit(uint64_t addr);
     void IssueHitTrans(Transaction &trans);
     void AddPrefetchTrans(Transaction &prefetch_trans);
+    bool WaitPrefetch(Transaction &trans);
 
     void TraceFile(const std::string& content);
 };

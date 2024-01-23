@@ -26,6 +26,7 @@ public:
     void ivicte_entry(uint64_t addr);
     bool update_useful(uint64_t addr);
     void update_valid();
+    bool hit(uint64_t addr);
 
 friend class Prefetch_Buffer;
 };
@@ -34,6 +35,7 @@ struct PrefetchEntry{
     uint64_t addr;
     int hit_count;
     int valid;
+    int life;
 };
 
 class Prefetch_Buffer {
@@ -45,12 +47,14 @@ private:
 public:
     Prefetch_Buffer(int capacity) { // 构造函数
         this->capacity = capacity;
-        l.push_back(new PrefetchEntry()); // 初始化空列表
+        //l.push_back(new PrefetchEntry()); // 初始化空列表
     }
 
     void set(uint64_t addr, Prefetch_Filter PF);
     void ivicte(uint64_t addr);
     bool hit(uint64_t addr);
+    void epoch_update(Prefetch_Filter PF);
+    int prefetch_latency(uint64_t addr);
 };
 
 struct trans_info {
@@ -107,6 +111,8 @@ public:
     Prefetcher(const Config &config, double Tl, double Th, int distance):
     prefetch_total(0),
     prefetch_hit(0),
+    prefetch_latency(0),
+    total_latency(0),
     epoch_total(0),
     epoch_hit(0),
     i(0),
@@ -122,6 +128,8 @@ public:
     double Th;
     int prefetch_total;
     int prefetch_hit;
+    int prefetch_latency;
+    int total_latency;
     double epoch_total;
     double epoch_hit;
     int distance;
@@ -138,6 +146,9 @@ public:
     virtual bool IssuePrefetch(const Transaction &trans, Transaction &prefetch_trans);
     virtual double Updatea();
     virtual void UpdateaDistance();
+    virtual void initial(const Transaction &trans);
+    virtual bool Continue();
+    virtual void GetPrefetch()=0;
 };
 
 class NextLine_Prefetcher : public Prefetcher {
@@ -145,7 +156,7 @@ public:
     NextLine_Prefetcher(const Config &config) : Prefetcher(config, 0.25, 0.75, 5) {}
     ~NextLine_Prefetcher(){};
     
-    void GetPrefetch();
+    void GetPrefetch() override;
 };
 
 class SPP_Prefetcher : public Prefetcher {
@@ -161,11 +172,13 @@ public:
     uint16_t sig;
     prefetch_info prefetch_delta;
 
-    void GetPrefetch(uint16_t signaure);
+    void GetPrefetch() override;
     //bool IssuePrefetch(const Transaction &trans, Transaction &prefetch_trans) override;
     void updateSTandPT(trans_info info);
     trans_info get_info(const Transaction &trans);
     void UpdateaDistance() override;
+    void initial(const Transaction &trans) override;
+    bool Continue() override;
 };
 
 }
