@@ -40,14 +40,13 @@ struct PrefetchEntry{
 
 class Prefetch_Buffer {
 private:
-    std::list<PrefetchEntry*> l; // 双向链表
-    std::unordered_map<uint64_t, std::list<PrefetchEntry*>::iterator> m; // 哈希表
+    std::list<PrefetchEntry*> l;
+    std::unordered_map<uint64_t, std::list<PrefetchEntry*>::iterator> m;
     int capacity;
 
 public:
-    Prefetch_Buffer(int capacity) { // 构造函数
+    Prefetch_Buffer(int capacity) {
         this->capacity = capacity;
-        //l.push_back(new PrefetchEntry()); // 初始化空列表
     }
 
     void set(uint64_t addr, Prefetch_Filter PF);
@@ -96,13 +95,67 @@ struct prefetch_info{
 };
 
 class Pattern_Table {
-private:
-    std::unordered_map<uint16_t,PT_entry>PatternTable;
-
 public:
+    std::unordered_map<uint16_t,PT_entry>PatternTable;
     void update(uint16_t index, int delta);
+    void updatesig(uint16_t index);
     prefetch_info prefetch_delta(uint16_t signature);
 
+};
+
+struct History_Table_entry {
+    uint16_t tag;
+    uint64_t addr;
+    History_Table_entry* next;
+    History_Table_entry () = default;
+    History_Table_entry (uint16_t tag, uint64_t addr) : tag(tag), addr(addr), next(nullptr) {}
+};
+
+class History_Table {
+public:
+    History_Table(int group, int way);
+    History_Table_entry** HistoryTable;
+    int way;
+    int group;
+    int count[8];
+    int64_t *delta;
+    void update_historytable(uint16_t tag, uint64_t addr);
+    void get_delta(uint16_t tag, uint64_t addr);
+};
+
+class Delta_Table :public Pattern_Table{
+public:
+    std::vector<int> prefetch_delta;
+    void update_coverage();
+    void get_delta(uint16_t tag);
+    void update_capacity(int distance);
+};
+
+class Time_Table {
+public:
+    std::unordered_map<uint64_t, uint64_t> TimeTable;
+    int capacity = 16;
+
+    void update(Transaction &trans);
+};
+
+struct timestamp {
+    double arrival_latency;
+    double fetch_latency;
+    int num_arrival;
+    int num_fetch;
+};
+
+class Latency_Table {
+private:
+    std::unordered_map<int, timestamp> LatencyTable;
+    Time_Table TT;
+    timestamp time;
+
+public:
+    void update_arrival(Transaction &trans);
+    void update_fetch(Transaction &trans);
+    bool Istimely(const Transaction &trans, Transaction &prefetch_trans);
 };
 
 class Prefetcher
@@ -116,7 +169,7 @@ public:
     epoch_total(0),
     epoch_hit(0),
     i(0),
-    PrefetchBuffer(32),
+    PrefetchBuffer(64),
     config_(config),
     Tl(Tl),
     Th(Th),
@@ -138,6 +191,7 @@ public:
     Transaction prefetch_trans;
     Prefetch_Buffer PrefetchBuffer;
     Prefetch_Filter PF;
+    Latency_Table LT;
     const Config &config_;
 
     virtual void W_ivicte(uint64_t addr);
@@ -148,7 +202,8 @@ public:
     virtual void UpdateaDistance();
     virtual void initial(const Transaction &trans);
     virtual bool Continue();
-    virtual void GetPrefetch()=0;
+    virtual Transaction GetPrefetch()=0;
+    trans_info get_info(const Transaction &trans);
 };
 
 class NextLine_Prefetcher : public Prefetcher {
@@ -156,7 +211,7 @@ public:
     NextLine_Prefetcher(const Config &config) : Prefetcher(config, 0.25, 0.75, 5) {}
     ~NextLine_Prefetcher(){};
     
-    void GetPrefetch() override;
+    Transaction GetPrefetch() override;
 };
 
 class SPP_Prefetcher : public Prefetcher {
@@ -172,13 +227,28 @@ public:
     uint16_t sig;
     prefetch_info prefetch_delta;
 
-    void GetPrefetch() override;
+    Transaction GetPrefetch() override;
     //bool IssuePrefetch(const Transaction &trans, Transaction &prefetch_trans) override;
     void updateSTandPT(trans_info info);
-    trans_info get_info(const Transaction &trans);
     void UpdateaDistance() override;
     void initial(const Transaction &trans) override;
+    int get_tag(uint64_t addr);
     bool Continue() override;
 };
 
+class Delta_Prefetcher : public Prefetcher {
+public:
+    Delta_Prefetcher(const Config &config) : Prefetcher(config, 0.25, 0.75, 8), HT(History_Table(8, 16)){}
+    ~Delta_Prefetcher(){};
+
+    uint16_t tag;
+    Delta_Table DT;
+    History_Table HT;
+
+    void initial(const Transaction &trans) override;
+    uint16_t get_tag(uint64_t addr);
+    void update(uint16_t tag, uint64_t addr);
+    Transaction GetPrefetch() override;
+    void UpdateaDistance() override;
+};
 }
