@@ -112,7 +112,7 @@ struct Transaction {
           added_cycle(0),
           complete_cycle(0),
           is_write(is_write) {}
-    Transaction(const Transaction& tran, bool IsPrefetch)
+    Transaction(const Transaction& tran, int IsPrefetch)
         : addr(tran.addr),
           added_cycle(tran.added_cycle),
           complete_cycle(tran.complete_cycle),
@@ -122,7 +122,7 @@ struct Transaction {
     uint64_t added_cycle;
     uint64_t complete_cycle;
     bool is_write;
-    bool IsPrefetch;
+    int IsPrefetch;
 
     friend std::ostream& operator<<(std::ostream& os, const Transaction& trans);
     friend std::istream& operator>>(std::istream& is, Transaction& trans);

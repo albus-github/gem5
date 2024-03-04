@@ -101,6 +101,8 @@ void Controller::ClockTick() {
             case CommandType::PRECHARGE: cmd_type = "PRECHARGE"; break;
             case CommandType::READ: cmd_type = "READ"; break;
             case CommandType::WRITE: cmd_type = "WRITE"; break;
+            case CommandType::READ_PRECHARGE: cmd_type = "READ_PRECHARGE"; break;
+            case CommandType::WRITE_PRECHARGE: cmd_type = "WRITE_PRECHARGE"; break;
             default: cmd_type = " ";
         }
         std::stringstream issue_info;
@@ -203,7 +205,7 @@ bool Controller::WillAcceptTransaction(uint64_t hex_addr, bool is_write) const {
 }
 
 bool Controller::AddTransaction(Transaction trans) {
-    trans.IsPrefetch = false;
+    trans.IsPrefetch = 0;
     trans.added_cycle = clk_;
     simple_stats_.AddValue("interarrival_latency", clk_ - last_trans_clk_);
     last_trans_clk_ = clk_;
@@ -264,8 +266,9 @@ bool Controller::AddTransaction(Transaction trans) {
             prefetcher.initial(trans);
             while (prefetcher.Continue()){
                 Transaction prefetch = prefetcher.GetPrefetch();
+                Address prefetch_addr = config_.AddressMapping(prefetch.addr);
                 prefetcher.i ++;
-                if (prefetcher.IssuePrefetch(trans, prefetch) && read_queue_.size() < read_queue_.capacity() - 1){
+                if (prefetcher.IssuePrefetch(trans, prefetch) && read_queue_.size() < read_queue_.capacity() - 1 && channel_state_.OpenRow(prefetch_addr.rank, prefetch_addr.bankgroup, prefetch_addr.bank) == prefetch_addr.row){
                     std::stringstream p_trans_info;
                     p_trans_info<<"Cycle: "<<clk_<<", "<<"Prefetch_Trans: "<<"Addr: "<<prefetch.addr<<'\n';
                     std::string p_trans_infostr = p_trans_info.str();
@@ -404,6 +407,8 @@ Command Controller::TransToCommand(const Transaction &trans) {
         cmd_type = trans.is_write ? CommandType::WRITE_PRECHARGE
                                   : CommandType::READ_PRECHARGE;
     }
+    if (trans.IsPrefetch == 2)
+        cmd_type = CommandType::READ_PRECHARGE;
     return Command(cmd_type, addr, trans.addr, IsPrefetch);
 }
 

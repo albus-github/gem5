@@ -1,4 +1,5 @@
 #include "prefetcher.h"
+#include "command_queue.h"
 
 namespace dramsim3 {
 
@@ -195,8 +196,12 @@ bool Prefetcher::PrefetchHit(uint64_t addr){
 bool Prefetcher::IssuePrefetch(const Transaction &trans, Transaction &prefetch_trans){
     Address trans_addr = config_.AddressMapping(trans.addr);
     Address prefetch_addr = config_.AddressMapping(prefetch_trans.addr);
-    if (trans_addr.bank == prefetch_addr.bank && trans_addr.row == prefetch_addr.row && trans_addr.bankgroup == prefetch_addr.bankgroup && trans.addr != prefetch_trans.addr){
+    Address next_addr = config_.AddressMapping(prefetch_trans.addr + 64);
+    if (trans_addr.row == prefetch_addr.row && trans.addr != prefetch_trans.addr || trans_addr.bank != prefetch_addr.bank || trans_addr.bankgroup != prefetch_addr.bankgroup){
         if (PF.PrefetchFilter.find(prefetch_trans.addr) == PF.PrefetchFilter.end() /*&& LT.Istimely(trans, prefetch_trans)*/){
+            /*if (prefetch_addr.row != next_addr.row || prefetch_addr.bank != next_addr.bank || prefetch_addr.bankgroup != next_addr.bankgroup){
+                prefetch_trans.IsPrefetch = 2;
+            }*/
             return true;
         }
     }
@@ -256,7 +261,7 @@ bool Prefetcher::Continue(){
 //Get the Perfetch command
 Transaction NextLine_Prefetcher::GetPrefetch(){
     prefetch_trans.addr += 64;
-    prefetch_trans.IsPrefetch = true;
+    prefetch_trans.IsPrefetch = 1;
     prefetch_trans.is_write = false;
     return prefetch_trans;
 }
@@ -525,7 +530,7 @@ void SPP_Prefetcher::updateSTandPT(trans_info info){
 Transaction SPP_Prefetcher::GetPrefetch(){
     prefetch_delta = PT.prefetch_delta(sig);
     prefetch_trans.addr = prefetch_trans.addr + 64 * prefetch_delta.delta;
-    prefetch_trans.IsPrefetch = true;
+    prefetch_trans.IsPrefetch = 1;
     prefetch_trans.is_write = false;
     P = a * P * prefetch_delta.p;
     sig = ST.newsignature(sig, prefetch_delta.delta);
@@ -592,7 +597,7 @@ void Delta_Prefetcher::update(uint16_t tag, uint64_t addr){
 Transaction Delta_Prefetcher::GetPrefetch(){
     Transaction prefetch;
     prefetch.addr = prefetch_trans.addr + DT.prefetch_delta[i];
-    prefetch.IsPrefetch = true;
+    prefetch.IsPrefetch = 1;
     prefetch.is_write = false;
     return prefetch;
 }
