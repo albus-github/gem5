@@ -51,6 +51,7 @@ from m5.params import NULL
 from m5.util import addToPath, fatal, warn
 from gem5.isas import ISA
 from gem5.runtime import get_runtime_isa
+from m5.objects import DRAMsim3
 
 addToPath("../../")
 
@@ -280,7 +281,11 @@ else:
     system.membus = SystemXBar()
     system.system_port = system.membus.cpu_side_ports
     CacheConfig.config_cache(args, system)
-    MemConfig.config_mem(args, system)
+    if args.mem_type == "DRAMsim3":
+        system.mem_ctrl = DRAMsim3()
+        system.mem_ctrl.port = system.membus.mem_side_ports
+    else:
+        MemConfig.config_mem(args, system)
     config_filesystem(system, args)
 
 system.workload = SEWorkload.init_compatible(mp0_path)

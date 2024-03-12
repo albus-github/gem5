@@ -37,7 +37,7 @@ def config_ds3(mem_type: str, num_chnls: int) -> Tuple[str, str]:
         "DRAMsim3",
     )
     """
-    dramsim_3_dir = "/home/albus/gem5/ext/dramsim3/DRAMsim3";
+    dramsim_3_dir = "/home/albus/gem5/ext/dramsim3/DRAMsim3"
 
     dramsim_3_mem_configs = os.path.join(dramsim_3_dir, "configs")
 
