@@ -2,6 +2,59 @@ import os
 import sh
 from os.path import join as pjoin
 
+benchmark_code = {
+    'perlbench_r': '500.perlbench_r',
+    'gcc_r': '502.gcc_r',
+    'bwaves_r': '503.bwaves_r',
+    'mcf_r': '505.mcf_r',
+    'cactuBSSN_r': '507.cactuBSSN_r',
+    'namd_r': '508.namd_r',
+    'parest_r': '510.parest_r',
+    'povray_r': '511.povray_r',
+    'lbm_r': '519.lbm_r',
+    'omnetpp_r': '520.omnetpp_r',
+    'wrf_r': '521.wrf_r',
+    'xalancbmk_r': '523.xalancbmk_r',
+    'x264_r': '525.x264_r',
+    'blender_r': '526.blender_r',
+    'cam4_r': '527.cam4_r',
+    'deepsjeng_r': '531.deepsjeng_r',
+    'imagick_r': '538.imagick_r',
+    'leela_r': '541.leela_r',
+    'nab_r': '544.nab_r',
+    'exchange2_r': '548.exchange2_r',
+    'fotonik3d_r': '549.fotonik3d_r',
+    'roms_r': '554.roms_r',
+    'xz_r': '557.xz_r',
+    'perlbench_s': '600.perlbench_s',
+    'gcc_s': '602.gcc_s',
+    'bwaves_s': '603.bwaves_s',
+    'mcf_s': '605.mcf_s',
+    'cactuBSSN_s': '607.cactuBSSN_s',
+    'lbm_s': '619.lbm_s',
+    'omnetpp_s': '620.omnetpp_s',
+    'wrf_s': '621.wrf_s',
+    'xalancbmk_s': '623.xalancbmk_s',
+    'x264_s': '625.x264_s',
+    'cam4_s': '627.cam4_s',
+    'pop2_s': '628.pop2_s',
+    'deepsjeng_s': '631.deepsjeng_s',
+    'imagick_s': '638.imagick_s',
+    'leela_s': '641.leela_s',
+    'nab_s': '644.nab_s',
+    'exchange2_s': '648.exchange2_s',
+    'fotonik3d_s': '649.fotonik3d_s',
+    'roms_s': '654.roms_s',
+    'xz_s': '657.xz_s',
+    'specrand_fr': '997.specrand_fr',
+    'specrand_ir': '999.specrand_ir',
+}
+
+def run_dir(benchmark):
+    if benchmark[-1] == "r":
+        return '/home/albus/spec2017/benchspec/CPU/'+benchmark_code[benchmark]+'/run/run_base_refrate_mytest-m64.0000/'
+    if benchmark[-1] == "s":
+        return '/home/albus/spec2017/benchspec/CPU/'+benchmark_code[benchmark]+'/run/run_base_refspeed_mytest-m64.0000/'
 
 def avoid_repeated(func, outdir, binary=None, *args, **kwargs):
     func_name = func.__name__
@@ -62,7 +115,7 @@ def gem5_exec(spec_version = '2006'):
     if spec_version == '2006':
         return os.environ['gem5_run_dir']
     elif spec_version == '2017':
-        return os.environ['spec2017_run_dir']
+        return '/home/albus/spec2017/benchspec/CPU'
     return None
 
 def gem5_cpt_dir(arch, version=2006):

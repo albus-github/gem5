@@ -35,8 +35,8 @@ def simpoint_profile(benchmark, dont_care, outdir_b):
                     benchmark))
                 return
 
-    '''exec_dir = pjoin(c.gem5_exec('2017'), benchmark)
-    os.chdir(exec_dir)'''
+    exec_dir = c.run_dir(benchmark)
+    os.chdir(exec_dir)
 
     options = [
             '--outdir=' + outdir,
@@ -46,6 +46,7 @@ def simpoint_profile(benchmark, dont_care, outdir_b):
             '--benchmark_stdout={}/out'.format(outdir),
             '--benchmark_stderr={}/err'.format(outdir),
             '--cpu-type=NonCachingSimpleCPU',
+            '--mem-size=16GB'
             '--simpoint-profile',
             '--simpoint-interval={}'.format(100000000),
             '-I {}'.format(1200*10**9),
