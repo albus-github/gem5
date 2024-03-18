@@ -46,7 +46,7 @@ def simpoint_profile(benchmark, dont_care, outdir_b):
             '--benchmark_stdout={}/out'.format(outdir),
             '--benchmark_stderr={}/err'.format(outdir),
             '--cpu-type=NonCachingSimpleCPU',
-            '--mem-size=16GB',
+            '--mem-size=8GB',
             '--simpoint-profile',
             '--simpoint-interval={}'.format(100000000),
             '-I {}'.format(1200*10**9),
