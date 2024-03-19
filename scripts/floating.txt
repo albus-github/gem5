@@ -1,0 +1,14 @@
+bwaves_r
+cactuBSSN_r
+namd_r
+parest_r
+povray_r
+lbm_r
+wrf_r
+blender_r
+cam4_r
+imagick_r
+nab_r
+fotonik3d_r
+roms_r
+specrand_fr
