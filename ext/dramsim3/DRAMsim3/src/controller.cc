@@ -20,7 +20,7 @@ Controller::Controller(int channel, const Config &config, const Timing &timing) 
       cmd_queue_(channel_id_, config, channel_state_, simple_stats_),
       refresh_(config, channel_state_),
       is_rw_denp_(false),
-      prefetch_on(true),
+      prefetch_on(false),
       prefetcher(config),
 #ifdef THERMAL
       thermal_calc_(thermal_calc),
