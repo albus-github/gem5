@@ -24,31 +24,29 @@ assert outdir != 'deadbeaf'
 
 def take_cpt_for_benchmark(benchmark, simpoint_file, weight_file, outdir_b):
 
-    gem5_dir = c.gem5_home()
+    gem5_dir = '/home/albus/gem5'
 
     interval = 200*10**6
     warmup = 20*10**6
 
-    exec_dir = pjoin(c.gem5_exec('2017'), benchmark)
+    exec_dir = c.run_dir(benchmark)
     os.chdir(exec_dir)
 
     options = [
             '--outdir=' + outdir_b,
-            pjoin(gem5_dir, 'configs/spec2017/se_spec17.py'),
+            pjoin(gem5_dir, 'configs/spec_2017/se_spec2017.py'),
             '-b',
             '{}'.format(benchmark),
-            '--benchmark-stdout={}/out'.format(outdir_b),
-            '--benchmark-stderr={}/err'.format(outdir_b),
+            '--benchmark_stdout={}/out'.format(outdir_b),
+            '--benchmark_stderr={}/err'.format(outdir_b),
             '--cpu-type=AtomicSimpleCPU',
             '--mem-type=SimpleMemory',
             '--mem-size=8GB',
             '--take-simpoint-checkpoint={},{},{},{}'.format(
-                simpoint_file, weight_file, interval, warmup),
-            '--arch=X86',
-            '--spec-size=ref',
+                simpoint_file, weight_file, interval, warmup)
             ]
     print(options)
-    gem5 = sh.Command(pjoin(c.gem5_build('X86'), 'gem5.fast'))
+    gem5 = sh.Command('/home/albus/gem5/build/X86/gem5.fast')
     # sys.exit(0)
     gem5(
             _out=pjoin(outdir_b, 'gem5_out.txt'),
