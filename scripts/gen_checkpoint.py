@@ -42,14 +42,14 @@ def take_cpt_for_benchmark(benchmark, simpoint_file, weight_file, outdir_b):
             '--benchmark-stderr={}/err'.format(outdir_b),
             '--cpu-type=AtomicSimpleCPU',
             '--mem-type=SimpleMemory',
-            '--mem-size=16GB',
+            '--mem-size=8GB',
             '--take-simpoint-checkpoint={},{},{},{}'.format(
                 simpoint_file, weight_file, interval, warmup),
-            '--arch=RISCV',
+            '--arch=X86',
             '--spec-size=ref',
             ]
     print(options)
-    gem5 = sh.Command(pjoin(c.gem5_build('RISCV'), 'gem5.opt'))
+    gem5 = sh.Command(pjoin(c.gem5_build('X86'), 'gem5.fast'))
     # sys.exit(0)
     gem5(
             _out=pjoin(outdir_b, 'gem5_out.txt'),
