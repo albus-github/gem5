@@ -35,7 +35,6 @@ def take_cpt_for_benchmark(benchmark, simpoint_file, weight_file, outdir_b):
     options = [
             '--outdir=' + outdir_b,
             pjoin(gem5_dir, 'configs/spec2017/se_spec17.py'),
-            '--spec-2017-bench',
             '-b',
             '{}'.format(benchmark),
             '--benchmark-stdout={}/out'.format(outdir_b),
