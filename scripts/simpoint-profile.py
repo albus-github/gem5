@@ -43,13 +43,13 @@ def simpoint_profile(benchmark, dont_care, outdir_b):
             pjoin(gem5_dir, 'configs/spec_2017/se_spec2017.py'),
             '-b',
             '{}'.format(benchmark),
-            '--maxinsts=100000000000',
+            '--maxinsts=1000000000',
             '--benchmark_stdout={}/out'.format(outdir),
             '--benchmark_stderr={}/err'.format(outdir),
             '--cpu-type=NonCachingSimpleCPU',
             '--mem-size=8GB',
             '--simpoint-profile',
-            '--simpoint-interval={}'.format(100000000),
+            '--simpoint-interval={}'.format(10000000),
             ]
     print(options)
     gem5 = sh.Command('/home/albus/gem5/build/X86/gem5.fast')
