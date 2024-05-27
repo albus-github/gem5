@@ -26,7 +26,7 @@ def take_cpt_for_benchmark(benchmark, simpoint_file, weight_file, outdir_b):
 
     gem5_dir = '/home/albus/gem5'
 
-    interval = 200*10**6
+    interval = 100*10**6
     warmup = 20*10**6
 
     exec_dir = c.run_dir(benchmark)
@@ -37,6 +37,7 @@ def take_cpt_for_benchmark(benchmark, simpoint_file, weight_file, outdir_b):
             pjoin(gem5_dir, 'configs/spec_2017/se_spec2017.py'),
             '-b',
             '{}'.format(benchmark),
+            '--maxinsts=100000000000',
             '--benchmark_stdout={}/out'.format(outdir_b),
             '--benchmark_stderr={}/err'.format(outdir_b),
             '--cpu-type=AtomicSimpleCPU',
