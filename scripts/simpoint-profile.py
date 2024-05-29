@@ -43,7 +43,7 @@ def simpoint_profile(benchmark, dont_care, outdir_b):
             pjoin(gem5_dir, 'configs/spec_2017/se_spec2017.py'),
             '-b',
             '{}'.format(benchmark),
-            '--maxinsts=1000000000',
+            '--maxinsts=10000000000',
             '--benchmark_stdout={}/out'.format(outdir),
             '--benchmark_stderr={}/err'.format(outdir),
             '--cpu-type=NonCachingSimpleCPU',

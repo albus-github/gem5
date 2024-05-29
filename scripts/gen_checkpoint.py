@@ -8,6 +8,7 @@ import sh
 import time
 from os.path import join as pjoin
 from os.path import expanduser as uexp
+import argparse
 from multiprocessing import Pool
 import common as c
 
@@ -37,7 +38,7 @@ def take_cpt_for_benchmark(benchmark, simpoint_file, weight_file, outdir_b):
             pjoin(gem5_dir, 'configs/spec_2017/se_spec2017.py'),
             '-b',
             '{}'.format(benchmark),
-            '--maxinsts=1000000000',
+            '--maxinsts=10000000000',
             '--benchmark_stdout={}/out'.format(outdir_b),
             '--benchmark_stderr={}/err'.format(outdir_b),
             '--cpu-type=AtomicSimpleCPU',
@@ -61,7 +62,7 @@ def run(benchmark):
     if not os.path.isdir(outdir_b):
         os.makedirs(outdir_b)
 
-    simpoint_dir_b = pjoin('/home/albus/gem5-results/spec17simpoints/', benchmark)
+    simpoint_dir_b = pjoin('/home/albus/gem5-results/spec2017_simpoint_simpoints/', benchmark)
 
     simpoint_file = pjoin(simpoint_dir_b, 'simpoints')
     weight_file = pjoin(simpoint_dir_b, 'weights')
@@ -79,14 +80,18 @@ def run(benchmark):
 
 
 def main():
+    parser = argparse.ArgumentParser(description='Simulate SPEC 2017 benchmarks and generate checkpoints.')
+    parser.add_argument('benchmarks', nargs='*', help='List of benchmarks to simulate')
+    args = parser.parse_args()
+
+    if args.benchmarks:
+        benchmarks = args.benchmarks
+    else:
+        benchmarks_file = './integer.txt'
+        with open(benchmarks_file) as f:
+            benchmarks = [line.strip() for line in f]
+
     num_thread = 22
-
-    benchmarks = []
-
-    with open('./integer.txt') as f:
-        for line in f:
-            benchmarks.append(line.strip())
-
     if num_thread > 1:
         p = Pool(num_thread)
         p.map(run, benchmarks)
