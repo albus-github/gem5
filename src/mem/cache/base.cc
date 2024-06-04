@@ -192,8 +192,10 @@ BaseCache::regenerateBlkAddr(CacheBlk* blk)
 void
 BaseCache::init()
 {
-    if (!cpuSidePort.isConnected() || !memSidePort.isConnected())
-        fatal("Cache ports on %s are not connected\n", name());
+    if (!cpuSidePort.isConnected())
+        fatal("Cache cpu_side ports on %s are not connected\n", name());
+    if (!memSidePort.isConnected())
+        fatal("Cache mem_side_ports on %s are not connected\n", name());
     cpuSidePort.sendRangeChange();
     forwardSnoops = cpuSidePort.isSnooping();
 }

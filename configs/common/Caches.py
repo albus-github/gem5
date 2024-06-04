@@ -70,13 +70,21 @@ class L1_DCache(L1Cache):
 
 class L2Cache(Cache):
     assoc = 8
-    tag_latency = 20
-    data_latency = 20
-    response_latency = 20
+    tag_latency = 10
+    data_latency = 10
+    response_latency = 10
     mshrs = 20
     tgts_per_mshr = 12
     write_buffers = 8
 
+class L3Cache(Cache):
+    assoc = 16
+    tag_latency = 20
+    data_latency = 20
+    response_latency = 20
+    mshrs = 64
+    tgts_per_mshr = 20
+    write_buffers = 32
 
 class IOCache(Cache):
     assoc = 8

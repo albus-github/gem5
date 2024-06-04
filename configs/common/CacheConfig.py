@@ -110,10 +110,11 @@ def config_cache(options, system):
             None,
         )
     else:
-        dcache_class, icache_class, l2_cache_class, walk_cache_class = (
+        dcache_class, icache_class, l2_cache_class, l3_cache_class, walk_cache_class = (
             L1_DCache,
             L1_ICache,
             L2Cache,
+            L3Cache,
             None,
         )
 
@@ -127,20 +128,28 @@ def config_cache(options, system):
     # minimal so that compute delays do not include memory access latencies.
     # Configure the compulsory L1 caches for the O3CPU, do not configure
     # any more caches.
-    if options.l2cache and options.elastic_trace_en:
-        fatal("When elastic trace is enabled, do not configure L2 caches.")
+    # if options.l2cache and options.elastic_trace_en:
+    #     fatal("When elastic trace is enabled, do not configure L2 caches.")
 
-    if options.l2cache:
-        # Provide a clock for the L2 and the L1-to-L2 bus here as they
-        # are not connected using addTwoLevelCacheHierarchy. Use the
-        # same clock as the CPUs.
-        system.l2 = l2_cache_class(
-            clk_domain=system.cpu_clk_domain, **_get_cache_opts("l2", options)
+    # if options.l2cache:
+    #     # Provide a clock for the L2 and the L1-to-L2 bus here as they
+    #     # are not connected using addTwoLevelCacheHierarchy. Use the
+    #     # same clock as the CPUs.
+    #     system.l2 = l2_cache_class(
+    #         clk_domain=system.cpu_clk_domain, **_get_cache_opts("l2", options)
+    #     )
+
+    #     system.tol2bus = L2XBar(clk_domain=system.cpu_clk_domain)
+    #     system.l2.cpu_side = system.tol2bus.mem_side_ports
+    #     system.l2.mem_side = system.membus.cpu_side_ports
+
+    if options.l3cache:
+        system.l3 = l3_cache_class(
+            clk_domain=system.cpu_clk_domain, **_get_cache_opts("l3", options)
         )
-
-        system.tol2bus = L2XBar(clk_domain=system.cpu_clk_domain)
-        system.l2.cpu_side = system.tol2bus.mem_side_ports
-        system.l2.mem_side = system.membus.cpu_side_ports
+        system.tol3bus = L3XBar(clk_domain=system.cpu_clk_domain)
+        system.l3.cpu_side = system.tol3bus.mem_side_ports
+        system.l3.mem_side = system.membus.cpu_side_ports
 
     if options.memchecker:
         system.memchecker = MemChecker()
@@ -206,18 +215,44 @@ def config_cache(options, system):
                 )
 
         system.cpu[i].createInterruptController()
+        # if options.l2cache:
+        #     system.cpu[i].connectAllPorts(
+        #         system.tol2bus.cpu_side_ports,
+        #         system.membus.cpu_side_ports,
+        #         system.membus.mem_side_ports,
+        #     )
+        # elif options.external_memory_system:
+        #     system.cpu[i].connectUncachedPorts(
+        #         system.membus.cpu_side_ports, system.membus.mem_side_ports
+        #     )
+        # else:
+        #     system.cpu[i].connectBus(system.membus)
+
         if options.l2cache:
+            system.cpu[i].l2=l2_cache_class(clk_domain=system.cpu_clk_domain,
+                                          size=options.l2_size,
+                                          assoc=options.l2_assoc)
+
+            system.cpu[i].tol2bus = L2XBar(clk_domain=system.cpu_clk_domain)
+            system.cpu[i].l2.cpu_side = system.cpu[i].tol2bus.mem_side_ports
             system.cpu[i].connectAllPorts(
-                system.tol2bus.cpu_side_ports,
+                system.cpu[i].tol2bus.cpu_side_ports,
                 system.membus.cpu_side_ports,
                 system.membus.mem_side_ports,
             )
+
+        if options.l3cache:
+            system.cpu[i].l2.mem_side = system.tol3bus.cpu_side_ports
+            
         elif options.external_memory_system:
             system.cpu[i].connectUncachedPorts(
                 system.membus.cpu_side_ports, system.membus.mem_side_ports
             )
+        elif options.l2cache:
+            system.cpu[i].l2.mem_side = system.membus.cpu_side_ports
         else:
             system.cpu[i].connectBus(system.membus)
+
 
     return system
 
