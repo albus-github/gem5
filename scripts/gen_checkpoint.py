@@ -42,7 +42,7 @@ def take_cpt_for_benchmark(benchmark, simpoint_file, weight_file, outdir_b):
             '--benchmark_stdout={}/out'.format(outdir_b),
             '--benchmark_stderr={}/err'.format(outdir_b),
             '--cpu-type=AtomicSimpleCPU',
-            '--mem-type=SimpleMemory',
+            '--mem-type=DRAMsim3',
             '--mem-size=8GB',
             '--take-simpoint-checkpoint={},{},{},{}'.format(
                 simpoint_file, weight_file, interval, warmup)

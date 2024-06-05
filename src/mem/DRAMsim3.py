@@ -48,7 +48,7 @@ class DRAMsim3(AbstractMemory):
     )
 
     configFile = Param.String(
-        "ext/dramsim3/DRAMsim3/configs/DDR4_8Gb_x8_2400.ini",
+        "/home/albus/gem5/ext/dramsim3/DRAMsim3/configs/DDR4_8Gb_x8_2400.ini",
         "The configuration file to use with DRAMSim3",
     )
     filePath = Param.String(

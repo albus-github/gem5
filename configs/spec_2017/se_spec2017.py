@@ -452,6 +452,7 @@ else:
     if args.mem_type == "DRAMsim3":
         system.mem_ctrl = DRAMsim3()
         system.mem_ctrl.port = system.membus.mem_side_ports
+        system.mem_ctrl.filePath = m5.options.outdir
     else:
         MemConfig.config_mem(args, system)
     config_filesystem(system, args)
