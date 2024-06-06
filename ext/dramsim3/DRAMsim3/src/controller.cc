@@ -186,7 +186,7 @@ void Controller::ClockTick() {
         prefetcher.UpdateaDistance();
     }
     if (clk_ % 1000000 == 0 && clk_ != 0){
-        std::cout<<"The program is running!    Prefetch_on: "<<prefetch_on<<"    Sim_Cycle: "<<clk_<<std::endl;
+        std::cout<<"The program is running!    Prefetch_on: "<<prefetch_on<<"    Sim_Cycle: "<<clk_<<"    [DRAMsim3]"<<std::endl;
     }
     clk_++;
     cmd_queue_.ClockTick();
@@ -531,7 +531,8 @@ bool Controller::WaitPrefetch(Transaction &trans){
 }
 
 void Controller::TraceFile(const std::string& content){
-    std::string filename = "trace_output.txt"; // 固定的文件名
+    std::string filename = config_.output_dir + "trace_output.txt"; // 固定的文件名
+    std::cout<<filename<<std::endl;
     std::ofstream file(filename, std::ios::app);
     if (file.is_open()) {
         file << content;
