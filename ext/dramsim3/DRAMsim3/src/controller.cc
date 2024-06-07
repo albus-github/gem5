@@ -532,7 +532,6 @@ bool Controller::WaitPrefetch(Transaction &trans){
 
 void Controller::TraceFile(const std::string& content){
     std::string filename = config_.output_dir + "trace_output.txt"; // 固定的文件名
-    std::cout<<filename<<std::endl;
     std::ofstream file(filename, std::ios::app);
     if (file.is_open()) {
         file << content;
