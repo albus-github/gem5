@@ -52,6 +52,7 @@ class Controller {
     bool is_rw_denp_;
 
     bool prefetch_on;
+    bool trace_output;
     //NextLine_Prefetcher prefetcher;
     //SPP_Prefetcher prefetcher;
     Delta_Prefetcher prefetcher;

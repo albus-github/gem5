@@ -24,7 +24,7 @@ def run_scripts(benchmark):
     for script, args in scripts_with_args:
         try:
             # 使用subprocess.run来执行脚本，并传递参数
-            result = subprocess.run(['python', script] + args, check=True)
+            result = subprocess.run(['python3', script] + args, check=True)
             print(f"{script} executed successfully with return code {result.returncode}")
         except subprocess.CalledProcessError as e:
             print(f"Error occurred while executing {script}: {e}")

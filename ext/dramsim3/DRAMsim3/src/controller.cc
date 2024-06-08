@@ -21,6 +21,7 @@ Controller::Controller(int channel, const Config &config, const Timing &timing) 
       refresh_(config, channel_state_),
       is_rw_denp_(false),
       prefetch_on(false),
+      trace_output(false),
       prefetcher(config),
 #ifdef THERMAL
       thermal_calc_(thermal_calc),
@@ -532,13 +533,17 @@ bool Controller::WaitPrefetch(Transaction &trans){
 
 void Controller::TraceFile(const std::string& content){
     std::string filename = config_.output_dir + "trace_output.txt"; // 固定的文件名
-    std::ofstream file(filename, std::ios::app);
-    if (file.is_open()) {
-        file << content;
-        file.close();
-    } else {
-        std::cout << "无法打开文件！" << std::endl;
-    }
+    if (trace_output){
+        std::ofstream file(filename, std::ios::app);
+        if (file.is_open()) {
+            file << content;
+            file.close();
+        } else {
+            std::cout << "无法打开文件！" << std::endl;
+        }
+    } else
+        return ;
+    
 }
 
 }  // namespace dramsim3

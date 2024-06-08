@@ -102,6 +102,7 @@ def run(args):
 def main():
     parser = argparse.ArgumentParser(description='Simulate SPEC 2017 benchmarks and generate checkpoints.')
     parser.add_argument('benchmark', nargs='+', help='List of benchmarks to simulate')
+    parser.add_argument('-r', type=int, help='Specific checkpoint index to restore')
     args = parser.parse_args()
 
     for benchmark in args.benchmark:
@@ -109,6 +110,10 @@ def main():
         if not os.path.isdir(outdir_b):
             os.makedirs(outdir_b)
 
+
+    if args.r is not None:
+        run((benchmark, args.r - 1, outdir_b))
+    else:
         num_thread = count_ctps(benchmark)
         if num_thread > 1:
             with Pool(num_thread) as pool:
