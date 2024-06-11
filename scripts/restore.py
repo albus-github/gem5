@@ -5,7 +5,7 @@ import sh
 import argparse
 from os.path import join as pjoin
 from os.path import expanduser as uexp
-from multiprocessing import Pool
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import common as c
 from functools import partial
 
@@ -93,11 +93,11 @@ def run(args):
     some_extra_args = None
 
     if prerequisite:
-        print('prerequisite satisified, is going to run gem5 on', benchmark)
+        print('prerequisite satisfied, is going to run gem5 on', benchmark)
         c.avoid_repeated(restore_cpt, restore_dir, None,
                 benchmark, some_extra_args, restore_dir, i)
     else:
-        print('prerequisite not satisified, abort on', benchmark)
+        print('prerequisite not satisfied, abort on', benchmark)
 
 def main():
     parser = argparse.ArgumentParser(description='Simulate SPEC 2017 benchmarks and generate checkpoints.')
@@ -110,16 +110,15 @@ def main():
         if not os.path.isdir(outdir_b):
             os.makedirs(outdir_b)
 
-
-    if args.r is not None:
-        run((benchmark, args.r - 1, outdir_b))
-    else:
-        num_thread = count_ctps(benchmark)
-        if num_thread > 1:
-            with Pool(num_thread) as pool:
-                pool.map(run, [(benchmark, i, outdir_b) for i in range(num_thread)])
+        if args.r is not None:
+            run((benchmark, args.r - 1, outdir_b))
         else:
-            run((benchmark, 0, outdir_b))
+            num_thread = count_ctps(benchmark)
+            if num_thread > 0:
+                with ThreadPoolExecutor(max_workers=8) as executor:
+                    futures = [executor.submit(run, (benchmark, i, outdir_b)) for i in range(num_thread)]
+                    for future in as_completed(futures):
+                        future.result()  # Check for exceptions and wait for thread completion
 
 if __name__ == '__main__':
     main()

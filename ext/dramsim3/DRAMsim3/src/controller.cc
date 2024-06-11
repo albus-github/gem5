@@ -186,9 +186,9 @@ void Controller::ClockTick() {
         TraceFile(epoch_infostr);
         prefetcher.UpdateaDistance();
     }
-    if (clk_ % 1000000 == 0 && clk_ != 0){
-        std::cout<<"The program is running!    Prefetch_on: "<<prefetch_on<<"    Sim_Cycle: "<<clk_<<"    [DRAMsim3]"<<std::endl;
-    }
+    // if (clk_ % 1000000 == 0 && clk_ != 0){
+    //     std::cout<<"The program is running!    Prefetch_on: "<<prefetch_on<<"    Sim_Cycle: "<<clk_<<"    [DRAMsim3]"<<std::endl;
+    // }
     clk_++;
     cmd_queue_.ClockTick();
     simple_stats_.Increment("num_cycles");
