@@ -242,7 +242,14 @@ def config_cache(options, system):
             )
 
         if options.l3cache:
-            system.cpu[i].l2.mem_side = system.tol3bus.cpu_side_ports
+            if options.l2cache:
+                system.cpu[i].l2.mem_side = system.tol3bus.cpu_side_ports
+            else:
+                system.cpu[i].connectAllPorts(
+                system.tol3bus.cpu_side_ports,
+                system.membus.cpu_side_ports,
+                system.membus.mem_side_ports,
+            )
             
         elif options.external_memory_system:
             system.cpu[i].connectUncachedPorts(

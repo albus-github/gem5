@@ -36,6 +36,7 @@ class Controller {
     // Stats output
     void PrintEpochStats();
     void PrintFinalStats();
+    void PrefetchStats();
     void ResetStats() { simple_stats_.Reset(); }
     std::pair<uint64_t, int> ReturnDoneTrans(uint64_t clock);
     bool IsComplete(){return (return_queue_.empty() && pending_rd_q_.empty());}
@@ -53,9 +54,9 @@ class Controller {
 
     bool prefetch_on;
     bool trace_output;
-    //NextLine_Prefetcher prefetcher;
+    NextLine_Prefetcher prefetcher;
     //SPP_Prefetcher prefetcher;
-    Delta_Prefetcher prefetcher;
+    //Delta_Prefetcher prefetcher;
 
 #ifdef THERMAL
     ThermalCalculator &thermal_calc_;

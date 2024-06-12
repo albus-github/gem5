@@ -1,0 +1,3 @@
+deepsjeng_r
+mcf_r
+xz_r

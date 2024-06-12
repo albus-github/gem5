@@ -66,6 +66,7 @@ void BaseDRAMSystem::PrintStats() {
     json_out.close();
     for (size_t i = 0; i < ctrls_.size(); i++) {
         ctrls_[i]->PrintFinalStats();
+        ctrls_[i]->PrefetchStats();
         if (i != ctrls_.size() - 1) {
             std::ofstream chan_out(config_.json_stats_name, std::ofstream::app);
             chan_out << "," << std::endl;

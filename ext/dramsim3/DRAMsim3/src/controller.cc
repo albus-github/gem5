@@ -20,7 +20,7 @@ Controller::Controller(int channel, const Config &config, const Timing &timing) 
       cmd_queue_(channel_id_, config, channel_state_, simple_stats_),
       refresh_(config, channel_state_),
       is_rw_denp_(false),
-      prefetch_on(false),
+      prefetch_on(true),
       trace_output(false),
       prefetcher(config),
 #ifdef THERMAL
@@ -179,16 +179,16 @@ void Controller::ClockTick() {
     }
 
     ScheduleTransaction();
-    if (clk_ % 1000 ==0 && clk_ != 0){
-        std::stringstream epoch_info;
-        epoch_info<<"Cycle: "<<clk_<<", Epoch info: Prefetch total in the epoch: "<<prefetcher.epoch_total<<", Prefetch hit in the epoch: "<<prefetcher.epoch_hit<<'\n';
-        std::string epoch_infostr = epoch_info.str();
-        TraceFile(epoch_infostr);
-        prefetcher.UpdateaDistance();
-    }
-    // if (clk_ % 1000000 == 0 && clk_ != 0){
-    //     std::cout<<"The program is running!    Prefetch_on: "<<prefetch_on<<"    Sim_Cycle: "<<clk_<<"    [DRAMsim3]"<<std::endl;
+
+    //adaptive distance
+    // if (clk_ % 1000 ==0 && clk_ != 0){
+    //     std::stringstream epoch_info;
+    //     epoch_info<<"Cycle: "<<clk_<<", Epoch info: Prefetch total in the epoch: "<<prefetcher.epoch_total<<", Prefetch hit in the epoch: "<<prefetcher.epoch_hit<<'\n';
+    //     std::string epoch_infostr = epoch_info.str();
+    //     TraceFile(epoch_infostr);
+    //     prefetcher.UpdateaDistance();
     // }
+
     clk_++;
     cmd_queue_.ClockTick();
     simple_stats_.Increment("num_cycles");
@@ -263,6 +263,7 @@ bool Controller::AddTransaction(Transaction trans) {
             }
         }
 
+        //prefetcher implement
         if (prefetch_on){
             prefetcher.initial(trans);
             while (prefetcher.Continue()){
@@ -532,7 +533,7 @@ bool Controller::WaitPrefetch(Transaction &trans){
 }
 
 void Controller::TraceFile(const std::string& content){
-    std::string filename = config_.output_dir + "trace_output.txt"; // 固定的文件名
+    std::string filename = config_.output_dir + "trace_output";
     if (trace_output){
         std::ofstream file(filename, std::ios::app);
         if (file.is_open()) {
@@ -543,7 +544,28 @@ void Controller::TraceFile(const std::string& content){
         }
     } else
         return ;
-    
+}
+
+void Controller::PrefetchStats(){
+    std::string filename = config_.output_dir + "prefetch_info";
+    std::ofstream file(filename, std::ios::out);
+    if (file.is_open()) {
+        if (prefetch_on){
+            file <<"Prefetch count:       "<<prefetcher.prefetch_total<<std::endl;
+            file <<"Prefetch hit:         "<<prefetcher.prefetch_hit<<std::endl;
+            if (prefetcher.prefetch_total != 0){
+                file <<"Prefetch accuracy:    "<<double(prefetcher.prefetch_hit) / prefetcher.prefetch_total<<std::endl;
+            } else {
+                file <<"Prefetch accuracy: N/A (prefetch_total is zero)"<<std::endl;
+            }
+            
+        } else {
+            file <<"Simulate without prefetch!"<<std::endl;
+        }
+        file.close();
+    } else {
+        std::cout << "无法打开文件！" << std::endl;
+    }
 }
 
 }  // namespace dramsim3

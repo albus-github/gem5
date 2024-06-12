@@ -197,7 +197,7 @@ public:
     virtual void W_ivicte(uint64_t addr);
     virtual void UpdatePrefetchBuffer(Transaction &trans);
     virtual bool PrefetchHit(uint64_t addr);
-    virtual bool IssuePrefetch(const Transaction &trans, Transaction &prefetch_trans);
+    virtual bool IssuePrefetch(const Transaction &trans, Transaction &prefetch_trans); //prefetch filter
     virtual double Updatea();
     virtual void UpdateaDistance();
     virtual void initial(const Transaction &trans);
@@ -208,7 +208,7 @@ public:
 
 class NextLine_Prefetcher : public Prefetcher {
 public:
-    NextLine_Prefetcher(const Config &config) : Prefetcher(config, 0.25, 0.75, 5) {}
+    NextLine_Prefetcher(const Config &config) : Prefetcher(config, 0.25, 0.75, 1) {}
     ~NextLine_Prefetcher(){};
     
     Transaction GetPrefetch() override;
