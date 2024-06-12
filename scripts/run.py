@@ -7,13 +7,13 @@ script_dir  = '/home/albus/gem5/scripts/'
 task_dir    = '/home/albus/gem5/scripts/' 
 int_task    = task_dir + 'integer.txt'
 float_task  = task_dir + 'floating.txt'
-all_task    = task_dir + 'all_compiled_spec2017.txt'
+all_task    = task_dir + 'run.txt'
 
 def run_scripts(benchmark):
     scripts_with_args = [
         (f'{script_dir}restore.py',  [benchmark]),
-        (f'{script_dir}weight.py',   [benchmark, stats_dir, 'cpi']),
-        (f'{script_dir}weight.py',   [benchmark, stats_dir, 'ipc']),
+        (f'{script_dir}weight.py',   [benchmark, stats_dir, 'system.switch_cpus.cpi']),
+        (f'{script_dir}weight.py',   [benchmark, stats_dir, 'system.switch_cpus.ipc']),
         (f'{script_dir}weight.py',   [benchmark, stats_dir, 'num_reads_done', '--dram']),
         (f'{script_dir}weight.py',   [benchmark, stats_dir, 'num_read_row_hits', '--dram']),
         (f'{script_dir}weight.py',   [benchmark, stats_dir, 'num_read_cmds', '--dram']),

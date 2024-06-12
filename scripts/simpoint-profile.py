@@ -8,6 +8,7 @@ import sh
 import time
 from os.path import join as pjoin
 from os.path import expanduser as uexp
+import argparse
 from multiprocessing import Pool
 import common as c
 
@@ -71,8 +72,6 @@ def run(benchmark):
             benchmark, None, outdir_b)
 
 def main():
-    num_thread = 50
-
     benchmarks = []
 
     cmd_timestamp_file = './ts-simprofile'
@@ -81,12 +80,18 @@ def main():
         cmd_timestamp = os.path.getmtime(cmd_timestamp_file)
         print(cmd_timestamp)
 
+    parser = argparse.ArgumentParser(description='Simulate SPEC 2017 benchmarks and generate checkpoints.')
+    parser.add_argument('benchmarks', nargs='*', help='List of benchmarks to simulate')
+    args = parser.parse_args()
 
-    with open('/home/albus/gem5/scripts/all_compiled_spec2017.txt') as f:
-        for line in f:
-            benchmarks.append(line.strip())
+    if args.benchmarks:
+        benchmarks = args.benchmarks
+    else:
+        with open('/home/albus/gem5/scripts/all_compiled_spec2017.txt') as f:
+            for line in f:
+                benchmarks.append(line.strip())
     # print benchmarks
-
+    num_thread = len(benchmarks)
     if num_thread > 1:
         p = Pool(num_thread)
         p.map(run, benchmarks)

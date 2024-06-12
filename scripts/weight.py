@@ -55,7 +55,6 @@ def read_stats(filename, keyword, is_dram):
                             value = parts[1].split('#')[0].strip()
                             data = float(value)
                             matched_string = parts[0]
-                    break
     except FileNotFoundError:
         print(f"stats file not found: {filename}")
     except ValueError as e:
@@ -82,12 +81,15 @@ def weighted_calculation(simpoints_file, weights_file, benchmark, stats_dir, key
         return 0
     return total_weighted_value / total_weight, matched_strings
 
-def main(benchmark, stats_dir, key_word, dram):
+def main(benchmark, stats_dir, key_word, dram, outdir):
     simpoints = os.path.join(simpoints_dir, benchmark, 'simpoints')
     weights = os.path.join(simpoints_dir, benchmark, 'weights')
     result, matched_strings = weighted_calculation(simpoints, weights, benchmark, stats_dir, key_word, dram)
     
-    out_dir = os.path.join(stats_dir, benchmark, 'results.txt')    
+    if outdir:
+        out_dir = os.path.join(outdir, 'results.txt') 
+    else :
+        out_dir = os.path.join(stats_dir, benchmark, 'results.txt')    
     with open(out_dir, 'a') as file:
         file.write(f'{matched_strings}        {result}\n')
 
@@ -97,7 +99,8 @@ if __name__ == "__main__":
     parser.add_argument('stats_dir', type=str, help='stats 文件目录')
     parser.add_argument('key_word', type=str, help='key_work to caculate')
     parser.add_argument('--dram', action='store_true', help='analyse dramsim3.txt')
+    parser.add_argument('--outdir', type=str, help='output directory')
 
     args = parser.parse_args()
 
-    main(args.benchmark, args.stats_dir, args.key_word, args.dram)
+    main(args.benchmark, args.stats_dir, args.key_word, args.dram, args.outdir)
