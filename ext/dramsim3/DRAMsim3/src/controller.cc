@@ -551,12 +551,12 @@ void Controller::PrefetchStats(){
     std::ofstream file(filename, std::ios::out);
     if (file.is_open()) {
         if (prefetch_on){
-            file <<"Prefetch count:       "<<prefetcher.prefetch_total<<std::endl;
-            file <<"Prefetch hit:         "<<prefetcher.prefetch_hit<<std::endl;
+            file <<"Prefetch_count       "<<prefetcher.prefetch_total<<std::endl;
+            file <<"Prefetch_hit         "<<prefetcher.prefetch_hit<<std::endl;
             if (prefetcher.prefetch_total != 0){
-                file <<"Prefetch accuracy:    "<<double(prefetcher.prefetch_hit) / prefetcher.prefetch_total<<std::endl;
+                file <<"Prefetch_accuracy    "<<double(prefetcher.prefetch_hit) / prefetcher.prefetch_total<<std::endl;
             } else {
-                file <<"Prefetch accuracy: N/A (prefetch_total is zero)"<<std::endl;
+                file <<"Prefetch_accuracy    N/A (prefetch_total is zero)"<<std::endl;
             }
             
         } else {

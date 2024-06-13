@@ -2,14 +2,15 @@ import subprocess
 import argparse
 import os
 
-stats_dir   = '/home/albus/gem5-results/spec2017_simpoint_restore'
-script_dir  = '/home/albus/gem5/scripts/'
-task_dir    = '/home/albus/gem5/scripts/' 
-int_task    = task_dir + 'integer.txt'
-float_task  = task_dir + 'floating.txt'
-all_task    = task_dir + 'run.txt'
+default_stats_dir   = '/home/albus/gem5-results/spec2017_simpoint_restore'
+script_dir          = '/home/albus/gem5/scripts/'
+task_dir            = '/home/albus/gem5/scripts/' 
+int_task            = task_dir + 'integer.txt'
+float_task          = task_dir + 'floating.txt'
+fail_task           = task_dir + 'fail.txt'
+all_task            = task_dir + 'all_compiled_spec2017.txt'
 
-def run_scripts(benchmark):
+def run_scripts(benchmark, stats_dir):
     scripts_with_args = [
         (f'{script_dir}restore.py',  [benchmark]),
         (f'{script_dir}weight.py',   [benchmark, stats_dir, 'system.switch_cpus.cpi']),
@@ -18,7 +19,10 @@ def run_scripts(benchmark):
         (f'{script_dir}weight.py',   [benchmark, stats_dir, 'num_read_row_hits', '--dram']),
         (f'{script_dir}weight.py',   [benchmark, stats_dir, 'num_read_cmds', '--dram']),
         (f'{script_dir}weight.py',   [benchmark, stats_dir, 'average_read_latency', '--dram']),
-        (f'{script_dir}weight.py',   [benchmark, stats_dir, 'average_bandwidth', '--dram'])
+        (f'{script_dir}weight.py',   [benchmark, stats_dir, 'average_bandwidth', '--dram']),
+        (f'{script_dir}weight.py',   [benchmark, stats_dir, 'Prefetch_count', '--prefetch']),
+        (f'{script_dir}weight.py',   [benchmark, stats_dir, 'Prefetch_hit', '--prefetch']),
+        (f'{script_dir}weight.py',   [benchmark, stats_dir, 'Prefetch_accuracy', '--prefetch'])
     ]
 
     for script, args in scripts_with_args:
@@ -33,8 +37,14 @@ def run_scripts(benchmark):
 def main():
     parser = argparse.ArgumentParser(description='Run benchmark scripts')
     parser.add_argument('benchmark', type=str, nargs='?', default=None, help='benchmark to run')
+    parser.add_argument('--stats_dir', type=str, help='stats 文件目录')
 
     args = parser.parse_args()
+
+    if args.stats_dir:
+        stats_dir = '--stats_dir=' + args.stats_dir
+    else:
+        stats_dir = '--stats_dir=' + default_stats_dir
 
     if args.benchmark:
         if args.benchmark == 'integer':
@@ -44,7 +54,7 @@ def main():
                 for benchmark in benchmarks:
                     benchmark = benchmark.strip()
                     if benchmark:  # 跳过空行
-                        run_scripts(benchmark)
+                        run_scripts(benchmark, stats_dir)
         elif args.benchmark == 'floating':
             if os.path.exists(float_task):
                 with open(float_task, 'r') as file:
@@ -52,9 +62,17 @@ def main():
                 for benchmark in benchmarks:
                     benchmark = benchmark.strip()
                     if benchmark:  # 跳过空行
-                        run_scripts(benchmark)
+                        run_scripts(benchmark, stats_dir)
+        elif args.benchmark == 'fail':
+            if os.path.exists(fail_task):
+                with open(fail_task, 'r') as file:
+                    benchmarks = file.readlines()
+                for benchmark in benchmarks:
+                    benchmark = benchmark.strip()
+                    if benchmark:  # 跳过空行
+                        run_scripts(benchmark, stats_dir)
         else:
-            run_scripts(args.benchmark)
+            run_scripts(args.benchmark, stats_dir)
     else:
         if os.path.exists(all_task):
             with open(all_task, 'r') as file:
@@ -62,7 +80,7 @@ def main():
             for benchmark in benchmarks:
                 benchmark = benchmark.strip()
                 if benchmark:  # 跳过空行
-                    run_scripts(benchmark)
+                    run_scripts(benchmark, stats_dir)
         else:
             print("task.txt file not found and no benchmark provided as an argument.")
 

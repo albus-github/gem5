@@ -87,7 +87,7 @@ def main():
     if args.benchmarks:
         benchmarks = args.benchmarks
     else:
-        benchmarks_file = './integer.txt'
+        benchmarks_file = './all_compiled_spec2017.txt'
         with open(benchmarks_file) as f:
             benchmarks = [line.strip() for line in f]
 

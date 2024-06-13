@@ -1,26 +1,22 @@
 #!/usr/bin/env python3
 
 import os
-import re
 import sys
-import random
 import sh
-import time
-from os.path import join as pjoin
-from os.path import expanduser as uexp
 import argparse
+from os.path import join as pjoin
 from multiprocessing import Pool
 import common as c
+import logging
 
-cmd_timestamp = None
+# Set up logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Please set to the directory where to store gem5-generated bbvs
+# Directory to store gem5-generated bbvs
 simpoint_profile_dir = '/home/albus/gem5-results/spec2017_simpoint_profile'
 assert simpoint_profile_dir != 'deadbeaf'
 
-def simpoint_profile(benchmark, dont_care, outdir_b):
-    global cmd_timestamp
-
+def simpoint_profile(benchmark, cmd_timestamp=None):
     gem5_dir = '/home/albus/gem5'
     outdir = pjoin(simpoint_profile_dir, benchmark)
 
@@ -32,72 +28,76 @@ def simpoint_profile(benchmark, dont_care, outdir_b):
         if os.path.isfile(output_timestamp_file):
             file_m_time = os.path.getmtime(output_timestamp_file)
             if file_m_time > cmd_timestamp:
-                print('Command is older than output of {}, skip!'.format(
-                    benchmark))
+                logging.info(f'Command is older than output of {benchmark}, skip!')
                 return
 
     exec_dir = c.run_dir(benchmark)
-    os.chdir(exec_dir)
+    try:
+        os.chdir(exec_dir)
+    except OSError as e:
+        logging.error(f'Failed to change directory: {e}')
+        return
 
     options = [
-            '--outdir=' + outdir,
-            pjoin(gem5_dir, 'configs/spec_2017/se_spec2017.py'),
-            '-b',
-            '{}'.format(benchmark),
-            '--maxinsts=10000000000',
-            '--benchmark_stdout={}/out'.format(outdir),
-            '--benchmark_stderr={}/err'.format(outdir),
-            '--cpu-type=NonCachingSimpleCPU',
-            '--mem-size=8GB',
-            '--simpoint-profile',
-            '--simpoint-interval={}'.format(10000000),
-            ]
-    print(options)
+        '--outdir=' + outdir,
+        pjoin(gem5_dir, 'configs/spec_2017/se_spec2017.py'),
+        '-b', benchmark,
+        '--maxinsts=10000000000',
+        '--benchmark_stdout={}/out'.format(outdir),
+        '--benchmark_stderr={}/err'.format(outdir),
+        '--cpu-type=NonCachingSimpleCPU',
+        '--mem-size=8GB',
+        '--simpoint-profile',
+        '--simpoint-interval={}'.format(10000000),
+    ]
+    logging.info(f'Running gem5 with options: {options}')
     gem5 = sh.Command('/home/albus/gem5/build/X86/gem5.fast')
-    # sys.exit(0)
-    gem5(
-            _out=pjoin(outdir, 'gem5_out.txt'),
-            _err=pjoin(outdir, 'gem5_err.txt'),
-            *options
-            )
+    try:
+        gem5(_out=pjoin(outdir, 'gem5_out.txt'), _err=pjoin(outdir, 'gem5_err.txt'), *options)
+    except sh.ErrorReturnCode as e:
+        logging.error(f'gem5 failed: {e}')
+        return
 
     sh.touch(pjoin(outdir, 'done'))
 
-def run(benchmark):
+def run(benchmark, cmd_timestamp=None):
     outdir_b = pjoin(simpoint_profile_dir, benchmark)
     if not os.path.isdir(outdir_b):
         os.makedirs(outdir_b)
 
-    c.avoid_repeated(simpoint_profile, outdir_b, pjoin('/home/albus/gem5/build/X86/gem5.fast'),
-            benchmark, None, outdir_b)
+    c.avoid_repeated(simpoint_profile, outdir_b, pjoin('/home/albus/gem5/build/X86/gem5.fast'), benchmark, cmd_timestamp)
 
 def main():
     benchmarks = []
+    cmd_timestamp = None
 
     cmd_timestamp_file = './ts-simprofile'
-    global cmd_timestamp
     if os.path.isfile(cmd_timestamp_file):
         cmd_timestamp = os.path.getmtime(cmd_timestamp_file)
-        print(cmd_timestamp)
+        logging.info(f'Command timestamp: {cmd_timestamp}')
 
     parser = argparse.ArgumentParser(description='Simulate SPEC 2017 benchmarks and generate checkpoints.')
-    parser.add_argument('benchmarks', nargs='*', help='List of benchmarks to simulate')
+    parser.add_argument('benchmarks', nargs='*', help='List of benchmarks to simulate or "uncompiled" to read from uncompiled.txt')
     args = parser.parse_args()
 
     if args.benchmarks:
-        benchmarks = args.benchmarks
+        if args.benchmarks == ['uncompiled']:
+            with open('/home/albus/gem5/scripts/uncompiled.txt') as f:
+                benchmarks = [line.strip() for line in f]
+        else:
+            benchmarks = args.benchmarks
     else:
         with open('/home/albus/gem5/scripts/all_compiled_spec2017.txt') as f:
-            for line in f:
-                benchmarks.append(line.strip())
-    # print benchmarks
-    num_thread = len(benchmarks)
-    if num_thread > 1:
-        p = Pool(num_thread)
-        p.map(run, benchmarks)
-    else:
-        run(benchmarks[0])
+            benchmarks = [line.strip() for line in f]
 
+    num_threads = min(len(benchmarks), os.cpu_count())
+    logging.info(f'Starting simulation with {num_threads} threads.')
+    
+    if benchmarks:
+        with Pool(num_threads) as pool:
+            pool.starmap(run, [(benchmark, cmd_timestamp) for benchmark in benchmarks])
+    else:
+        logging.warning('No benchmarks to run.')
 
 if __name__ == '__main__':
     main()
