@@ -9,8 +9,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import common as c
 from functools import partial
 
-outdir = '/home/albus/gem5-results/spec2017_simpoint_restore'
-gem5_dir = '/home/albus/gem5'
+default_outdir  = '/home/albus/gem5-results/spec2017_simpoint_restore'
+gem5_dir        = '/home/albus/gem5'
 
 def count_ctps(benchmark):
     weight_file_path = os.path.join('/home/albus/gem5-results/spec2017_simpoint_simpoints', benchmark, 'weights')
@@ -103,7 +103,10 @@ def main():
     parser = argparse.ArgumentParser(description='Simulate SPEC 2017 benchmarks and generate checkpoints.')
     parser.add_argument('benchmark', nargs='+', help='List of benchmarks to simulate')
     parser.add_argument('-r', type=int, help='Specific checkpoint index to restore')
+    parser.add_argument('--outdir', type=str, help='Output directory')
     args = parser.parse_args()
+
+    outdir = args.outdir if args.outdir else default_outdir
 
     for benchmark in args.benchmark:
         outdir_b = pjoin(outdir, benchmark)

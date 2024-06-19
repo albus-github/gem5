@@ -13,16 +13,17 @@ all_task            = task_dir + 'all_compiled_spec2017.txt'
 def run_scripts(benchmark, stats_dir):
     scripts_with_args = [
         (f'{script_dir}restore.py',  [benchmark]),
-        (f'{script_dir}weight.py',   [benchmark, stats_dir, 'system.switch_cpus.cpi']),
         (f'{script_dir}weight.py',   [benchmark, stats_dir, 'system.switch_cpus.ipc']),
+        (f'{script_dir}weight.py',   [benchmark, stats_dir, 'system.mem_ctrl.numReads::total']),
+        (f'{script_dir}weight.py',   [benchmark, stats_dir, 'system.mem_ctrl.bwRead::total']),
+        (f'{script_dir}weight.py',   [benchmark, stats_dir, 'system.mem_ctrl.bwTotal::total']),
         (f'{script_dir}weight.py',   [benchmark, stats_dir, 'num_reads_done', '--dram']),
         (f'{script_dir}weight.py',   [benchmark, stats_dir, 'num_read_row_hits', '--dram']),
         (f'{script_dir}weight.py',   [benchmark, stats_dir, 'num_read_cmds', '--dram']),
         (f'{script_dir}weight.py',   [benchmark, stats_dir, 'average_read_latency', '--dram']),
         (f'{script_dir}weight.py',   [benchmark, stats_dir, 'average_bandwidth', '--dram']),
         (f'{script_dir}weight.py',   [benchmark, stats_dir, 'Prefetch_count', '--prefetch']),
-        (f'{script_dir}weight.py',   [benchmark, stats_dir, 'Prefetch_hit', '--prefetch']),
-        (f'{script_dir}weight.py',   [benchmark, stats_dir, 'Prefetch_accuracy', '--prefetch'])
+        (f'{script_dir}weight.py',   [benchmark, stats_dir, 'Prefetch_hit', '--prefetch'])
     ]
 
     for script, args in scripts_with_args:

@@ -1,10 +1,8 @@
 perlbench_r
-bwaves_r
 mcf_r
 cactuBSSN_r
 namd_r
 povray_r
-wrf_r
 xalancbmk_r
 x264_r
 blender_r
@@ -18,3 +16,5 @@ roms_r
 xz_r
 specrand_fr
 specrand_ir
+bwaves_r
+wrf_r
