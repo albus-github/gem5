@@ -21,8 +21,11 @@ Controller::Controller(int channel, const Config &config, const Timing &timing) 
       refresh_(config, channel_state_),
       is_rw_denp_(false),
       prefetch_on(true),
-      trace_output(false),
       prefetcher(config),
+#ifdef STATS
+      read_cmds(0),
+      read_done(0),
+#endif
 #ifdef THERMAL
       thermal_calc_(thermal_calc),
 #endif  // THERMAL
@@ -51,10 +54,12 @@ std::pair<uint64_t, int> Controller::ReturnDoneTrans(uint64_t clk) {
     auto it = return_queue_.begin();
     while (it != return_queue_.end()) {
         if (clk >= it->complete_cycle) {
+        #ifdef TRACE
             std::stringstream complete_info;
             complete_info<<"Cycle: "<<clk_<<", "<<"Complete_Trans: "<<"Addr: "<<it->addr<<", "<<"latency: "<<it->complete_cycle - it->added_cycle<<", Add_Cycle: "<<it->added_cycle<<", IsWrite: "<<it->is_write<<", IsPrefetch: "<<it->IsPrefetch<<'\n';
             std::string complete_infostr = complete_info.str();
-            TraceFile(complete_infostr);
+            TraceFile(complete_infostr, "trace");
+        #endif
             if (it->complete_cycle - it->added_cycle != 4){
                 prefetcher.LT.update_fetch(*it);                
             }
@@ -68,6 +73,13 @@ std::pair<uint64_t, int> Controller::ReturnDoneTrans(uint64_t clk) {
                 } else {
                     simple_stats_.Increment("num_reads_done");
                     simple_stats_.AddValue("read_latency", clk_ - it->added_cycle);
+                #ifdef STATS
+                    read_done += 1;
+                    std::stringstream num_read;
+                    num_read<<"Cycle: "<<clk_<<", read_done: "<<it->addr<<", num_read_done: "<<read_done<<'\n';
+                    std::string num_readstr = num_read.str();
+                    TraceFile(num_readstr, "stats");
+                #endif
                 }
                 auto pair = std::make_pair(it->addr, it->is_write);
                 it = return_queue_.erase(it);
@@ -106,10 +118,13 @@ void Controller::ClockTick() {
             case CommandType::WRITE_PRECHARGE: cmd_type = "WRITE_PRECHARGE"; break;
             default: cmd_type = " ";
         }
+
+    #ifdef TRACE
         std::stringstream issue_info;
         issue_info<<"Cycle: "<<clk_<<", "<<"Issue_Command: "<<cmd_type<<", "<<"Addr: "<<cmd.hex_addr<<", bg: "<<cmd.addr.bankgroup<<", ba: "<<cmd.addr.bank<<", ro: "<<cmd.addr.row<<", co: "<<cmd.addr.column<<", "<<"IsPrefetch: "<<cmd.IsPrefetch<<'\n';
         std::string issue_infostr = issue_info.str();
-        TraceFile(issue_infostr);
+        TraceFile(issue_infostr, "trace");
+    #endif
 
         IssueCommand(cmd);
         cmd_issued = true;
@@ -182,11 +197,11 @@ void Controller::ClockTick() {
 
     //adaptive distance
     // if (clk_ % 1000 ==0 && clk_ != 0){
+    //     prefetcher.UpdateaDistance();
     //     std::stringstream epoch_info;
     //     epoch_info<<"Cycle: "<<clk_<<", Epoch info: Prefetch total in the epoch: "<<prefetcher.epoch_total<<", Prefetch hit in the epoch: "<<prefetcher.epoch_hit<<'\n';
     //     std::string epoch_infostr = epoch_info.str();
     //     TraceFile(epoch_infostr);
-    //     prefetcher.UpdateaDistance();
     // }
 
     clk_++;
@@ -210,10 +225,13 @@ bool Controller::AddTransaction(Transaction trans) {
     trans.added_cycle = clk_;
     simple_stats_.AddValue("interarrival_latency", clk_ - last_trans_clk_);
     last_trans_clk_ = clk_;
+
+#ifdef TRACE
     std::stringstream add_info;
     add_info<<"Cycle: "<<clk_<<", "<<"ADD_Trans: "<<"Addr: "<<trans.addr<<", IsWrite: "<<trans.is_write<<'\n';
     std::string add_infostr = add_info.str();
-    TraceFile(add_infostr);
+    TraceFile(add_infostr, "trace");
+#endif
 
     if (trans.is_write) {
         if (pending_wr_q_.count(trans.addr) == 0) {  // can not merge writes
@@ -271,10 +289,12 @@ bool Controller::AddTransaction(Transaction trans) {
                 Address prefetch_addr = config_.AddressMapping(prefetch.addr);
                 prefetcher.i ++;
                 if (prefetcher.IssuePrefetch(trans, prefetch) && read_queue_.size() < read_queue_.capacity() - 1 && channel_state_.OpenRow(prefetch_addr.rank, prefetch_addr.bankgroup, prefetch_addr.bank) == prefetch_addr.row){
+                #ifdef TRACE
                     std::stringstream p_trans_info;
                     p_trans_info<<"Cycle: "<<clk_<<", "<<"Prefetch_Trans: "<<"Addr: "<<prefetch.addr<<'\n';
                     std::string p_trans_infostr = p_trans_info.str();
-                    TraceFile(p_trans_infostr);
+                    TraceFile(p_trans_infostr, "trace");
+                #endif
                     AddPrefetchTrans(prefetch);
                     prefetcher.PF.add_entry(prefetch.addr);
                     prefetcher.prefetch_total ++;
@@ -441,10 +461,20 @@ void Controller::PrintFinalStats() {
 }
 
 void Controller::UpdateCommandStats(const Command &cmd) {                   //仅仅起统计次数的作用？
+#ifdef STATS
+    std::stringstream read_cmd;
+    std::string read_cmdstr;
+#endif
     switch (cmd.cmd_type) {
         case CommandType::READ:
         case CommandType::READ_PRECHARGE:
             simple_stats_.Increment("num_read_cmds");
+        #ifdef STATS
+            read_cmds += 1;
+            read_cmd<<"Cycle: "<<clk_<<", read addr: "<<cmd.hex_addr<<",  IsPrefetch: "<<cmd.IsPrefetch<<", num_read_cmds: "<<read_cmds<<'\n';
+            read_cmdstr = read_cmd.str();
+            TraceFile(read_cmdstr, "stats");
+        #endif
             if (channel_state_.RowHitCount(cmd.Rank(), cmd.Bankgroup(),
                                            cmd.Bank()) != 0) {
                 simple_stats_.Increment("num_read_row_hits");
@@ -487,10 +517,18 @@ bool Controller::PrefetchHit(uint64_t addr){
         prefetcher.prefetch_latency = prefetcher.PrefetchBuffer.prefetch_latency(addr);
         prefetcher.total_latency += prefetcher.prefetch_latency;
         prefetcher.prefetch_hit ++;
+    #ifdef TRACE
         std::stringstream prefetch_info;
         prefetch_info<<"Cycle: "<<clk_<<", Prefetcher_info: Issue Prefetch: "<<prefetcher.prefetch_total<<", Prefetch hit: "<<prefetcher.prefetch_hit<<", Prefetch latency: "<<prefetcher.prefetch_latency<<", Prefetch total latency: "<<prefetcher.total_latency<<'\n';
         std::string prefetch_infostr = prefetch_info.str();
-        TraceFile(prefetch_infostr);
+        TraceFile(prefetch_infostr, "trace");
+    #endif
+    #ifdef STATS
+        std::stringstream prefetch_hit;
+        prefetch_hit<<"Cycle: "<<clk_<<", Hit addr: "<<addr<<", Prefetcher_info: Issue Prefetch: "<<prefetcher.prefetch_total<<", Prefetch hit: "<<prefetcher.prefetch_hit<<'\n';
+        std::string prefetch_hitstr = prefetch_hit.str();
+        TraceFile(prefetch_hitstr, "stats");
+    #endif
         return true;
     } else {
         return false;
@@ -532,18 +570,28 @@ bool Controller::WaitPrefetch(Transaction &trans){
     return false;
 }
 
-void Controller::TraceFile(const std::string& content){
-    std::string filename = config_.output_dir + "trace_output";
-    if (trace_output){
-        std::ofstream file(filename, std::ios::app);
+void Controller::TraceFile(const std::string& content, std::string type){
+    std::string tracename = config_.output_dir + "trace_output";
+    std::string statsname = config_.output_dir + "stats_debug";
+    if (type == "trace"){
+        std::ofstream file(tracename, std::ios::app);
         if (file.is_open()) {
             file << content;
             file.close();
         } else {
             std::cout << "无法打开文件！" << std::endl;
         }
-    } else
-        return ;
+    } 
+    if (type == "stats"){
+        std::ofstream file(statsname, std::ios::app);
+        if (file.is_open()) {
+            file << content;
+            file.close();
+        } else {
+            std::cout << "无法打开文件！" << std::endl;
+        }
+    }
+    return ;
 }
 
 void Controller::PrefetchStats(){

@@ -62,6 +62,23 @@ struct trans_info {
     Address addr;
 };
 
+struct sb_entry {
+    int tag;
+    uint64_t addr;
+    int delta;
+};
+
+class stream_buffer {
+private:
+    std::list<sb_entry> stream_buffer;
+    int capacity;
+
+public:
+    int delta[8];
+    void update(uint16_t tag, uint64_t addr);
+    void get_delta(uint16_t tag);
+};
+
 struct ST_entry {
     int tag;
     int last_offset;
@@ -204,6 +221,8 @@ public:
     virtual bool Continue();
     virtual Transaction GetPrefetch()=0;
     trans_info get_info(const Transaction &trans);
+    int get_tag(uint64_t addr);
+    uint16_t get_tag_uint16(uint64_t addr);
 };
 
 class NextLine_Prefetcher : public Prefetcher {
@@ -212,6 +231,17 @@ public:
     ~NextLine_Prefetcher(){};
     
     Transaction GetPrefetch() override;
+};
+
+class Stream_Prefetcher : public Prefetcher {
+public:
+    Stream_Prefetcher(const Config &config) : Prefetcher(config, 0.25, 0.75, 5) {}
+    ~Stream_Prefetcher(){};
+    
+    stream_buffer Stream_buffer;
+    uint16_t tag;
+    Transaction GetPrefetch() override;
+    void initial(const Transaction &trans) override;
 };
 
 class SPP_Prefetcher : public Prefetcher {
@@ -232,7 +262,6 @@ public:
     void updateSTandPT(trans_info info);
     void UpdateaDistance() override;
     void initial(const Transaction &trans) override;
-    int get_tag(uint64_t addr);
     bool Continue() override;
 };
 
@@ -246,7 +275,6 @@ public:
     History_Table HT;
 
     void initial(const Transaction &trans) override;
-    uint16_t get_tag(uint64_t addr);
     void update(uint16_t tag, uint64_t addr);
     Transaction GetPrefetch() override;
     void UpdateaDistance() override;

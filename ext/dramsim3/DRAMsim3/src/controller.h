@@ -19,6 +19,9 @@
 
 namespace dramsim3 {
 
+// #define TRACE
+// #define STATS
+
 enum class RowBufPolicy { OPEN_PAGE, CLOSE_PAGE, SIZE };
 
 class Controller {
@@ -53,10 +56,16 @@ class Controller {
     bool is_rw_denp_;
 
     bool prefetch_on;
-    bool trace_output;
-    NextLine_Prefetcher prefetcher;
+
+    //NextLine_Prefetcher prefetcher;
+    Stream_Prefetcher prefetcher;
     //SPP_Prefetcher prefetcher;
     //Delta_Prefetcher prefetcher;
+
+#ifdef STATS
+    int read_cmds;
+    int read_done;
+#endif
 
 #ifdef THERMAL
     ThermalCalculator &thermal_calc_;
@@ -98,7 +107,7 @@ class Controller {
     void AddPrefetchTrans(Transaction &prefetch_trans);
     bool WaitPrefetch(Transaction &trans);
 
-    void TraceFile(const std::string& content);
+    void TraceFile(const std::string& content, std::string type);
 };
 }  // namespace dramsim3
 #endif

@@ -164,6 +164,66 @@ bool Latency_Table::Istimely(const Transaction &trans, Transaction &prefetch_tra
     return true;
 }
 
+void stream_buffer::update(uint16_t tag, uint64_t addr) {
+    sb_entry entry;
+    if (stream_buffer.empty()){
+        entry = {tag, addr, 0};
+        stream_buffer.emplace_back(entry);
+        capacity ++;
+    } else{
+        bool found = false;
+        for (auto it = stream_buffer.begin(); it != stream_buffer.end();){  
+            if (it->tag == tag){
+                found = true;
+                if (addr == it->addr + it->delta){
+                    entry = {tag, addr, it->delta};
+                    it = stream_buffer.erase(it);
+                    stream_buffer.emplace_front(entry);
+                } else if (it->delta ==0){
+                    it->delta = addr - it->addr;
+                    it->addr = addr;
+                    bool erased = false;
+                    for (auto k = stream_buffer.begin(); k != stream_buffer.end(); ++k){
+                        if (k->tag == it->tag && k->delta == it->delta && k != it){
+                            it = stream_buffer.erase(it);
+                            capacity --;
+                            erased = true;
+                            break;
+                        }
+                    } if (!erased)
+                        ++ it;
+                } else
+                    ++ it;
+            } else
+                ++ it;
+        } 
+        if (!found){
+            if (capacity == 8){
+                stream_buffer.pop_back();
+                capacity --;
+            }
+            entry = {tag, addr, 0};
+            stream_buffer.emplace_front(entry);
+            capacity ++;
+        }
+        if (found && capacity < 8){
+            entry = {tag, addr, 0};
+            stream_buffer.emplace_back(entry);
+            capacity ++;
+        }
+    }
+}
+
+void stream_buffer::get_delta(uint16_t tag){
+    int i =0;
+    for (auto it = stream_buffer.begin(); it != stream_buffer.end(); ++it){
+        if (tag == it->tag && i < 8){
+            delta[i] = it->delta;
+            ++i;
+        }
+    }
+}
+
 bool Prefetcher::PrefetchHit(uint64_t addr){
     if (PF.update_useful(addr)){
         epoch_hit ++;
@@ -258,6 +318,18 @@ bool Prefetcher::Continue(){
     return false;
 }
 
+int Prefetcher::get_tag(uint64_t addr){
+    int tag = addr >> 12;
+    return tag;
+}
+
+uint16_t Prefetcher::get_tag_uint16(uint64_t addr){
+    uint16_t mask = 0xFFFF;
+    addr = addr >> 12;
+    uint16_t index = addr & mask;
+    return index;
+}
+
 //Get the Perfetch command
 Transaction NextLine_Prefetcher::GetPrefetch(){
     prefetch_trans.addr += 64;
@@ -265,6 +337,34 @@ Transaction NextLine_Prefetcher::GetPrefetch(){
     prefetch_trans.is_write = false;
     return prefetch_trans;
 }
+
+void Stream_Prefetcher::initial(const Transaction &trans) {
+    i = 0;
+    prefetch_trans = trans;
+    for (int i = 0; i < 8 ; ++i){
+        Stream_buffer.delta[i] = 0;
+    }
+    tag = get_tag_uint16(trans.addr);
+    Stream_buffer.update(tag, trans.addr);
+    Stream_buffer.get_delta(tag);
+    if (Stream_buffer.delta[0] !=0){
+        for (int j = 1; j < distance; ++j){
+            int k = 0;
+            if (Stream_buffer.delta[j] == 0){
+                Stream_buffer.delta[j] = Stream_buffer.delta[k];
+                ++k;
+            }
+        }
+    }
+    
+}
+
+Transaction Stream_Prefetcher::GetPrefetch(){
+    prefetch_trans.addr += Stream_buffer.delta[i];
+    prefetch_trans.IsPrefetch = 1;
+    prefetch_trans.is_write = false;
+    return prefetch_trans;
+} 
 
 trans_info Prefetcher::get_info(const Transaction &trans){
     auto addr = config_.AddressMapping(trans.addr);
@@ -541,11 +641,6 @@ void SPP_Prefetcher::UpdateaDistance(){
     a = Updatea();
 }
 
-int SPP_Prefetcher::get_tag(uint64_t addr){
-    int tag = addr >> 12;
-    return tag;
-}
-
 void SPP_Prefetcher::initial(const Transaction &trans){
     prefetch_trans = trans;
     int tag = get_tag(trans.addr);
@@ -572,16 +667,9 @@ void Delta_Prefetcher::initial(const Transaction &trans){
     for (int j = 0; j < DT.prefetch_delta.size(); ++j){
         DT.prefetch_delta[j] = 0;
     }
-    tag = get_tag(trans.addr);
+    tag = get_tag_uint16(trans.addr);
     DT.update_coverage();
     update(tag, trans.addr);
-}
-
-uint16_t Delta_Prefetcher::get_tag(uint64_t addr){
-    uint16_t mask = 0xFFFF;
-    addr = addr >> 12;
-    uint16_t index = addr & mask;
-    return index;
 }
 
 void Delta_Prefetcher::update(uint16_t tag, uint64_t addr){
