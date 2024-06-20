@@ -1,0 +1,5 @@
+nab_r
+namd_r
+perlbench_r
+x264_r
+imagick_r

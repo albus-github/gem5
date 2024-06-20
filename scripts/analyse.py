@@ -7,12 +7,11 @@ script_dir          = '/home/albus/gem5/scripts/'
 task_dir            = '/home/albus/gem5/scripts/' 
 int_task            = task_dir + 'integer.txt'
 float_task          = task_dir + 'floating.txt'
-test_task           = task_dir + 'test.txt'
+fail_task           = task_dir + 'fail.txt'
 all_task            = task_dir + 'all_compiled_spec2017.txt'
 
 def run_scripts(benchmark, stats_dir):
     scripts_with_args = [
-        (f'{script_dir}restore.py',  [benchmark]),
         (f'{script_dir}weight.py',   [benchmark, stats_dir, 'system.switch_cpus.ipc']),
         (f'{script_dir}weight.py',   [benchmark, stats_dir, 'system.mem_ctrl.numReads::total']),
         (f'{script_dir}weight.py',   [benchmark, stats_dir, 'system.mem_ctrl.bwRead::total']),
@@ -64,9 +63,9 @@ def main():
                     benchmark = benchmark.strip()
                     if benchmark:  # 跳过空行
                         run_scripts(benchmark, stats_dir)
-        elif args.benchmark == 'test':
-            if os.path.exists(test_task):
-                with open(test_task, 'r') as file:
+        elif args.benchmark == 'fail':
+            if os.path.exists(fail_task):
+                with open(fail_task, 'r') as file:
                     benchmarks = file.readlines()
                 for benchmark in benchmarks:
                     benchmark = benchmark.strip()

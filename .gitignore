@@ -11,6 +11,11 @@ m5out
 /configs/example/gem5_library
 /src/doxygen/html
 /ext/dramsim2/DRAMSim2
+/ext/dramsim3/DRAMsim3/dramsim3.txt
+/ext/dramsim3/DRAMsim3/dramsim3.json
+/ext/dramsim3/DRAMsim3/prefetch_info
+/ext/dramsim3/DRAMsim3/trace_output
+/ext/dramsim3/DRAMsim3/stats_debug
 /ext/mcpat/regression/*/*.out
 /util/m5/*.o
 /util/m5/*.a

@@ -12,6 +12,11 @@ from functools import partial
 default_outdir  = '/home/albus/gem5-results/spec2017_simpoint_restore'
 gem5_dir        = '/home/albus/gem5'
 
+def cases(benchmark, r):
+    if benchmark=="namd_r" and r==3: return True
+    if benchmark=="imagick_r" and r==3: return True
+    return False
+
 def count_ctps(benchmark):
     weight_file_path = os.path.join('/home/albus/gem5-results/spec2017_simpoint_simpoints', benchmark, 'weights')
     try:
@@ -114,12 +119,18 @@ def main():
             os.makedirs(outdir_b)
 
         if args.r is not None:
+            if cases(benchmark, args.r):
+                continue
             run((benchmark, args.r - 1, outdir_b))
         else:
             num_thread = count_ctps(benchmark)
             if num_thread > 0:
                 with ThreadPoolExecutor(max_workers=8) as executor:
-                    futures = [executor.submit(run, (benchmark, i, outdir_b)) for i in range(num_thread)]
+                    futures = [
+                        executor.submit(run, (benchmark, i, outdir_b))
+                        for i in range(num_thread)
+                        if not cases(benchmark, i + 1)
+                    ]
                     for future in as_completed(futures):
                         future.result()  # Check for exceptions and wait for thread completion
 
