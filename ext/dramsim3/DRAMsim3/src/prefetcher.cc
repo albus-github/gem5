@@ -268,7 +268,7 @@ bool Prefetcher::IssuePrefetch(const Transaction &trans, Transaction &prefetch_t
     return false;
 }
 
-double Prefetcher::Updatea(){
+double Prefetcher::Updatea(){           //compulate prefetch accuracy in the last epoch
     double a;
     if (epoch_total != 0){
         a = epoch_hit / epoch_total;
@@ -282,12 +282,18 @@ double Prefetcher::Updatea(){
     return a;
 }
 
+void Prefetcher::Updatelatency(Transaction &trans, uint64_t clk){
+    epoch_read_done += 1;
+    epoch_read_latency = (epoch_read_latency * (epoch_read_done - 1) + clk - trans.added_cycle) / epoch_read_done;
+}
+
 void Prefetcher::UpdateaDistance(){
+    // update distance with prefetch accuracy
     double epcoh_a = Updatea();
     if (epcoh_a > Th){
         if (distance < 5){
             distance = 5;
-        } else if (distance <10){
+        } else if (distance < max_distance){
             distance ++;
         }
     } else if (epcoh_a > Tl){
@@ -301,6 +307,24 @@ void Prefetcher::UpdateaDistance(){
             distance --;
         }
     }
+
+    // if (last_read_latency != 0){
+    //     if (epoch_read_latency > last_read_latency && distance > 0 && distance > 5){
+    //         distance --;
+    //     } else if(distance == max_distance && last_read_latency > 15){
+    //         distance --;
+    //     } else if (distance < 5){
+    //         distance = 5;
+    //     }
+    //     else{
+    //         if (distance < max_distance){
+    //             distance ++;
+    //         }
+    //     }
+    // }
+    // last_read_latency = epoch_read_latency;
+    // epoch_read_done = 0;
+    // epoch_read_latency = 0;
 }
 
 void Prefetcher::UpdatePrefetchBuffer(Transaction &trans){

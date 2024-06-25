@@ -21,6 +21,7 @@ namespace dramsim3 {
 
 // #define TRACE
 // #define STATS
+#define PREFETCH
 
 enum class RowBufPolicy { OPEN_PAGE, CLOSE_PAGE, SIZE };
 

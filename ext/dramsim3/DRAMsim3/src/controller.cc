@@ -73,6 +73,7 @@ std::pair<uint64_t, int> Controller::ReturnDoneTrans(uint64_t clk) {
                 } else {
                     simple_stats_.Increment("num_reads_done");
                     simple_stats_.AddValue("read_latency", clk_ - it->added_cycle);
+                    prefetcher.Updatelatency(*it, clk_);
                 #ifdef STATS
                     read_done += 1;
                     std::stringstream num_read;
@@ -195,14 +196,23 @@ void Controller::ClockTick() {
 
     ScheduleTransaction();
 
-    //adaptive distance
-    // if (clk_ % 1000 ==0 && clk_ != 0){
-    //     prefetcher.UpdateaDistance();
-    //     std::stringstream epoch_info;
-    //     epoch_info<<"Cycle: "<<clk_<<", Epoch info: Prefetch total in the epoch: "<<prefetcher.epoch_total<<", Prefetch hit in the epoch: "<<prefetcher.epoch_hit<<'\n';
-    //     std::string epoch_infostr = epoch_info.str();
-    //     TraceFile(epoch_infostr);
-    // }
+    // adaptive distance
+    // if (prefetcher.epoch_read_done % 50 ==0 && prefetcher.epoch_read_done != 0 && prefetch_on){
+    if (clk_ % 1000 ==0 && clk_ != 0){
+        prefetcher.UpdateaDistance();
+    #ifdef PREFETCH
+        std::stringstream distance;
+        distance<<"Cycle: "<<clk_<<", last_read_latency: "<<prefetcher.last_read_latency<<", Distance: "<<prefetcher.distance<<'\n';
+        std::string dsitancestr = distance.str();
+        TraceFile(dsitancestr, "prefetch");
+    #endif
+    #ifdef TRACE
+        std::stringstream epoch_info;
+        epoch_info<<"Cycle: "<<clk_<<", Epoch info: Prefetch total in the epoch: "<<prefetcher.epoch_total<<", Prefetch hit in the epoch: "<<prefetcher.epoch_hit<<", distance: "<<prefetcher.distance<<'\n';
+        std::string epoch_infostr = epoch_info.str();
+        TraceFile(epoch_infostr, "trace");
+    #endif
+    }
 
     clk_++;
     cmd_queue_.ClockTick();
@@ -514,8 +524,6 @@ void Controller::UpdateCommandStats(const Command &cmd) {                   //�
 // determine if the trans has been hit in the prefetch-buffer
 bool Controller::PrefetchHit(uint64_t addr){
     if (prefetcher.PrefetchHit(addr)){
-        prefetcher.prefetch_latency = prefetcher.PrefetchBuffer.prefetch_latency(addr);
-        prefetcher.total_latency += prefetcher.prefetch_latency;
         prefetcher.prefetch_hit ++;
     #ifdef TRACE
         std::stringstream prefetch_info;
@@ -573,6 +581,7 @@ bool Controller::WaitPrefetch(Transaction &trans){
 void Controller::TraceFile(const std::string& content, std::string type){
     std::string tracename = config_.output_dir + "trace_output";
     std::string statsname = config_.output_dir + "stats_debug";
+    std::string fetchname = config_.output_dir + "prefetch_debug";
     if (type == "trace"){
         std::ofstream file(tracename, std::ios::app);
         if (file.is_open()) {
@@ -584,6 +593,15 @@ void Controller::TraceFile(const std::string& content, std::string type){
     } 
     if (type == "stats"){
         std::ofstream file(statsname, std::ios::app);
+        if (file.is_open()) {
+            file << content;
+            file.close();
+        } else {
+            std::cout << "无法打开文件！" << std::endl;
+        }
+    }
+    if (type == "prefetch"){
+        std::ofstream file(fetchname, std::ios::app);
         if (file.is_open()) {
             file << content;
             file.close();

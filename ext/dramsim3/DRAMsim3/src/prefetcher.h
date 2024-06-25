@@ -178,11 +178,9 @@ public:
 class Prefetcher
 {
 public:
-    Prefetcher(const Config &config, double Tl, double Th, int distance):
+    Prefetcher(const Config &config, double Tl, double Th, int distance, int max_distance):
     prefetch_total(0),
     prefetch_hit(0),
-    prefetch_latency(0),
-    total_latency(0),
     epoch_total(0),
     epoch_hit(0),
     i(0),
@@ -190,7 +188,11 @@ public:
     config_(config),
     Tl(Tl),
     Th(Th),
-    distance(distance)
+    epoch_read_done(0),
+    epoch_read_latency(0),
+    last_read_latency(0),
+    distance(distance),
+    max_distance(max_distance)
     {}
     ~Prefetcher(){}
 
@@ -198,11 +200,13 @@ public:
     double Th;
     int prefetch_total;
     int prefetch_hit;
-    int prefetch_latency;
-    int total_latency;
     double epoch_total;
     double epoch_hit;
+    int epoch_read_done;
+    double epoch_read_latency;
+    double last_read_latency;
     int distance;
+    int max_distance;
     int i;
 
     Transaction prefetch_trans;
@@ -216,6 +220,7 @@ public:
     virtual bool PrefetchHit(uint64_t addr);
     virtual bool IssuePrefetch(const Transaction &trans, Transaction &prefetch_trans); //prefetch filter
     virtual double Updatea();
+    virtual void Updatelatency(Transaction &trans, uint64_t clk);
     virtual void UpdateaDistance();
     virtual void initial(const Transaction &trans);
     virtual bool Continue();
@@ -227,7 +232,7 @@ public:
 
 class NextLine_Prefetcher : public Prefetcher {
 public:
-    NextLine_Prefetcher(const Config &config) : Prefetcher(config, 0.25, 0.75, 1) {}
+    NextLine_Prefetcher(const Config &config) : Prefetcher(config, 0.25, 0.75, 1, 10) {}
     ~NextLine_Prefetcher(){};
     
     Transaction GetPrefetch() override;
@@ -235,7 +240,7 @@ public:
 
 class Stream_Prefetcher : public Prefetcher {
 public:
-    Stream_Prefetcher(const Config &config) : Prefetcher(config, 0.25, 0.75, 5) {}
+    Stream_Prefetcher(const Config &config) : Prefetcher(config, 0.25, 0.75, 5, 8) {}
     ~Stream_Prefetcher(){};
     
     stream_buffer Stream_buffer;
@@ -246,7 +251,7 @@ public:
 
 class SPP_Prefetcher : public Prefetcher {
 public:
-    SPP_Prefetcher(const Config &config) : Prefetcher(config, 0.25, 0.75, 10) {}
+    SPP_Prefetcher(const Config &config) : Prefetcher(config, 0.25, 0.75, 10, 10) {}
     ~SPP_Prefetcher(){};
 
     Signature_Table ST;
@@ -267,7 +272,7 @@ public:
 
 class Delta_Prefetcher : public Prefetcher {
 public:
-    Delta_Prefetcher(const Config &config) : Prefetcher(config, 0.25, 0.75, 8), HT(History_Table(8, 16)){}
+    Delta_Prefetcher(const Config &config) : Prefetcher(config, 0.25, 0.75, 8, 8), HT(History_Table(8, 16)){}
     ~Delta_Prefetcher(){};
 
     uint16_t tag;
