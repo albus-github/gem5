@@ -13,8 +13,11 @@ default_outdir  = '/home/albus/gem5-results/spec2017_simpoint_restore'
 gem5_dir        = '/home/albus/gem5'
 
 def cases(benchmark, r):
-    if benchmark=="namd_r" and r==3: return True
-    if benchmark=="imagick_r" and r==3: return True
+    if benchmark=="namd_r"      and r==3: return True
+    if benchmark=="imagick_r"   and r==3: return True
+    if benchmark=="perlbench_r" and r==3: return True
+    if benchmark=="x264_r"      and (r==1 or r==2): return True
+    if benchmark=="cactuBSSN_r" and (r==15): return True
     return False
 
 def count_ctps(benchmark):
