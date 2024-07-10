@@ -109,6 +109,8 @@ void Controller::ClockTick() {
     }
 
     if (cmd.IsValid()) {
+
+    #ifdef TRACE
         std::string cmd_type;
         switch(cmd.cmd_type){
             case CommandType::ACTIVATE: cmd_type = "ACTIVE"; break;
@@ -119,8 +121,6 @@ void Controller::ClockTick() {
             case CommandType::WRITE_PRECHARGE: cmd_type = "WRITE_PRECHARGE"; break;
             default: cmd_type = " ";
         }
-
-    #ifdef TRACE
         std::stringstream issue_info;
         issue_info<<"Cycle: "<<clk_<<", "<<"Issue_Command: "<<cmd_type<<", "<<"Addr: "<<cmd.hex_addr<<", bg: "<<cmd.addr.bankgroup<<", ba: "<<cmd.addr.bank<<", ro: "<<cmd.addr.row<<", co: "<<cmd.addr.column<<", "<<"IsPrefetch: "<<cmd.IsPrefetch<<'\n';
         std::string issue_infostr = issue_info.str();
@@ -198,20 +198,20 @@ void Controller::ClockTick() {
 
     // adaptive distance
     // if (prefetcher.epoch_read_done % 50 ==0 && prefetcher.epoch_read_done != 0 && prefetch_on){
-    if (clk_ % 1000 ==0 && clk_ != 0){
-        prefetcher.UpdateaDistance();
+    if (clk_ % 1000 ==0 && clk_ != 0 && prefetch_on){
     #ifdef PREFETCH
         std::stringstream distance;
-        distance<<"Cycle: "<<clk_<<", last_read_latency: "<<prefetcher.last_read_latency<<", Distance: "<<prefetcher.distance<<'\n';
+        distance<<"Cycle: "<<clk_<<", last_read_latency: "<<prefetcher.epoch_stats.epoch_read_latency<<", Distance: "<<prefetcher.distance<<'\n';
         std::string dsitancestr = distance.str();
         TraceFile(dsitancestr, "prefetch");
     #endif
     #ifdef TRACE
         std::stringstream epoch_info;
-        epoch_info<<"Cycle: "<<clk_<<", Epoch info: Prefetch total in the epoch: "<<prefetcher.epoch_total<<", Prefetch hit in the epoch: "<<prefetcher.epoch_hit<<", distance: "<<prefetcher.distance<<'\n';
+        epoch_info<<"Cycle: "<<clk_<<", Epoch info: Prefetch total in the epoch: "<<prefetcher.epoch_stats.epoch_total<<", Prefetch hit in the epoch: "<<prefetcher.epoch_stats.epoch_hit<<", distance: "<<prefetcher.distance<<'\n';
         std::string epoch_infostr = epoch_info.str();
         TraceFile(epoch_infostr, "trace");
     #endif
+        // prefetcher.UpdateaDistance();
     }
 
     clk_++;
@@ -243,6 +243,18 @@ bool Controller::AddTransaction(Transaction trans) {
     TraceFile(add_infostr, "trace");
 #endif
 
+#ifdef OUT
+    std::stringstream trace_out;
+    string type;
+    if (trans.is_write)
+        type = "WRITE";
+    else   
+        type = "READ";
+    trace_out<<"0x"<<std::hex<<trans.addr<<" "<<type<<" "<<std::dec <<clk_-1<<'\n';
+    std::string trace_outstr = trace_out.str();
+    TraceFile(trace_outstr, "out");
+#endif
+
     if (trans.is_write) {
         if (pending_wr_q_.count(trans.addr) == 0) {  // can not merge writes
             pending_wr_q_.insert(std::make_pair(trans.addr, trans));
@@ -258,6 +270,7 @@ bool Controller::AddTransaction(Transaction trans) {
     } else {  // read
         // if in write buffer, use the write buffer value
         prefetcher.LT.update_arrival(trans);
+        prefetcher.epoch_stats.epoch_trans_num ++;
         if (pending_wr_q_.count(trans.addr) > 0) {
             trans.complete_cycle = clk_ + 1;
             return_queue_.push_back(trans);
@@ -308,7 +321,7 @@ bool Controller::AddTransaction(Transaction trans) {
                     AddPrefetchTrans(prefetch);
                     prefetcher.PF.add_entry(prefetch.addr);
                     prefetcher.prefetch_total ++;
-                    prefetcher.epoch_total ++;
+                    prefetcher.epoch_stats.epoch_total ++;
                 } else{
                     continue;
                 }
@@ -331,6 +344,44 @@ void Controller::ScheduleTransaction() {
     std::vector<Transaction> &queue =
         is_unified_queue_ ? unified_queue_
                           : write_draining_ > 0 ? write_buffer_ : read_queue_;
+
+    for (auto it = queue.begin(); it != queue.end(); it++) {
+        if (!it->is_write && !it->IsPrefetch ){
+            if (PrefetchHit(it->addr)){
+                IssueHitTrans(*it);
+                queue.erase(it);
+                return;
+            }/*if (WaitPrefetch(*it)){
+                //std::cout<<"Trans addr: "<<it->addr<<std::endl;
+                continue;
+            }*/
+        }
+    }
+           
+    for (auto it = queue.begin(); it != queue.end(); it++) {
+        if (!it->is_write && !it->IsPrefetch ){
+            auto cmd = TransToCommand(*it);
+            if (channel_state_.IsRowOpen(cmd.addr.rank, cmd.addr.bankgroup, cmd.addr.bank)){
+                if (cmd_queue_.WillAcceptCommand(cmd.Rank(), cmd.Bankgroup(),
+                                             cmd.Bank())) {
+                    if (!is_unified_queue_ && cmd.IsWrite()) {
+                        // Enforce R->W dependency
+                        if (pending_rd_q_.count(it->addr) > 0) {
+                            write_draining_ = 0;
+                            is_rw_denp_ = true;
+                            return;
+                        }
+                        write_draining_ -= 1;
+                    }
+                    is_rw_denp_ = false;
+                    cmd_queue_.AddCommand(cmd);
+                    queue.erase(it);
+                    return;
+                }
+            }
+        }
+    }
+
     for (auto it = queue.begin(); it != queue.end(); it++) {
         if (it->is_write){
             prefetcher.W_ivicte(it->addr);
@@ -357,17 +408,17 @@ void Controller::ScheduleTransaction() {
             }
         }*/
 
-        if (!it->is_write && !it->IsPrefetch){
-            if (PrefetchHit(it->addr)){
-                IssueHitTrans(*it);
-                queue.erase(it);
-                break;
-            }
-            /*if (WaitPrefetch(*it)){
-                //std::cout<<"Trans addr: "<<it->addr<<std::endl;
-                continue;
-            }*/
-        }
+        // if (!it->is_write && !it->IsPrefetch){
+        //     if (PrefetchHit(it->addr)){
+        //         IssueHitTrans(*it);
+        //         queue.erase(it);
+        //         break;
+        //     }
+        //     /*if (WaitPrefetch(*it)){
+        //         //std::cout<<"Trans addr: "<<it->addr<<std::endl;
+        //         continue;
+        //     }*/
+        // }
         
         auto cmd = TransToCommand(*it);
         if (cmd_queue_.WillAcceptCommand(cmd.Rank(), cmd.Bankgroup(),
@@ -527,7 +578,7 @@ bool Controller::PrefetchHit(uint64_t addr){
         prefetcher.prefetch_hit ++;
     #ifdef TRACE
         std::stringstream prefetch_info;
-        prefetch_info<<"Cycle: "<<clk_<<", Prefetcher_info: Issue Prefetch: "<<prefetcher.prefetch_total<<", Prefetch hit: "<<prefetcher.prefetch_hit<<", Prefetch latency: "<<prefetcher.prefetch_latency<<", Prefetch total latency: "<<prefetcher.total_latency<<'\n';
+        prefetch_info<<"Cycle: "<<clk_<<", Prefetcher_info: Issue Prefetch: "<<prefetcher.prefetch_total<<", Prefetch hit: "<<prefetcher.prefetch_hit<<'\n';
         std::string prefetch_infostr = prefetch_info.str();
         TraceFile(prefetch_infostr, "trace");
     #endif
@@ -582,6 +633,7 @@ void Controller::TraceFile(const std::string& content, std::string type){
     std::string tracename = config_.output_dir + "trace_output";
     std::string statsname = config_.output_dir + "stats_debug";
     std::string fetchname = config_.output_dir + "prefetch_debug";
+    std::string outname   = config_.output_dir + "trace.txt";
     if (type == "trace"){
         std::ofstream file(tracename, std::ios::app);
         if (file.is_open()) {
@@ -602,6 +654,15 @@ void Controller::TraceFile(const std::string& content, std::string type){
     }
     if (type == "prefetch"){
         std::ofstream file(fetchname, std::ios::app);
+        if (file.is_open()) {
+            file << content;
+            file.close();
+        } else {
+            std::cout << "无法打开文件！" << std::endl;
+        }
+    }
+    if (type == "out"){
+        std::ofstream file(outname, std::ios::app);
         if (file.is_open()) {
             file << content;
             file.close();

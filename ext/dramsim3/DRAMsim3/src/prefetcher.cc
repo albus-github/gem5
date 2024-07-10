@@ -176,6 +176,7 @@ void stream_buffer::update(uint16_t tag, uint64_t addr) {
             if (it->tag == tag){
                 found = true;
                 if (addr == it->addr + it->delta){
+                    //ghr.update_ghr(tag, addr, it->delta);
                     entry = {tag, addr, it->delta};
                     it = stream_buffer.erase(it);
                     stream_buffer.emplace_front(entry);
@@ -190,14 +191,17 @@ void stream_buffer::update(uint16_t tag, uint64_t addr) {
                             erased = true;
                             break;
                         }
-                    } if (!erased)
+                    } if (!erased){
+                        //ghr.update_ghr(tag, addr, it->delta);
                         ++ it;
+                    }
                 } else
                     ++ it;
             } else
                 ++ it;
         } 
         if (!found){
+            //int h_delta = ghr.search_ghr(tag, addr);
             if (capacity == 8){
                 stream_buffer.pop_back();
                 capacity --;
@@ -224,9 +228,34 @@ void stream_buffer::get_delta(uint16_t tag){
     }
 }
 
+void global_history_register::update_ghr(int tag, uint64_t addr, int delta){
+    auto it = ghr.find(tag);
+    if (it != ghr.end()){
+        it->second.first = addr;
+        it->second.second = delta;
+    } else {
+        ghr.emplace(tag, std::make_pair(addr, delta));
+    }
+}
+
+int global_history_register::search_ghr(int tag, uint64_t addr){
+    auto it = ghr.find(tag);
+    if (it != ghr.end()){
+        return it->second.second;
+    } else {
+        for (auto f_it = ghr.begin(); f_it != ghr.end(); f_it++){
+            if (f_it->second.first + f_it->second.second == addr){
+                ghr.emplace(tag, std::make_pair(addr, f_it->second.second));
+                return f_it->second.second;
+            }
+        }
+        return 0;
+    }
+}
+
 bool Prefetcher::PrefetchHit(uint64_t addr){
     if (PF.update_useful(addr)){
-        epoch_hit ++;
+        epoch_stats.epoch_hit ++;
     }
     return PrefetchBuffer.hit(addr);
 }
@@ -257,7 +286,7 @@ bool Prefetcher::IssuePrefetch(const Transaction &trans, Transaction &prefetch_t
     Address trans_addr = config_.AddressMapping(trans.addr);
     Address prefetch_addr = config_.AddressMapping(prefetch_trans.addr);
     Address next_addr = config_.AddressMapping(prefetch_trans.addr + 64);
-    if (trans_addr.row == prefetch_addr.row && trans.addr != prefetch_trans.addr || trans_addr.bank != prefetch_addr.bank || trans_addr.bankgroup != prefetch_addr.bankgroup){
+    if ((trans_addr.row == prefetch_addr.row && trans.addr != prefetch_trans.addr) || trans_addr.bank != prefetch_addr.bank || trans_addr.bankgroup != prefetch_addr.bankgroup){
         if (PF.PrefetchFilter.find(prefetch_trans.addr) == PF.PrefetchFilter.end() /*&& LT.Istimely(trans, prefetch_trans)*/){
             /*if (prefetch_addr.row != next_addr.row || prefetch_addr.bank != next_addr.bank || prefetch_addr.bankgroup != next_addr.bankgroup){
                 prefetch_trans.IsPrefetch = 2;
@@ -268,63 +297,74 @@ bool Prefetcher::IssuePrefetch(const Transaction &trans, Transaction &prefetch_t
     return false;
 }
 
-double Prefetcher::Updatea(){           //compulate prefetch accuracy in the last epoch
-    double a;
-    if (epoch_total != 0){
-        a = epoch_hit / epoch_total;
+void Prefetcher::Updatea_epoch_info(){           //compulate prefetch accuracy in the last epoch
+    if (epoch_stats.epoch_total != 0){
+        epoch_stats.epoch_a = double(epoch_stats.epoch_hit) / epoch_stats.epoch_total;
     } else {
-        a = 0.5;
+        epoch_stats.epoch_a = 0.5;
     }
-    epoch_hit = 0;
-    epoch_total = 0;
+    epoch_stats.epoch_hit = 0;
+    epoch_stats.epoch_total = 0;
     //PrefetchBuffer.epoch_update(PF);  //life time
     PF.update_valid();
-    return a;
 }
 
 void Prefetcher::Updatelatency(Transaction &trans, uint64_t clk){
-    epoch_read_done += 1;
-    epoch_read_latency = (epoch_read_latency * (epoch_read_done - 1) + clk - trans.added_cycle) / epoch_read_done;
+    epoch_stats.epoch_read_done  += 1;
+    epoch_stats.epoch_read_latency = (epoch_stats.epoch_read_latency * (epoch_stats.epoch_read_done - 1) + clk - trans.added_cycle) / epoch_stats.epoch_read_done;
 }
 
 void Prefetcher::UpdateaDistance(){
-    // update distance with prefetch accuracy
-    double epcoh_a = Updatea();
-    if (epcoh_a > Th){
-        if (distance < 5){
-            distance = 5;
-        } else if (distance < max_distance){
-            distance ++;
+    Updatea_epoch_info();
+    // if (epoch_stats.last_trans_num == 0 || abs(epoch_stats.epoch_trans_num - epoch_stats.last_trans_num) > epoch_stats.last_trans_num * 0.15)
+    //     distance = 5;
+    // else{
+        // update distance with prefetch accuracy
+        if (epoch_stats.epoch_a > Th){
+            if (distance < 5){
+                distance = 5;
+            } else if (distance < max_distance){
+                distance ++;
+            }
+        } else if (epoch_stats.epoch_a > Tl){
+                distance = 5;
+        } else {
+            if (distance > 5){
+                distance = 5;
+            } else if (distance > 1){
+                distance --;
+            }
         }
-    } else if (epcoh_a > Tl){
-            distance = 5;
-    } else {
-        if (distance > 5){
-            distance = 5;
-        } else if (distance == 1){
-            distance = 1;
-        } else{
-            distance --;
-        }
-    }
+        
+        // update distance with read_latency
+        // if (epoch_stats.last_read_latency != 0 && epoch_stats.epoch_read_latency != 0){
+        //     if (epoch_stats.epoch_read_latency > epoch_stats.last_read_latency && distance > 1 /*&& distance > 5*/){
+        //         distance --;
+        //     } else if(distance == max_distance && epoch_stats.last_read_latency > 15){
+        //         distance --;
+        //     } 
+        //     else if(epoch_stats.epoch_read_latency <= epoch_stats.last_read_latency){
+        //         if (distance < 5){
+        //             distance = 5;
+        //         }
+        //         else if (distance < max_distance){
+        //             distance ++;
+        //         }
+        //     }
+        // }
 
-    // if (last_read_latency != 0){
-    //     if (epoch_read_latency > last_read_latency && distance > 0 && distance > 5){
-    //         distance --;
-    //     } else if(distance == max_distance && last_read_latency > 15){
-    //         distance --;
-    //     } else if (distance < 5){
-    //         distance = 5;
-    //     }
-    //     else{
-    //         if (distance < max_distance){
-    //             distance ++;
-    //         }
-    //     }
+        // if (epoch_stats.epoch_a > Th && distance < max_distance){
+        //     distance ++;
+        // } else if (epoch_stats.epoch_a < Tl && distance > 1){
+        //     distance --;
+        // }
     // }
-    // last_read_latency = epoch_read_latency;
-    // epoch_read_done = 0;
-    // epoch_read_latency = 0;
+
+    epoch_stats.last_read_latency = epoch_stats.epoch_read_latency;
+    epoch_stats.epoch_read_done = 0;
+    epoch_stats.last_trans_num = epoch_stats.epoch_trans_num;
+    epoch_stats.epoch_trans_num = 0;
+    epoch_stats.epoch_read_latency = 0;
 }
 
 void Prefetcher::UpdatePrefetchBuffer(Transaction &trans){
@@ -662,7 +702,8 @@ Transaction SPP_Prefetcher::GetPrefetch(){
 }
 
 void SPP_Prefetcher::UpdateaDistance(){
-    a = Updatea();
+    Updatea_epoch_info();
+    a = epoch_stats.epoch_a;
 }
 
 void SPP_Prefetcher::initial(const Transaction &trans){
@@ -715,14 +756,14 @@ Transaction Delta_Prefetcher::GetPrefetch(){
 }
 
 void Delta_Prefetcher::UpdateaDistance(){
-    double epcoh_a = Updatea();
-    if (epcoh_a > Th){
+    Updatea_epoch_info();
+    if (epoch_stats.epoch_a > Th){
         if (distance < 8){
             distance = 8;
         } else if (distance < HT.way){
             distance ++;
         }
-    } else if (epcoh_a > Tl){
+    } else if (epoch_stats.epoch_a > Tl){
             distance = 8;
     } else {
         if (distance > 8){

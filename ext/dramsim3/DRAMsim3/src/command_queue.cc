@@ -42,12 +42,14 @@ Command CommandQueue::GetCommandToIssue() {
                 continue;
             }
         }
-        auto cmd = GetFirstReadyInQueue(queue);
-        if (cmd.IsValid()) {
-            if (cmd.IsReadWrite()) {
-                EraseRWCommand(cmd);
+        if (!queue.empty()){
+            auto cmd = GetFirstReadyInQueue(queue);
+            if (cmd.IsValid()) {
+                if (cmd.IsReadWrite()) {
+                    EraseRWCommand(cmd);
+                }
+                return cmd;
             }
-            return cmd;
         }
     }
     return Command();
@@ -176,6 +178,22 @@ CMDQueue& CommandQueue::GetQueue(int rank, int bankgroup, int bank) {
 }
 
 Command CommandQueue::GetFirstReadyInQueue(CMDQueue& queue) const {
+    for (auto cmd_it = queue.begin(); cmd_it != queue.end(); cmd_it++) {
+        // schedule read command firet; schedule command before prefetch
+        if (cmd_it->IsRead() && !cmd_it->IsPrefetch){
+            Command cmd = channel_state_.GetReadyCommand(*cmd_it, clk_);
+            if (!cmd.IsValid()) {
+                continue;
+            }
+            if (cmd.cmd_type == CommandType::PRECHARGE) {
+                if (!ArbitratePrecharge(cmd_it, queue)) {
+                    continue;
+                }
+            }
+            return cmd;
+        }
+    }
+
     for (auto cmd_it = queue.begin(); cmd_it != queue.end(); cmd_it++) {
         Command cmd = channel_state_.GetReadyCommand(*cmd_it, clk_);
         if (!cmd.IsValid()) {

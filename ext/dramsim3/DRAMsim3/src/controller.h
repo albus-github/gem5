@@ -21,7 +21,8 @@ namespace dramsim3 {
 
 // #define TRACE
 // #define STATS
-#define PREFETCH
+// #define PREFETCH
+// #define OUT
 
 enum class RowBufPolicy { OPEN_PAGE, CLOSE_PAGE, SIZE };
 
@@ -58,8 +59,8 @@ class Controller {
 
     bool prefetch_on;
 
-    //NextLine_Prefetcher prefetcher;
-    Stream_Prefetcher prefetcher;
+    NextLine_Prefetcher prefetcher;
+    //Stream_Prefetcher prefetcher;
     //SPP_Prefetcher prefetcher;
     //Delta_Prefetcher prefetcher;
 

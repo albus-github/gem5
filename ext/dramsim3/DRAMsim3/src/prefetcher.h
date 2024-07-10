@@ -68,9 +68,18 @@ struct sb_entry {
     int delta;
 };
 
+class global_history_register {
+public:    
+    std::unordered_map<int, std::pair<uint64_t, int>> ghr;
+
+    void update_ghr(int tag, uint64_t addr, int delta);
+    int search_ghr(int tag, uint64_t addr);
+};
+
 class stream_buffer {
 private:
     std::list<sb_entry> stream_buffer;
+    global_history_register ghr;
     int capacity;
 
 public:
@@ -175,24 +184,41 @@ public:
     bool Istimely(const Transaction &trans, Transaction &prefetch_trans);
 };
 
+struct epoch_info{
+    int epoch_total;
+    int epoch_hit;
+    int epoch_read_done;
+    int epoch_trans_num;
+    int last_trans_num;
+    double epoch_read_latency;
+    double last_read_latency;
+    double epoch_a;
+
+    epoch_info()
+        : epoch_total(0),
+          epoch_hit(0),
+          epoch_read_done(0),
+          epoch_trans_num(0),
+          last_trans_num(0),
+          epoch_read_latency(0.0),
+          last_read_latency(0.0),
+          epoch_a(0.0) {}
+};
+
 class Prefetcher
 {
 public:
     Prefetcher(const Config &config, double Tl, double Th, int distance, int max_distance):
     prefetch_total(0),
     prefetch_hit(0),
-    epoch_total(0),
-    epoch_hit(0),
     i(0),
-    PrefetchBuffer(64),
+    PrefetchBuffer(128),
     config_(config),
     Tl(Tl),
     Th(Th),
-    epoch_read_done(0),
-    epoch_read_latency(0),
-    last_read_latency(0),
     distance(distance),
-    max_distance(max_distance)
+    max_distance(max_distance),
+    epoch_stats()
     {}
     ~Prefetcher(){}
 
@@ -200,11 +226,6 @@ public:
     double Th;
     int prefetch_total;
     int prefetch_hit;
-    double epoch_total;
-    double epoch_hit;
-    int epoch_read_done;
-    double epoch_read_latency;
-    double last_read_latency;
     int distance;
     int max_distance;
     int i;
@@ -213,13 +234,14 @@ public:
     Prefetch_Buffer PrefetchBuffer;
     Prefetch_Filter PF;
     Latency_Table LT;
+    epoch_info epoch_stats;
     const Config &config_;
 
     virtual void W_ivicte(uint64_t addr);
     virtual void UpdatePrefetchBuffer(Transaction &trans);
     virtual bool PrefetchHit(uint64_t addr);
     virtual bool IssuePrefetch(const Transaction &trans, Transaction &prefetch_trans); //prefetch filter
-    virtual double Updatea();
+    virtual void Updatea_epoch_info();
     virtual void Updatelatency(Transaction &trans, uint64_t clk);
     virtual void UpdateaDistance();
     virtual void initial(const Transaction &trans);
@@ -240,7 +262,7 @@ public:
 
 class Stream_Prefetcher : public Prefetcher {
 public:
-    Stream_Prefetcher(const Config &config) : Prefetcher(config, 0.25, 0.75, 5, 8) {}
+    Stream_Prefetcher(const Config &config) : Prefetcher(config, 0.25, 0.5, 5, 8) {}
     ~Stream_Prefetcher(){};
     
     stream_buffer Stream_buffer;
@@ -251,7 +273,7 @@ public:
 
 class SPP_Prefetcher : public Prefetcher {
 public:
-    SPP_Prefetcher(const Config &config) : Prefetcher(config, 0.25, 0.75, 10, 10) {}
+    SPP_Prefetcher(const Config &config) : Prefetcher(config, 0.25, 0.5, 3, 10) {}
     ~SPP_Prefetcher(){};
 
     Signature_Table ST;
@@ -272,7 +294,7 @@ public:
 
 class Delta_Prefetcher : public Prefetcher {
 public:
-    Delta_Prefetcher(const Config &config) : Prefetcher(config, 0.25, 0.75, 8, 8), HT(History_Table(8, 16)){}
+    Delta_Prefetcher(const Config &config) : Prefetcher(config, 0.25, 0.5, 3, 8), HT(History_Table(8, 16)){}
     ~Delta_Prefetcher(){};
 
     uint16_t tag;
