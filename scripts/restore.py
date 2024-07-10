@@ -13,11 +13,11 @@ default_outdir  = '/home/albus/gem5-results/spec2017_simpoint_restore'
 gem5_dir        = '/home/albus/gem5'
 
 def cases(benchmark, r):
-    if benchmark=="namd_r"      and r==3: return True
-    if benchmark=="imagick_r"   and r==3: return True
-    if benchmark=="perlbench_r" and r==3: return True
-    if benchmark=="x264_r"      and (r==1 or r==2): return True
-    if benchmark=="cactuBSSN_r" and (r==15): return True
+    # if benchmark=="namd_r"      and r==3: return True
+    # if benchmark=="imagick_r"   and r==3: return True
+    # if benchmark=="perlbench_r" and r==3: return True
+    # if benchmark=="x264_r"      and (r==1 or r==2): return True
+    # if benchmark=="cactuBSSN_r" and (r==15): return True
     return False
 
 def count_ctps(benchmark):
@@ -42,7 +42,7 @@ def restore_cpt(benchmark, some_extra_args, restore_dir, i):
             '{}'.format(benchmark),
             '--benchmark_stdout={}/out'.format(restore_dir),
             '--benchmark_stderr={}/err'.format(restore_dir),
-            '--maxinsts=10000000000',
+            '--maxinsts=100000000',
             '--mem-size=8GB',
             '--restore-simpoint-checkpoint',
             '-r {}'.format(i+1),

@@ -9,6 +9,7 @@ import time
 from os.path import join as pjoin
 from os.path import expanduser as uexp
 import argparse
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from multiprocessing import Pool
 import common as c
 
@@ -28,7 +29,7 @@ def take_cpt_for_benchmark(benchmark, simpoint_file, weight_file, outdir_b):
     gem5_dir = '/home/albus/gem5'
 
     interval = 10000000
-    warmup = 20*10**6
+    warmup = 2000000
 
     exec_dir = c.run_dir(benchmark)
     os.chdir(exec_dir)
@@ -38,7 +39,7 @@ def take_cpt_for_benchmark(benchmark, simpoint_file, weight_file, outdir_b):
             pjoin(gem5_dir, 'configs/spec_2017/se_spec2017.py'),
             '-b',
             '{}'.format(benchmark),
-            '--maxinsts=10000000000',
+            '--maxinsts=100000000',
             '--benchmark_stdout={}/out'.format(outdir_b),
             '--benchmark_stderr={}/err'.format(outdir_b),
             '--cpu-type=AtomicSimpleCPU',
@@ -91,12 +92,21 @@ def main():
         with open(benchmarks_file) as f:
             benchmarks = [line.strip() for line in f]
 
-    num_thread = 22
-    if num_thread > 1:
-        p = Pool(num_thread)
-        p.map(run, benchmarks)
-    else:
-        run(benchmarks[0])
+    # num_thread = 22
+    # if num_thread > 1:
+    #     p = Pool(num_thread)
+    #     p.map(run, benchmarks)
+    # else:
+    #     run(benchmarks[0])
+
+    if benchmarks:
+        with ThreadPoolExecutor(max_workers=min(8, len(benchmarks))) as executor:
+            futures = []
+            for benchmark in benchmarks:
+                futures.append(executor.submit(run, (benchmark)))
+            
+            for future in as_completed(futures):
+                future.result()  # Check for exceptions and wait for thread completion
 
 
 if __name__ == '__main__':
