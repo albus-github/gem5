@@ -345,42 +345,42 @@ void Controller::ScheduleTransaction() {
         is_unified_queue_ ? unified_queue_
                           : write_draining_ > 0 ? write_buffer_ : read_queue_;
 
-    for (auto it = queue.begin(); it != queue.end(); it++) {
-        if (!it->is_write && !it->IsPrefetch ){
-            if (PrefetchHit(it->addr)){
-                IssueHitTrans(*it);
-                queue.erase(it);
-                return;
-            }/*if (WaitPrefetch(*it)){
-                //std::cout<<"Trans addr: "<<it->addr<<std::endl;
-                continue;
-            }*/
-        }
-    }
+    // for (auto it = queue.begin(); it != queue.end(); it++) {
+    //     if (!it->is_write && !it->IsPrefetch ){
+    //         if (PrefetchHit(it->addr)){
+    //             IssueHitTrans(*it);
+    //             queue.erase(it);
+    //             return;
+    //         }/*if (WaitPrefetch(*it)){
+    //             //std::cout<<"Trans addr: "<<it->addr<<std::endl;
+    //             continue;
+    //         }*/
+    //     }
+    // }
            
-    for (auto it = queue.begin(); it != queue.end(); it++) {
-        if (!it->is_write && !it->IsPrefetch ){
-            auto cmd = TransToCommand(*it);
-            if (channel_state_.IsRowOpen(cmd.addr.rank, cmd.addr.bankgroup, cmd.addr.bank)){
-                if (cmd_queue_.WillAcceptCommand(cmd.Rank(), cmd.Bankgroup(),
-                                             cmd.Bank())) {
-                    if (!is_unified_queue_ && cmd.IsWrite()) {
-                        // Enforce R->W dependency
-                        if (pending_rd_q_.count(it->addr) > 0) {
-                            write_draining_ = 0;
-                            is_rw_denp_ = true;
-                            return;
-                        }
-                        write_draining_ -= 1;
-                    }
-                    is_rw_denp_ = false;
-                    cmd_queue_.AddCommand(cmd);
-                    queue.erase(it);
-                    return;
-                }
-            }
-        }
-    }
+    // for (auto it = queue.begin(); it != queue.end(); it++) {
+    //     if (!it->is_write && !it->IsPrefetch ){
+    //         auto cmd = TransToCommand(*it);
+    //         if (channel_state_.IsRowOpen(cmd.addr.rank, cmd.addr.bankgroup, cmd.addr.bank)){
+    //             if (cmd_queue_.WillAcceptCommand(cmd.Rank(), cmd.Bankgroup(),
+    //                                          cmd.Bank())) {
+    //                 if (!is_unified_queue_ && cmd.IsWrite()) {
+    //                     // Enforce R->W dependency
+    //                     if (pending_rd_q_.count(it->addr) > 0) {
+    //                         write_draining_ = 0;
+    //                         is_rw_denp_ = true;
+    //                         return;
+    //                     }
+    //                     write_draining_ -= 1;
+    //                 }
+    //                 is_rw_denp_ = false;
+    //                 cmd_queue_.AddCommand(cmd);
+    //                 queue.erase(it);
+    //                 return;
+    //             }
+    //         }
+    //     }
+    // }
 
     for (auto it = queue.begin(); it != queue.end(); it++) {
         if (it->is_write){
@@ -408,17 +408,17 @@ void Controller::ScheduleTransaction() {
             }
         }*/
 
-        // if (!it->is_write && !it->IsPrefetch){
-        //     if (PrefetchHit(it->addr)){
-        //         IssueHitTrans(*it);
-        //         queue.erase(it);
-        //         break;
-        //     }
-        //     /*if (WaitPrefetch(*it)){
-        //         //std::cout<<"Trans addr: "<<it->addr<<std::endl;
-        //         continue;
-        //     }*/
-        // }
+        if (!it->is_write && !it->IsPrefetch){
+            if (PrefetchHit(it->addr)){
+                IssueHitTrans(*it);
+                queue.erase(it);
+                break;
+            }
+            /*if (WaitPrefetch(*it)){
+                //std::cout<<"Trans addr: "<<it->addr<<std::endl;
+                continue;
+            }*/
+        }
         
         auto cmd = TransToCommand(*it);
         if (cmd_queue_.WillAcceptCommand(cmd.Rank(), cmd.Bankgroup(),

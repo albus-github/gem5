@@ -59,9 +59,9 @@ class Controller {
 
     bool prefetch_on;
 
-    NextLine_Prefetcher prefetcher;
+    //NextLine_Prefetcher prefetcher;
     //Stream_Prefetcher prefetcher;
-    //SPP_Prefetcher prefetcher;
+    SPP_Prefetcher prefetcher;
     //Delta_Prefetcher prefetcher;
 
 #ifdef STATS

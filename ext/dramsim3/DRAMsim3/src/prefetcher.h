@@ -129,29 +129,34 @@ public:
 
 };
 
-struct History_Table_entry {
-    uint16_t tag;
-    uint64_t addr;
-    History_Table_entry* next;
-    History_Table_entry () = default;
-    History_Table_entry (uint16_t tag, uint64_t addr) : tag(tag), addr(addr), next(nullptr) {}
+// struct History_Table_entry {
+//     uint16_t tag;
+//     uint64_t addr;
+//     History_Table_entry* next;
+//     History_Table_entry () = default;
+//     History_Table_entry (uint16_t tag, uint64_t addr) : tag(tag), addr(addr), next(nullptr) {}
+// };
+
+struct History_Table_entry{
+    std::list<std::pair<uint16_t, uint64_t>> TagGroup;
 };
 
 class History_Table {
 public:
     History_Table(int group, int way);
-    History_Table_entry** HistoryTable;
+   std::list<std::pair<uint16_t, uint64_t>> HistoryTable[8];
+    // History_Table_entry** HistoryTable;
     int way;
     int group;
     int count[8];
-    int64_t *delta;
+    int64_t delta[8];
     void update_historytable(uint16_t tag, uint64_t addr);
     void get_delta(uint16_t tag, uint64_t addr);
 };
 
 class Delta_Table :public Pattern_Table{
 public:
-    std::vector<int> prefetch_delta;
+    int prefetch_delta[8];
     void update_coverage();
     void get_delta(uint16_t tag);
     void update_capacity(int distance);
@@ -262,7 +267,7 @@ public:
 
 class Stream_Prefetcher : public Prefetcher {
 public:
-    Stream_Prefetcher(const Config &config) : Prefetcher(config, 0.25, 0.5, 5, 8) {}
+    Stream_Prefetcher(const Config &config) : Prefetcher(config, 0.25, 0.5, 3, 8) {}
     ~Stream_Prefetcher(){};
     
     stream_buffer Stream_buffer;
@@ -273,7 +278,7 @@ public:
 
 class SPP_Prefetcher : public Prefetcher {
 public:
-    SPP_Prefetcher(const Config &config) : Prefetcher(config, 0.25, 0.5, 3, 10) {}
+    SPP_Prefetcher(const Config &config) : Prefetcher(config, 0.2, 0.4, 3, 10) {}
     ~SPP_Prefetcher(){};
 
     Signature_Table ST;

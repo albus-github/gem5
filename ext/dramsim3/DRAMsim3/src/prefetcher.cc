@@ -420,7 +420,6 @@ void Stream_Prefetcher::initial(const Transaction &trans) {
             }
         }
     }
-    
 }
 
 Transaction Stream_Prefetcher::GetPrefetch(){
@@ -569,60 +568,78 @@ bool Prefetch_Filter::update_useful(uint64_t addr){
 History_Table::History_Table(int group, int way) {
   this->group = group;
   this->way = way;
-  HistoryTable = new History_Table_entry*[group];
-  delta = new int64_t[group];
-  for (int i = 0; i < group; i++) {
-    HistoryTable[i] = new History_Table_entry[way];
-  }
+//   HistoryTable = new History_Table_entry*[group];
+//   delta = new int64_t[group];
+//   for (int i = 0; i < group; i++) {
+//     HistoryTable[i] = new History_Table_entry[way];
+//   }
 }
+
+// void History_Table::update_historytable(uint16_t tag, uint64_t addr){
+//     int set = tag % group;
+//     History_Table_entry* entry = new History_Table_entry(tag, addr);
+//     History_Table_entry* prev = nullptr;
+//     History_Table_entry* curr = HistoryTable[set];
+//     /*while (curr != nullptr && curr->tag != entry->tag) {
+//         prev = curr;
+//         curr = curr->next;
+//     }
+//     if (curr != nullptr) { 
+//         if (prev != nullptr) {
+//             prev->next = curr->next;
+//             curr->next = HistoryTable[set];
+//             HistoryTable[set] = curr;
+//         }
+//     } else {*/
+//         entry->next = HistoryTable[set];
+//         HistoryTable[set] = entry;
+//         count[set]++;
+//         if (count[set] > way) {
+//             prev = nullptr;
+//             curr = HistoryTable[set];
+//             while (curr->next != nullptr) {
+//                 prev = curr;
+//                 curr = curr->next;
+//             }
+//             if (prev != nullptr) {
+//                 prev->next = nullptr;
+//                 delete curr;
+//             }
+//             count[set]--; 
+//         }
+//     //}
+// }
+
+// void History_Table::get_delta(uint16_t tag, uint64_t addr){
+//     int set = tag % group;
+//     int i = 0;
+//     History_Table_entry* curr = HistoryTable[set];
+//     while (curr != nullptr && i < 8) {
+//         if (curr->tag == tag) {
+//             delta[i] = addr - curr->addr;
+//             ++i;
+//         }
+//         curr = curr->next;
+//     }
+// }
 
 void History_Table::update_historytable(uint16_t tag, uint64_t addr){
     int set = tag % group;
-    History_Table_entry* entry = new History_Table_entry(tag, addr);
-    History_Table_entry* prev = nullptr;
-    History_Table_entry* curr = HistoryTable[set];
-    /*while (curr != nullptr && curr->tag != entry->tag) {
-        prev = curr;
-        curr = curr->next;
+    if (HistoryTable[set].size() == group){
+        HistoryTable[set].pop_back();
     }
-    if (curr != nullptr) { 
-        if (prev != nullptr) {
-            prev->next = curr->next;
-            curr->next = HistoryTable[set];
-            HistoryTable[set] = curr;
-        }
-    } else {*/
-        entry->next = HistoryTable[set];
-        HistoryTable[set] = entry;
-        count[set]++;
-        if (count[set] > way) {
-            prev = nullptr;
-            curr = HistoryTable[set];
-            while (curr->next != nullptr) {
-                prev = curr;
-                curr = curr->next;
-            }
-            if (prev != nullptr) {
-                prev->next = nullptr;
-                delete curr;
-            }
-            count[set]--; 
-        }
-    //}
+    HistoryTable[set].emplace_front(tag, addr);
 }
 
 void History_Table::get_delta(uint16_t tag, uint64_t addr){
     int set = tag % group;
     int i = 0;
-    History_Table_entry* curr = HistoryTable[set];
-    while (curr != nullptr && i < 8) {
-        if (curr->tag == tag) {
-            delta[i] = addr - curr->addr;
+    for (auto it = HistoryTable[set].begin(); it != HistoryTable[set].end(); it++){
+        if (it->first == tag){
+            delta[i] = addr - it->second;
             ++i;
         }
-        curr = curr->next;
     }
-    return;
 }
 
 void Delta_Table::update_coverage(){
@@ -631,8 +648,8 @@ void Delta_Table::update_coverage(){
             for (auto deltait = it->second.delta.begin(); deltait != it->second.delta.end(); ++deltait){
                 deltait->c_delta = 0;
             }
+            it->second.c_sig = 0;
         }
-        it->second.c_sig = 0;
     }
     return;
 }
@@ -659,16 +676,17 @@ void Delta_Table::get_delta(uint16_t tag){
         }
 
     } else {
-        for (int i = 0; i < prefetch_delta.size(); i++) {
+        // for (int i = 0; i < prefetch_delta.size(); i++) {
+        for (int i = 0; i < 8; i++) {
             prefetch_delta[i] = 0;
         }
         return;
     }
 }
 
-void Delta_Table::update_capacity(int distance){
-    prefetch_delta.resize(distance);
-}
+// void Delta_Table::update_capacity(int distance){
+//     prefetch_delta.resize(distance);
+// }
 
 void Prefetch_Filter::update_valid(){
     for (auto& entry : PrefetchFilter) {
@@ -717,7 +735,8 @@ void SPP_Prefetcher::initial(const Transaction &trans){
 }
 
 bool SPP_Prefetcher::Continue(){
-    if (P > Th && i < distance)
+    // if (P > Th && i < distance)
+    if (P > Tl && i < distance)
         return true;
     return false;
 }
@@ -725,11 +744,12 @@ bool SPP_Prefetcher::Continue(){
 void Delta_Prefetcher::initial(const Transaction &trans){
     i = 0;
     prefetch_trans = trans;
-    DT.update_capacity(distance);
+    // DT.update_capacity(distance);
     for (int i = 0; i < 8 ; ++i){
         HT.delta[i] = 0;
     }
-    for (int j = 0; j < DT.prefetch_delta.size(); ++j){
+    // for (int j = 0; j < DT.prefetch_delta.size(); ++j){
+    for (int j = 0; j < 8; ++j){
         DT.prefetch_delta[j] = 0;
     }
     tag = get_tag_uint16(trans.addr);
@@ -745,6 +765,15 @@ void Delta_Prefetcher::update(uint16_t tag, uint64_t addr){
         DT.update(tag, HT.delta[i]);
     }
     DT.get_delta(tag);
+    if (DT.prefetch_delta[0] !=0 && DT.prefetch_delta[distance - 1] == 0){
+        int k = 2;
+        for (int j = 1; j < distance; ++j){
+            if (DT.prefetch_delta[j] == 0){
+                DT.prefetch_delta[j] = DT.prefetch_delta[0] * k;
+                k++;
+            }
+        }
+    }
 }
 
 Transaction Delta_Prefetcher::GetPrefetch(){
