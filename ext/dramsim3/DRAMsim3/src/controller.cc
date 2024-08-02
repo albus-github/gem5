@@ -60,9 +60,9 @@ std::pair<uint64_t, int> Controller::ReturnDoneTrans(uint64_t clk) {
             std::string complete_infostr = complete_info.str();
             TraceFile(complete_infostr, "trace");
         #endif
-            if (it->complete_cycle - it->added_cycle != 4){
-                prefetcher.LT.update_fetch(*it);                
-            }
+            // if (it->complete_cycle - it->added_cycle != 4){
+            //     prefetcher.LT.update_fetch(*it);                
+            // }
             if (it->IsPrefetch){
                 prefetcher.UpdatePrefetchBuffer(*it);
                 it = return_queue_.erase(it);
@@ -211,7 +211,7 @@ void Controller::ClockTick() {
         std::string epoch_infostr = epoch_info.str();
         TraceFile(epoch_infostr, "trace");
     #endif
-        // prefetcher.UpdateaDistance();
+        prefetcher.UpdateaDistance();
     }
 
     clk_++;
@@ -269,7 +269,7 @@ bool Controller::AddTransaction(Transaction trans) {
         return true;
     } else {  // read
         // if in write buffer, use the write buffer value
-        prefetcher.LT.update_arrival(trans);
+        // prefetcher.LT.update_arrival(trans);
         prefetcher.epoch_stats.epoch_trans_num ++;
         if (pending_wr_q_.count(trans.addr) > 0) {
             trans.complete_cycle = clk_ + 1;
@@ -308,18 +308,25 @@ bool Controller::AddTransaction(Transaction trans) {
         if (prefetch_on){
             prefetcher.initial(trans);
             while (prefetcher.Continue()){
-                Transaction prefetch = prefetcher.GetPrefetch();
-                Address prefetch_addr = config_.AddressMapping(prefetch.addr);
+                std::pair<double, Transaction> prefetch = prefetcher.GetPrefetch();
+                Address prefetch_addr = config_.AddressMapping(prefetch.second.addr);
                 prefetcher.i ++;
-                if (prefetcher.IssuePrefetch(trans, prefetch) && read_queue_.size() < read_queue_.capacity() - 1 && channel_state_.OpenRow(prefetch_addr.rank, prefetch_addr.bankgroup, prefetch_addr.bank) == prefetch_addr.row){
+                // if (prefetch.addr != trans.addr && (read_queue_.size() < read_queue_.capacity() - 1)){
+                if (prefetcher.IssuePrefetch(trans, prefetch.second) && (read_queue_.size() < read_queue_.capacity() - 1)){
+                    if (    (channel_state_.OpenRow(prefetch_addr.rank, prefetch_addr.bankgroup, prefetch_addr.bank) != prefetch_addr.row)
+                         && (channel_state_.OpenRow(prefetch_addr.rank, prefetch_addr.bankgroup, prefetch_addr.bank) != -1)
+                         && (prefetch.first < prefetcher.Tl)
+                        ){
+                        continue;
+                    }
                 #ifdef TRACE
                     std::stringstream p_trans_info;
-                    p_trans_info<<"Cycle: "<<clk_<<", "<<"Prefetch_Trans: "<<"Addr: "<<prefetch.addr<<'\n';
+                    p_trans_info<<"Cycle: "<<clk_<<", "<<"Prefetch_Trans: "<<"Addr: "<<prefetch.second.addr<<'\n';
                     std::string p_trans_infostr = p_trans_info.str();
                     TraceFile(p_trans_infostr, "trace");
                 #endif
-                    AddPrefetchTrans(prefetch);
-                    prefetcher.PF.add_entry(prefetch.addr);
+                    AddPrefetchTrans(prefetch.second);
+                    prefetcher.PF.add_entry(prefetch.second.addr);
                     prefetcher.prefetch_total ++;
                     prefetcher.epoch_stats.epoch_total ++;
                 } else{
@@ -345,80 +352,60 @@ void Controller::ScheduleTransaction() {
         is_unified_queue_ ? unified_queue_
                           : write_draining_ > 0 ? write_buffer_ : read_queue_;
 
-    // for (auto it = queue.begin(); it != queue.end(); it++) {
-    //     if (!it->is_write && !it->IsPrefetch ){
-    //         if (PrefetchHit(it->addr)){
-    //             IssueHitTrans(*it);
-    //             queue.erase(it);
-    //             return;
-    //         }/*if (WaitPrefetch(*it)){
-    //             //std::cout<<"Trans addr: "<<it->addr<<std::endl;
-    //             continue;
-    //         }*/
-    //     }
-    // }
+    // shedule cmds before prefetch trans
+    for (auto it = queue.begin(); it != queue.end(); it++) {
+        if (!it->is_write && !it->IsPrefetch ){
+            if (PrefetchHit(it->addr)){
+                IssueHitTrans(*it);
+                queue.erase(it);
+                return;
+            }/*if (WaitPrefetch(*it)){
+                //std::cout<<"Trans addr: "<<it->addr<<std::endl;
+                continue;
+            }*/
+        }
+    }
            
-    // for (auto it = queue.begin(); it != queue.end(); it++) {
-    //     if (!it->is_write && !it->IsPrefetch ){
-    //         auto cmd = TransToCommand(*it);
-    //         if (channel_state_.IsRowOpen(cmd.addr.rank, cmd.addr.bankgroup, cmd.addr.bank)){
-    //             if (cmd_queue_.WillAcceptCommand(cmd.Rank(), cmd.Bankgroup(),
-    //                                          cmd.Bank())) {
-    //                 if (!is_unified_queue_ && cmd.IsWrite()) {
-    //                     // Enforce R->W dependency
-    //                     if (pending_rd_q_.count(it->addr) > 0) {
-    //                         write_draining_ = 0;
-    //                         is_rw_denp_ = true;
-    //                         return;
-    //                     }
-    //                     write_draining_ -= 1;
-    //                 }
-    //                 is_rw_denp_ = false;
-    //                 cmd_queue_.AddCommand(cmd);
-    //                 queue.erase(it);
-    //                 return;
-    //             }
-    //         }
-    //     }
-    // }
+    for (auto it = queue.begin(); it != queue.end(); it++) {
+        if (!it->is_write && !it->IsPrefetch ){
+            auto cmd = TransToCommand(*it);
+            if (channel_state_.IsRowOpen(cmd.addr.rank, cmd.addr.bankgroup, cmd.addr.bank)){
+                if (cmd_queue_.WillAcceptCommand(cmd.Rank(), cmd.Bankgroup(),
+                                             cmd.Bank())) {
+                    if (!is_unified_queue_ && cmd.IsWrite()) {
+                        // Enforce R->W dependency
+                        if (pending_rd_q_.count(it->addr) > 0) {
+                            write_draining_ = 0;
+                            is_rw_denp_ = true;
+                            return;
+                        }
+                        write_draining_ -= 1;
+                    }
+                    is_rw_denp_ = false;
+                    cmd_queue_.AddCommand(cmd);
+                    queue.erase(it);
+                    return;
+                }
+            }
+        }
+    }
 
     for (auto it = queue.begin(); it != queue.end(); it++) {
         if (it->is_write){
             prefetcher.W_ivicte(it->addr);
         }
 
-        //Prefetcher
-        /*if (prefetch_on && !it->IsPrefetch && !it->is_write){
-            prefetcher.initial(*it);
-            while (prefetcher.Continue()){
-                Transaction prefetch = prefetcher.GetPrefetch();
-                prefetcher.i ++;
-                if (prefetcher.IssuePrefetch(*it, prefetch) && read_queue_.size() < read_queue_.capacity() - 1){
-                    std::stringstream p_trans_info;
-                    p_trans_info<<"Cycle: "<<clk_<<", "<<"Prefetch_Trans: "<<"Addr: "<<prefetch.addr<<'\n';
-                    std::string p_trans_infostr = p_trans_info.str();
-                    TraceFile(p_trans_infostr);
-                    AddPrefetchTrans(prefetch);
-                    prefetcher.PF.add_entry(prefetch.addr);
-                    prefetcher.prefetch_total ++;
-                    prefetcher.epoch_total ++;
-                } else{
-                    continue;
-                }
-            }
-        }*/
-
-        if (!it->is_write && !it->IsPrefetch){
-            if (PrefetchHit(it->addr)){
-                IssueHitTrans(*it);
-                queue.erase(it);
-                break;
-            }
-            /*if (WaitPrefetch(*it)){
-                //std::cout<<"Trans addr: "<<it->addr<<std::endl;
-                continue;
-            }*/
-        }
+        // if (!it->is_write && !it->IsPrefetch){
+        //     if (PrefetchHit(it->addr)){
+        //         IssueHitTrans(*it);
+        //         queue.erase(it);
+        //         break;
+        //     }
+        //     /*if (WaitPrefetch(*it)){
+        //         //std::cout<<"Trans addr: "<<it->addr<<std::endl;
+        //         continue;
+        //     }*/
+        // }
         
         auto cmd = TransToCommand(*it);
         if (cmd_queue_.WillAcceptCommand(cmd.Rank(), cmd.Bankgroup(),

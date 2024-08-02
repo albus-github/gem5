@@ -316,9 +316,9 @@ void Prefetcher::Updatelatency(Transaction &trans, uint64_t clk){
 
 void Prefetcher::UpdateaDistance(){
     Updatea_epoch_info();
-    // if (epoch_stats.last_trans_num == 0 || abs(epoch_stats.epoch_trans_num - epoch_stats.last_trans_num) > epoch_stats.last_trans_num * 0.15)
-    //     distance = 5;
-    // else{
+    if (epoch_stats.last_trans_num == 0 || abs(epoch_stats.epoch_trans_num - epoch_stats.last_trans_num) > epoch_stats.last_trans_num * 0.15)
+        distance = 5;
+    else{
         // update distance with prefetch accuracy
         if (epoch_stats.epoch_a > Th){
             if (distance < 5){
@@ -358,7 +358,7 @@ void Prefetcher::UpdateaDistance(){
         // } else if (epoch_stats.epoch_a < Tl && distance > 1){
         //     distance --;
         // }
-    // }
+    }
 
     epoch_stats.last_read_latency = epoch_stats.epoch_read_latency;
     epoch_stats.epoch_read_done = 0;
@@ -395,11 +395,11 @@ uint16_t Prefetcher::get_tag_uint16(uint64_t addr){
 }
 
 //Get the Perfetch command
-Transaction NextLine_Prefetcher::GetPrefetch(){
+std::pair<double, Transaction> NextLine_Prefetcher::GetPrefetch(){
     prefetch_trans.addr += 64;
     prefetch_trans.IsPrefetch = 1;
     prefetch_trans.is_write = false;
-    return prefetch_trans;
+    return std::make_pair(epoch_stats.epoch_a, prefetch_trans);
 }
 
 void Stream_Prefetcher::initial(const Transaction &trans) {
@@ -422,11 +422,11 @@ void Stream_Prefetcher::initial(const Transaction &trans) {
     }
 }
 
-Transaction Stream_Prefetcher::GetPrefetch(){
+std::pair<double, Transaction> Stream_Prefetcher::GetPrefetch(){
     prefetch_trans.addr += Stream_buffer.delta[i];
     prefetch_trans.IsPrefetch = 1;
     prefetch_trans.is_write = false;
-    return prefetch_trans;
+    return std::make_pair(epoch_stats.epoch_a, prefetch_trans);
 } 
 
 trans_info Prefetcher::get_info(const Transaction &trans){
@@ -565,15 +565,15 @@ bool Prefetch_Filter::update_useful(uint64_t addr){
     return false;
 }
 
-History_Table::History_Table(int group, int way) {
-  this->group = group;
-  this->way = way;
+// History_Table::History_Table(int group, int way) {
+//   this->group = group;
+//   this->way = way;
 //   HistoryTable = new History_Table_entry*[group];
 //   delta = new int64_t[group];
 //   for (int i = 0; i < group; i++) {
 //     HistoryTable[i] = new History_Table_entry[way];
 //   }
-}
+// }
 
 // void History_Table::update_historytable(uint16_t tag, uint64_t addr){
 //     int set = tag % group;
@@ -664,24 +664,20 @@ void Delta_Table::get_delta(uint16_t tag){
                 }
         );
         for (int i = 0; i < 8; i++) {
-            if (entry.delta[i].delta == 0){
-                continue;
-            } else {
-                if (i < entry.delta.size()) {
-                prefetch_delta[i] = entry.delta[i].delta;
-                } else {
-                prefetch_delta[i] = 0;
-                }
+            if (entry.delta[i].delta != 0 && entry.delta[i].c_delta/entry.c_sig > 0.25){
+                prefetch_delta[i].delta = entry.delta[i].delta;
+                prefetch_delta[i].p = entry.delta[i].c_delta * 1.0 / entry.c_sig;
             }
         }
-
-    } else {
-        // for (int i = 0; i < prefetch_delta.size(); i++) {
-        for (int i = 0; i < 8; i++) {
-            prefetch_delta[i] = 0;
-        }
-        return;
     }
+    // } else {
+    //     // for (int i = 0; i < prefetch_delta.size(); i++) {
+    //     for (int i = 0; i < 8; i++) {
+    //         prefetch_delta[i].delta = 0;
+    //         prefetch_delta[i].p = 0;
+    //     }
+    //     return;
+    // }
 }
 
 // void Delta_Table::update_capacity(int distance){
@@ -709,19 +705,38 @@ void SPP_Prefetcher::updateSTandPT(trans_info info){
     sig = ST.getsignature(info);
 }
 
-Transaction SPP_Prefetcher::GetPrefetch(){
+std::pair<double, Transaction> SPP_Prefetcher::GetPrefetch(){
     prefetch_delta = PT.prefetch_delta(sig);
-    prefetch_trans.addr = prefetch_trans.addr + 64 * prefetch_delta.delta;
-    prefetch_trans.IsPrefetch = 1;
-    prefetch_trans.is_write = false;
     P = a * P * prefetch_delta.p;
     sig = ST.newsignature(sig, prefetch_delta.delta);
-    return prefetch_trans;
+    if (prefetch_delta.delta == 0 && initial_delta.delta != 0){
+        prefetch_trans.addr += 64 * initial_delta.delta;
+    } else {
+        prefetch_trans.addr += 64 * prefetch_delta.delta;
+    }
+    prefetch_trans.IsPrefetch = 1;
+    prefetch_trans.is_write = false;
+    return std::make_pair(prefetch_delta.p, prefetch_trans);
 }
 
 void SPP_Prefetcher::UpdateaDistance(){
     Updatea_epoch_info();
     a = epoch_stats.epoch_a;
+    if (epoch_stats.epoch_a > Th){
+            if (distance < 3){
+                distance = 5;
+            } else if (distance < max_distance){
+                distance ++;
+            }
+        } else if (epoch_stats.epoch_a > Tl){
+                distance = 3;
+        } else {
+            if (distance > 3){
+                distance = 3;
+            } else if (distance > 1){
+                distance --;
+            }
+        }
 }
 
 void SPP_Prefetcher::initial(const Transaction &trans){
@@ -732,6 +747,7 @@ void SPP_Prefetcher::initial(const Transaction &trans){
     updateSTandPT(transinfo);
     P = 1;
     i = 0;
+    initial_delta = PT.prefetch_delta(sig);
 }
 
 bool SPP_Prefetcher::Continue(){
@@ -747,10 +763,8 @@ void Delta_Prefetcher::initial(const Transaction &trans){
     // DT.update_capacity(distance);
     for (int i = 0; i < 8 ; ++i){
         HT.delta[i] = 0;
-    }
-    // for (int j = 0; j < DT.prefetch_delta.size(); ++j){
-    for (int j = 0; j < 8; ++j){
-        DT.prefetch_delta[j] = 0;
+        DT.prefetch_delta[i].delta = 0;
+        DT.prefetch_delta[i].p = 0;
     }
     tag = get_tag_uint16(trans.addr);
     DT.update_coverage();
@@ -765,43 +779,42 @@ void Delta_Prefetcher::update(uint16_t tag, uint64_t addr){
         DT.update(tag, HT.delta[i]);
     }
     DT.get_delta(tag);
-    if (DT.prefetch_delta[0] !=0 && DT.prefetch_delta[distance - 1] == 0){
+    if (DT.prefetch_delta[0].delta !=0 && DT.prefetch_delta[distance - 1].delta == 0){
         int k = 2;
         for (int j = 1; j < distance; ++j){
-            if (DT.prefetch_delta[j] == 0){
-                DT.prefetch_delta[j] = DT.prefetch_delta[0] * k;
+            if (DT.prefetch_delta[j].delta == 0){
+                DT.prefetch_delta[j].delta = DT.prefetch_delta[0].delta * k;
+                DT.prefetch_delta[j].p = DT.prefetch_delta[0].p;
                 k++;
             }
         }
     }
 }
 
-Transaction Delta_Prefetcher::GetPrefetch(){
+std::pair<double, Transaction> Delta_Prefetcher::GetPrefetch(){
     Transaction prefetch;
-    prefetch.addr = prefetch_trans.addr + DT.prefetch_delta[i];
+    prefetch.addr = prefetch_trans.addr + DT.prefetch_delta[i].delta;
     prefetch.IsPrefetch = 1;
     prefetch.is_write = false;
-    return prefetch;
+    return std::make_pair(DT.prefetch_delta[i].p, prefetch);
 }
 
 void Delta_Prefetcher::UpdateaDistance(){
     Updatea_epoch_info();
-    if (epoch_stats.epoch_a > Th){
-        if (distance < 8){
-            distance = 8;
-        } else if (distance < HT.way){
-            distance ++;
-        }
-    } else if (epoch_stats.epoch_a > Tl){
-            distance = 8;
-    } else {
-        if (distance > 8){
-            distance = 8;
-        } else if (distance == 1){
-            distance = 1;
-        } else{
-            distance --;
-        }
-    }
+    // if (epoch_stats.epoch_a > Th){
+    //     if (distance < 5){
+    //         distance = 5;
+    //     } else if (distance < HT.way){
+    //         distance ++;
+    //     }
+    // } else if (epoch_stats.epoch_a > Tl){
+    //         distance = 3;
+    // } else {
+    //     if (distance > 5){
+    //         distance = 3;
+    //     } else if (distance > 1){
+    //         distance --;
+    //     }
+    // }
 }
 }

@@ -143,11 +143,11 @@ struct History_Table_entry{
 
 class History_Table {
 public:
-    History_Table(int group, int way);
+    // History_Table(int group, int way);
    std::list<std::pair<uint16_t, uint64_t>> HistoryTable[8];
     // History_Table_entry** HistoryTable;
-    int way;
-    int group;
+    int way = 16;
+    int group = 8;
     int count[8];
     int64_t delta[8];
     void update_historytable(uint16_t tag, uint64_t addr);
@@ -156,7 +156,7 @@ public:
 
 class Delta_Table :public Pattern_Table{
 public:
-    int prefetch_delta[8];
+    prefetch_info prefetch_delta[8];
     void update_coverage();
     void get_delta(uint16_t tag);
     void update_capacity(int distance);
@@ -207,7 +207,7 @@ struct epoch_info{
           last_trans_num(0),
           epoch_read_latency(0.0),
           last_read_latency(0.0),
-          epoch_a(0.0) {}
+          epoch_a(0.5) {}
 };
 
 class Prefetcher
@@ -251,7 +251,7 @@ public:
     virtual void UpdateaDistance();
     virtual void initial(const Transaction &trans);
     virtual bool Continue();
-    virtual Transaction GetPrefetch()=0;
+    virtual std::pair<double, Transaction> GetPrefetch()=0;
     trans_info get_info(const Transaction &trans);
     int get_tag(uint64_t addr);
     uint16_t get_tag_uint16(uint64_t addr);
@@ -259,20 +259,20 @@ public:
 
 class NextLine_Prefetcher : public Prefetcher {
 public:
-    NextLine_Prefetcher(const Config &config) : Prefetcher(config, 0.25, 0.75, 1, 10) {}
+    NextLine_Prefetcher(const Config &config) : Prefetcher(config, 0.2, 0.75, 1, 10) {}
     ~NextLine_Prefetcher(){};
     
-    Transaction GetPrefetch() override;
+    std::pair<double, Transaction> GetPrefetch() override;
 };
 
 class Stream_Prefetcher : public Prefetcher {
 public:
-    Stream_Prefetcher(const Config &config) : Prefetcher(config, 0.25, 0.5, 3, 8) {}
+    Stream_Prefetcher(const Config &config) : Prefetcher(config, 0.2, 0.5, 3, 8) {}
     ~Stream_Prefetcher(){};
     
     stream_buffer Stream_buffer;
     uint16_t tag;
-    Transaction GetPrefetch() override;
+    std::pair<double, Transaction> GetPrefetch() override;
     void initial(const Transaction &trans) override;
 };
 
@@ -288,8 +288,9 @@ public:
     double a = 0.8;
     uint16_t sig;
     prefetch_info prefetch_delta;
+    prefetch_info initial_delta;
 
-    Transaction GetPrefetch() override;
+    std::pair<double, Transaction> GetPrefetch() override;
     //bool IssuePrefetch(const Transaction &trans, Transaction &prefetch_trans) override;
     void updateSTandPT(trans_info info);
     void UpdateaDistance() override;
@@ -299,7 +300,7 @@ public:
 
 class Delta_Prefetcher : public Prefetcher {
 public:
-    Delta_Prefetcher(const Config &config) : Prefetcher(config, 0.25, 0.5, 3, 8), HT(History_Table(8, 16)){}
+    Delta_Prefetcher(const Config &config) : Prefetcher(config, 0.2, 0.5, 3, 8)/*, HT(History_Table(8, 16))*/{}
     ~Delta_Prefetcher(){};
 
     uint16_t tag;
@@ -308,7 +309,7 @@ public:
 
     void initial(const Transaction &trans) override;
     void update(uint16_t tag, uint64_t addr);
-    Transaction GetPrefetch() override;
+    std::pair<double, Transaction> GetPrefetch() override;
     void UpdateaDistance() override;
 };
 }
