@@ -48,13 +48,16 @@ def read_stats(filename, keyword, is_dram):
                         if len(parts) >= 2:
                             value = parts[1].split('#')[0].strip()
                             data = float(value)
+                            if data == 0:
+                                data = None
                             matched_string = parts[0].strip()
                     else:
                         parts = line.strip().split()
-                        if len(parts) >= 2:
-                            value = parts[1].split('#')[0].strip()
-                            data = float(value)
-                            matched_string = parts[0]
+                        if parts[0] == keyword:
+                            if len(parts) >= 2:
+                                value = parts[1].split('#')[0].strip()
+                                data = float(value)
+                                matched_string = parts[0]
     except FileNotFoundError:
         print(f"Stats file not found: {filename}")
     except ValueError as e:
@@ -99,7 +102,8 @@ def main(benchmark, stats_dir, key_word, file, outdir):
             matched_string_output = next(iter(matched_strings))  # Get the single element
         else:
             matched_string_output = ", ".join(matched_strings)
-        file.write(f'{matched_string_output}        {result}\n')
+        if matched_string_output != '':
+            file.write(f'{matched_string_output}        {result}\n')
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Weighted calculation script')

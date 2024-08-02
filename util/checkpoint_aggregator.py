@@ -49,7 +49,7 @@ def aggregate(output_dir, cpts, no_compress, memory_size):
         os.system("mkdir -p " + output_path)
 
     agg_mem_file = open(output_path + "/system.physmem.store0.pmem", "wb+")
-    agg_config_file = open(output_path + "/m5.cpt", "wb+")
+    agg_config_file = open(output_path + "/m5.cpt", "w+")
 
     if not no_compress:
         merged_mem = gzip.GzipFile(fileobj=agg_mem_file, mode="wb")
@@ -61,7 +61,7 @@ def aggregate(output_dir, cpts, no_compress, memory_size):
         print(arg)
         merged_config = myCP()
         config = myCP()
-        config.readfp(open(cpts[i] + "/m5.cpt"))
+        config.read_file(open(cpts[i] + "/m5.cpt"))
 
         for sec in config.sections():
             if re.compile("cpu").search(sec):
@@ -72,7 +72,7 @@ def aggregate(output_dir, cpts, no_compress, memory_size):
                 for item in items:
                     if item[0] == "paddr":
                         merged_config.set(
-                            newsec, item[0], int(item[1]) + (page_ptr << 12)
+                            newsec, item[0], str(int(item[1]) + (page_ptr << 12))
                         )
                         continue
                     merged_config.set(newsec, item[0], item[1])

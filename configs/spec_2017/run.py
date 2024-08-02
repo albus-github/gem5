@@ -45,6 +45,7 @@
 from __future__ import print_function
 from __future__ import absolute_import
 
+import argparse
 import optparse
 import sys
 import os
@@ -69,31 +70,35 @@ from common.FileSystemConfig import config_filesystem
 from common.Caches import *
 from common.cpu2000 import *
 
-parser = optparse.OptionParser()
+parser = argparse.ArgumentParser()
 Options.addCommonOptions(parser)
 Options.addSEOptions(parser)
-parser.add_option("-b", "--benchmark", type="string", default="", help="The SPEC benchmark to be loaded.")
-parser.add_option("--benchmark_stdout", type="string", default="", help="Absolute path for stdout redirection for the benchmark.")
-parser.add_option("--benchmark_stderr", type="string", default="", help="Absolute path for stderr redirection for the benchmark.")
+
+parser.add_argument("-b", "--benchmark", type=str, default="", help="The SPEC benchmark to be loaded.")
+parser.add_argument("--benchmark_stdout", type=str, default="", help="Absolute path for stdout redirection for the benchmark.")
+parser.add_argument("--benchmark_stderr", type=str, default="", help="Absolute path for stderr redirection for the benchmark.")
+
+args = parser.parse_args()
 
 if '--ruby' in sys.argv:
     Ruby.define_options(parser)
 
-(options, args) = parser.parse_args()
+# (options, args) = parser.parse_args()
 
-if args:
-    print("Error: script doesn't take any positional arguments")
-    sys.exit(1)
+# if args:
+#     print("Error: script doesn't take any positional arguments")
+#     sys.exit(1)
 
 process = []
 numThreads = 1
 
-if options.benchmark:
+if args.benchmark:
     print('Selected SPEC_CPU2017 benchmark')
-    benches = options.benchmark.split(",")
+    benches = args.benchmark.split(",")
     for i in range(len(benches)):
         if benches[i] == 'perlbench_r':
             print('--> perlbench_r')
+            pro = spec17_benchmarks.perlbench_r
             process.append(spec17_benchmarks.perlbench_r)
         elif benches[i] == 'perlbench_s':
             print('--> perlbench_s')
@@ -229,50 +234,50 @@ else:
     sys.exit(1)
  
 # Set process stdout/stderr
-if options.benchmark_stdout:
-    process.output = options.benchmark_stdout
-    print("Process stdout file: " + process.output)
-if options.benchmark_stderr:
-    process.errout = options.benchmark_stderr
+if args.benchmark_stdout:
+    for p in process:
+        process.output = args.benchmark_stdout
+        print("Process stdout file: " + process.output)
+if args.benchmark_stderr:
+    process.errout = args.benchmark_stderr
     print("Process stderr file: " + process.errout)
 
-options.num_cpus = len(process)
-(CPUClass, test_mem_mode, FutureClass) = Simulation.setCPUClass(options)
+args.num_cpus = len(process)
+(CPUClass, test_mem_mode, FutureClass) = Simulation.setCPUClass(args)
 CPUClass.numThreads = numThreads
 
 # Check -- do not allow SMT with multiple CPUs
-if options.smt and options.num_cpus > 1:
+if args.smt and args.num_cpus > 1:
     fatal("You cannot use SMT with multiple CPUs!")
 
-np = options.num_cpus
-mp0_path = process.executable
+np = args.num_cpus
 system = System(cpu = [CPUClass(cpu_id=i) for i in range(np)],
                 mem_mode = test_mem_mode,
-                mem_ranges = [AddrRange(options.mem_size)],
-                cache_line_size = options.cacheline_size)
+                mem_ranges = [AddrRange(args.mem_size)],
+                cache_line_size = args.cacheline_size)
 
 if numThreads > 1:
     system.multi_thread = True
 
 # Create a top-level voltage domain
-system.voltage_domain = VoltageDomain(voltage = options.sys_voltage)
+system.voltage_domain = VoltageDomain(voltage = args.sys_voltage)
 
 # Create a source clock for the system and set the clock period
-system.clk_domain = SrcClockDomain(clock =  options.sys_clock,
+system.clk_domain = SrcClockDomain(clock =  args.sys_clock,
                                    voltage_domain = system.voltage_domain)
 
 # Create a CPU voltage domain
 system.cpu_voltage_domain = VoltageDomain()
 
 # Create a separate clock domain for the CPUs
-system.cpu_clk_domain = SrcClockDomain(clock = options.cpu_clock,
+system.cpu_clk_domain = SrcClockDomain(clock = args.cpu_clock,
                                        voltage_domain =
                                        system.cpu_voltage_domain)
 
 # If elastic tracing is enabled, then configure the cpu and attach the elastic
 # trace probe
-if options.elastic_trace_en:
-    CpuConfig.config_etrace(CPUClass, system.cpu, options)
+if args.elastic_trace_en:
+    CpuConfig.config_etrace(CPUClass, system.cpu, args)
 
 # All cpus belong to a common cpu_clk_domain, therefore running at a common
 # frequency.
@@ -289,45 +294,44 @@ if ObjectList.is_kvm_cpu(CPUClass) or ObjectList.is_kvm_cpu(FutureClass):
         fatal("KvmCPU can only be used in SE mode with x86")
 
 # Sanity check
-if options.simpoint_profile:
+if args.simpoint_profile:
     if not ObjectList.is_noncaching_cpu(CPUClass):
         fatal("SimPoint/BPProbe should be done with an atomic cpu")
     if np > 1:
         fatal("SimPoint generation not supported with more than one CPUs")
 
 for i in range(np):
-    """if options.smt:
+    
+    if args.smt:
         system.cpu[i].workload = process
     elif len(process) == 1:
         system.cpu[i].workload = process[0]
     else:
-        system.cpu[i].workload = process[i]"""
-    
-    system.cpu[i].workload = process
-    print (process.cmd)
+        system.cpu[i].workload = process[i]
+        print (process[i].cmd)
 
-    if options.simpoint_profile:
-        system.cpu[i].addSimPointProbe(options.simpoint_interval)
+    if args.simpoint_profile:
+        system.cpu[i].addSimPointProbe(args.simpoint_interval)
 
-    if options.checker:
+    if args.checker:
         system.cpu[i].addCheckerCpu()
 
-    if options.bp_type:
-        bpClass = ObjectList.bp_list.get(options.bp_type)
+    if args.bp_type:
+        bpClass = ObjectList.bp_list.get(args.bp_type)
         system.cpu[i].branchPred = bpClass()
 
-    if options.indirect_bp_type:
+    if args.indirect_bp_type:
         indirectBPClass = \
-            ObjectList.indirect_bp_list.get(options.indirect_bp_type)
+            ObjectList.indirect_bp_list.get(args.indirect_bp_type)
         system.cpu[i].branchPred.indirectBranchPred = indirectBPClass()
 
     system.cpu[i].createThreads()
 
-if options.ruby:
-    Ruby.create_system(options, False, system)
-    assert(options.num_cpus == len(system.ruby._cpu_ports))
+if args.ruby:
+    Ruby.create_system(optargsions, False, system)
+    assert(args.num_cpus == len(system.ruby._cpu_ports))
 
-    system.ruby.clk_domain = SrcClockDomain(clock = options.ruby_clock,
+    system.ruby.clk_domain = SrcClockDomain(clock = args.ruby_clock,
                                         voltage_domain = system.voltage_domain)
     for i in range(np):
         ruby_port = system.ruby._cpu_ports[i]
@@ -347,12 +351,17 @@ if options.ruby:
             system.cpu[i].itb.walker.port = ruby_port.slave
             system.cpu[i].dtb.walker.port = ruby_port.slave
 else:
-    MemClass = Simulation.setMemClass(options)
+    MemClass = Simulation.setMemClass(args)
     system.membus = SystemXBar()
     system.system_port = system.membus.slave
-    CacheConfig.config_cache(options, system)
-    MemConfig.config_mem(options, system)
-    config_filesystem(system, options)
-
+    CacheConfig.config_cache(args, system)
+    if args.mem_type == "DRAMsim3":
+        system.mem_ctrl = DRAMsim3()
+        system.mem_ctrl.port = system.membus.mem_side_ports
+        system.mem_ctrl.filePath = m5.options.outdir
+        system.mem_ctrl.range = args.mem_size
+    else:
+        MemConfig.config_mem(args, system)
+    config_filesystem(system, args)
 root = Root(full_system = False, system = system)
-Simulation.run(options, root, system, FutureClass)
+Simulation.run(args, root, system, FutureClass)

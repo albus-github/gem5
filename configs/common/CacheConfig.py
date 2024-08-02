@@ -229,9 +229,13 @@ def config_cache(options, system):
         #     system.cpu[i].connectBus(system.membus)
 
         if options.l2cache:
-            system.cpu[i].l2=l2_cache_class(clk_domain=system.cpu_clk_domain,
-                                          size=options.l2_size,
-                                          assoc=options.l2_assoc)
+            # system.cpu[i].l2=l2_cache_class(clk_domain=system.cpu_clk_domain,
+            #                               size=options.l2_size,
+            #                               assoc=options.l2_assoc)
+
+            system.cpu[i].l2 = l2_cache_class(clk_domain=system.cpu_clk_domain,
+                                              **_get_cache_opts("l2", options)
+                                              )
 
             system.cpu[i].tol2bus = L2XBar(clk_domain=system.cpu_clk_domain)
             system.cpu[i].l2.cpu_side = system.cpu[i].tol2bus.mem_side_ports

@@ -33,6 +33,7 @@ def sim(benchmark, some_extra_args, outdir_b):
     elif cpu_model == 'OoO':
         options += [
             '--cpu-type=X86O3CPU',
+            '--cpu-clock=3GHz',
             '--mem-type=DRAMsim3',
 
             '--caches',
@@ -51,7 +52,13 @@ def sim(benchmark, some_extra_args, outdir_b):
             '--l3_size=16MB',
             ]
     else:
-        assert False
+        assert False      
+
+    hwp = False
+    if hwp:
+        options += [
+            '--l2-hwp-type=StridePrefetcher'
+        ]
 
     try:
         gem5 = sh.Command('/home/albus/gem5/build/X86/gem5.fast')
@@ -75,12 +82,13 @@ def run(args):
         print('prerequisite satisfied, is going to run gem5 on', benchmark)
         c.avoid_repeated(sim, outdir_b, None,
                 benchmark, some_extra_args, outdir_b)
+        print(f'Benchmark {benchmark} complete simulation')
     else:
         print('prerequisite not satisfied, abort on', benchmark)
 
 def main():
     parser = argparse.ArgumentParser(description='Simulate SPEC 2017 benchmarks and generate checkpoints.')
-    parser.add_argument('benchmarks', nargs='+', help='List of benchmarks to simulate')
+    parser.add_argument('benchmarks', nargs='*', help='List of benchmarks to simulate')
     parser.add_argument('--outdir', type=str, help='Output directory')
     args = parser.parse_args()
 
@@ -89,7 +97,7 @@ def main():
     if args.benchmarks:
         benchmarks = args.benchmarks
     else:
-        with open("all_compiled_spec2017.txt", 'r') as f:
+        with open("/home/albus/gem5/scripts/all_compiled_spec2017.txt", 'r') as f:
             benchmarks = [line.strip() for line in f]
 
     if benchmarks:

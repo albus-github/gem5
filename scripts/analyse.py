@@ -7,7 +7,7 @@ script_dir          = '/home/albus/gem5/scripts/'
 task_dir            = '/home/albus/gem5/scripts/' 
 int_task            = task_dir + 'integer.txt'
 float_task          = task_dir + 'floating.txt'
-fail_task           = task_dir + 'fail.txt'
+test_task           = task_dir + 'test.txt'
 all_task            = task_dir + 'all_compiled_spec2017.txt'
 
 def run_scripts(benchmark, stats_dir):
@@ -16,6 +16,12 @@ def run_scripts(benchmark, stats_dir):
         (f'{script_dir}weight.py',   [benchmark, stats_dir, 'system.mem_ctrl.numReads::total']),
         (f'{script_dir}weight.py',   [benchmark, stats_dir, 'system.mem_ctrl.bwRead::total']),
         (f'{script_dir}weight.py',   [benchmark, stats_dir, 'system.mem_ctrl.bwTotal::total']),
+        (f'{script_dir}weight.py',   [benchmark, stats_dir, 'system.cpu.dcache.prefetcher.demandMshrMisses']),
+        (f'{script_dir}weight.py',   [benchmark, stats_dir, 'system.cpu.dcache.prefetcher.pfIssued']),
+        (f'{script_dir}weight.py',   [benchmark, stats_dir, 'system.cpu.dcache.prefetcher.pfUseful']),
+        (f'{script_dir}weight.py',   [benchmark, stats_dir, 'system.cpu.l2.prefetcher.demandMshrMisses']),
+        (f'{script_dir}weight.py',   [benchmark, stats_dir, 'system.cpu.l2.prefetcher.pfIssued']),
+        (f'{script_dir}weight.py',   [benchmark, stats_dir, 'system.cpu.l2.prefetcher.pfUseful']),
         (f'{script_dir}weight.py',   [benchmark, stats_dir, 'num_reads_done', '--dram']),
         (f'{script_dir}weight.py',   [benchmark, stats_dir, 'num_read_row_hits', '--dram']),
         (f'{script_dir}weight.py',   [benchmark, stats_dir, 'num_read_cmds', '--dram']),
@@ -63,9 +69,9 @@ def main():
                     benchmark = benchmark.strip()
                     if benchmark:  # 跳过空行
                         run_scripts(benchmark, stats_dir)
-        elif args.benchmark == 'fail':
-            if os.path.exists(fail_task):
-                with open(fail_task, 'r') as file:
+        elif args.benchmark == 'test':
+            if os.path.exists(test_task):
+                with open(test_task, 'r') as file:
                     benchmarks = file.readlines()
                 for benchmark in benchmarks:
                     benchmark = benchmark.strip()
