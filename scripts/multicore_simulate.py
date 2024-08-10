@@ -9,14 +9,14 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import common as c
 from functools import partial
 
-default_outdir  = '/home/albus/gem5-results/spec2017_results'
+default_outdir  = '/home/albus/gem5-results/multicore_results'
 gem5_dir        = '/home/albus/gem5'
 
 def sim(benchmark, some_extra_args, outdir_b):
 
     options = [
             '--outdir=' + outdir_b,
-            pjoin(gem5_dir, 'configs/spec_2017/se_spec2017.py'),
+            pjoin(gem5_dir, 'configs/spec_2017/se_spec2017_sim.py'),
             '-b',
             '{}'.format(benchmark),
             '--benchmark_stdout={}/out'.format(outdir_b),
@@ -34,6 +34,7 @@ def sim(benchmark, some_extra_args, outdir_b):
         options += [
             '--cpu-type=X86O3CPU',
             '--cpu-clock=3GHz',
+            '-n=4',
             '--mem-type=DRAMsim3',
 
             '--caches',
@@ -72,8 +73,8 @@ def sim(benchmark, some_extra_args, outdir_b):
 
 def run(args):
     benchmark, outdir_b = args
-    exec_dir = c.run_dir(benchmark)
-    os.chdir(exec_dir)
+    # exec_dir = c.run_dir(benchmark)
+    # os.chdir(exec_dir)
 
     prerequisite = True
     some_extra_args = None
@@ -88,17 +89,20 @@ def run(args):
 
 def main():
     parser = argparse.ArgumentParser(description='Simulate SPEC 2017 benchmarks and generate checkpoints.')
-    parser.add_argument('benchmarks', nargs='*', help='List of benchmarks to simulate')
+    parser.add_argument('benchmarks', nargs='?', help='List of benchmarks to simulate')
     parser.add_argument('--outdir', type=str, help='Output directory')
     args = parser.parse_args()
 
     outdir = args.outdir if args.outdir else default_outdir
 
-    if args.benchmarks:
-        benchmarks = args.benchmarks
+    if args.benchmarks == 'HM':
+        benchmarks = ['HM1', 'HM2']
+    elif args.benchmarks == 'LM':
+        benchmarks = ['LM1', 'LM2']
+    elif args.benchmarks == 'MX':
+        benchmarks = ['MX1', 'MX2']
     else:
-        with open("/home/albus/gem5/scripts/uncompiled.txt", 'r') as f:
-            benchmarks = [line.strip() for line in f]
+        benchmarks = ['HM1', 'HM2', 'LM1', 'LM2', 'MX1', 'MX2']
 
     if benchmarks:
         with ThreadPoolExecutor(max_workers=min(8, len(benchmarks))) as executor:

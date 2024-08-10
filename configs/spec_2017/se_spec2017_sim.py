@@ -178,18 +178,68 @@ else:
 
 if args.benchmark:
     print('Selected SPEC_CPU2017 benchmark')
-    if args.benchmark == 'mix':
-        print('--> imagick_r, mcf_r, nab_r, perlbench_r')
-        process1 = spec17_benchmarks.imagick_r
-        process2 = spec17_benchmarks.mcf_r  
+    if args.benchmark == 'HM1':
+        print('--> bwaves_r, deepsjeng_r, roms_r, wrf_r')
+        process1 = spec17_benchmarks.bwaves_r
+        process2 = spec17_benchmarks.deepsjeng_r  
+        process3 = spec17_benchmarks.roms_r
+        process4 = spec17_benchmarks.wrf_r
+        multiprocesses.append(process1)
+        multiprocesses.append(process2)
+        multiprocesses.append(process3)
+        multiprocesses.append(process4)
+    elif args.benchmark == 'HM2':
+        print('--> xz_r, cactuBSSN_r, blender_r, mcf_r')
+        process1 = spec17_benchmarks.xz_r
+        process2 = spec17_benchmarks.cactuBSSN_r  
+        process3 = spec17_benchmarks.blender_r
+        process4 = spec17_benchmarks.mcf_r
+        multiprocesses.append(process1)
+        multiprocesses.append(process2)
+        multiprocesses.append(process3)
+        multiprocesses.append(process4)
+    elif args.benchmark == 'LM1':
+        print('--> perlbench_r, imagick_r, nab_r, xalancbmk_r')
+        process1 = spec17_benchmarks.perlbench_r
+        process2 = spec17_benchmarks.imagick_r  
         process3 = spec17_benchmarks.nab_r
-        process4 = spec17_benchmarks.perlbench_r
+        process4 = spec17_benchmarks.xalancbmk_r
+        multiprocesses.append(process1)
+        multiprocesses.append(process2)
+        multiprocesses.append(process3)
+        multiprocesses.append(process4)
+    elif args.benchmark == 'LM2':
+        print('--> leela_r, namd_r, povray_r, fotonik3d_r')
+        process1 = spec17_benchmarks.leela_r
+        process2 = spec17_benchmarks.namd_r  
+        process3 = spec17_benchmarks.povray_r
+        process4 = spec17_benchmarks.fotonik3d_r
+        multiprocesses.append(process1)
+        multiprocesses.append(process2)
+        multiprocesses.append(process3)
+        multiprocesses.append(process4)
+    elif args.benchmark == 'MX1':
+        print('--> bwaves_r, nab_r, deepsjeng_r, imagick_r')
+        process1 = spec17_benchmarks.roms_r
+        process2 = spec17_benchmarks.perlbench_r
+        process3 = spec17_benchmarks.wrf_r
+        process4 = spec17_benchmarks.imagick_r
+        multiprocesses.append(process1)
+        multiprocesses.append(process2)
+        multiprocesses.append(process3)
+        multiprocesses.append(process4)
+    elif args.benchmark == 'MX2':
+        print('--> bwaves_r, nab_r, deepsjeng_r, xalancbmk_r')
+        process1 = spec17_benchmarks.bwaves_r
+        process2 = spec17_benchmarks.nab_r
+        process3 = spec17_benchmarks.deepsjeng_r
+        process4 = spec17_benchmarks.xalancbmk_r
         multiprocesses.append(process1)
         multiprocesses.append(process2)
         multiprocesses.append(process3)
         multiprocesses.append(process4)
     else:
-        print("No recognized SPEC2006 benchmark selected! Exiting.")
+        print("No recognized SPEC2017 multicore benchmark selected! Exiting.")
         sys.exit(1)
 else:
     print >> sys.stderr, "Need --benchmark switch to specify workload. Exiting!\n"
