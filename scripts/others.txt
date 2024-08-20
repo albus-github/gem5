@@ -1,0 +1,5 @@
+deepsjeng_r
+roms_r
+bwaves_r
+cam4_r
+povray_r

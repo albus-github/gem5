@@ -97,6 +97,7 @@ struct ST_entry {
 class Signature_Table {
 private:
     std::vector<ST_entry>SignatureTable;
+    global_history_register ghr;
 
 public:
     void update(trans_info info, int delta);
@@ -287,8 +288,8 @@ public:
     double P = 1;
     double a = 0.8;
     uint16_t sig;
-    prefetch_info prefetch_delta;
-    prefetch_info initial_delta;
+    prefetch_info prefetch_delta[10];
+    // prefetch_info initial_delta;
 
     std::pair<double, Transaction> GetPrefetch() override;
     //bool IssuePrefetch(const Transaction &trans, Transaction &prefetch_trans) override;

@@ -1,0 +1,15 @@
+perlbench_r
+mcf_r
+namd_r
+cactuBSSN_r
+xalancbmk_r
+blender_r
+imagick_r
+leela_r
+nab_r
+exchange2_r
+fotonik3d_r
+xz_r
+specrand_fr
+specrand_ir
+wrf_r

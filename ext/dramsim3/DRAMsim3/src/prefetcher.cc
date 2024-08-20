@@ -176,7 +176,7 @@ void stream_buffer::update(uint16_t tag, uint64_t addr) {
             if (it->tag == tag){
                 found = true;
                 if (addr == it->addr + it->delta){
-                    //ghr.update_ghr(tag, addr, it->delta);
+                    ghr.update_ghr(tag, addr, it->delta);
                     entry = {tag, addr, it->delta};
                     it = stream_buffer.erase(it);
                     stream_buffer.emplace_front(entry);
@@ -192,7 +192,7 @@ void stream_buffer::update(uint16_t tag, uint64_t addr) {
                             break;
                         }
                     } if (!erased){
-                        //ghr.update_ghr(tag, addr, it->delta);
+                        ghr.update_ghr(tag, addr, it->delta);
                         ++ it;
                     }
                 } else
@@ -201,7 +201,7 @@ void stream_buffer::update(uint16_t tag, uint64_t addr) {
                 ++ it;
         } 
         if (!found){
-            //int h_delta = ghr.search_ghr(tag, addr);
+            int h_delta = ghr.search_ghr(tag, addr);
             if (capacity == 8){
                 stream_buffer.pop_back();
                 capacity --;
@@ -469,10 +469,12 @@ void Signature_Table::update(trans_info info, int delta){
         if (it->tag == info.tag){
             it->last_offset = info.addr.column;
             it->signature = newsignature(it->signature, delta);
+            ghr.update_ghr(info.tag, info.hex_addr, delta);
             return;
         }
     }
-    ST_entry entry = {info.tag, info.addr.column, newsignature(0, info.addr.column)};
+    int h_delta = ghr.search_ghr(info.tag, info.hex_addr);
+    ST_entry entry = {info.tag, info.addr.column, newsignature(0, h_delta)};
     SignatureTable.push_back(entry);
     return;  
 }
@@ -534,6 +536,7 @@ prefetch_info Pattern_Table::prefetch_delta(uint16_t signature){
         else{
             prefetch_delta.p = 0;
         }
+        
         return prefetch_delta;
     } else {
         prefetch_delta.delta = 0;
@@ -625,7 +628,7 @@ bool Prefetch_Filter::update_useful(uint64_t addr){
 
 void History_Table::update_historytable(uint16_t tag, uint64_t addr){
     int set = tag % group;
-    if (HistoryTable[set].size() == group){
+    if (HistoryTable[set].size() == way){
         HistoryTable[set].pop_back();
     }
     HistoryTable[set].emplace_front(tag, addr);
@@ -634,7 +637,7 @@ void History_Table::update_historytable(uint16_t tag, uint64_t addr){
 void History_Table::get_delta(uint16_t tag, uint64_t addr){
     int set = tag % group;
     int i = 0;
-    for (auto it = HistoryTable[set].begin(); it != HistoryTable[set].end(); it++){
+    for (auto it = HistoryTable[set].begin(); it != HistoryTable[set].end() && i < 8; it++){
         if (it->first == tag){
             delta[i] = addr - it->second;
             ++i;
@@ -657,27 +660,18 @@ void Delta_Table::update_coverage(){
 void Delta_Table::get_delta(uint16_t tag){
     auto it = PatternTable.find(tag);
     if (it != PatternTable.end()){
-        PT_entry entry = it->second;
-        std::sort(entry.delta.begin(), entry.delta.end(),
+        std::sort(it->second.delta.begin(), it->second.delta.end(),
             [](const delta_entry &a, const delta_entry &b) {
                 return a.c_delta > b.c_delta;
                 }
         );
-        for (int i = 0; i < 8; i++) {
-            if (entry.delta[i].delta != 0 && entry.delta[i].c_delta/entry.c_sig > 0.25){
-                prefetch_delta[i].delta = entry.delta[i].delta;
-                prefetch_delta[i].p = entry.delta[i].c_delta * 1.0 / entry.c_sig;
+        for (int i = 0; i < it->second.delta.size(); i++) {
+            if (it->second.delta[i].delta != 0 && it->second.delta[i].c_delta/it->second.c_sig > 0.25){
+                prefetch_delta[i].delta = it->second.delta[i].delta;
+                prefetch_delta[i].p = it->second.delta[i].c_delta * 1.0 / it->second.c_sig;
             }
         }
     }
-    // } else {
-    //     // for (int i = 0; i < prefetch_delta.size(); i++) {
-    //     for (int i = 0; i < 8; i++) {
-    //         prefetch_delta[i].delta = 0;
-    //         prefetch_delta[i].p = 0;
-    //     }
-    //     return;
-    // }
 }
 
 // void Delta_Table::update_capacity(int distance){
@@ -705,38 +699,50 @@ void SPP_Prefetcher::updateSTandPT(trans_info info){
     sig = ST.getsignature(info);
 }
 
+// std::pair<double, Transaction> SPP_Prefetcher::GetPrefetch(){
+//     prefetch_delta = PT.prefetch_delta(sig);
+//     P = a * P * prefetch_delta.p;
+//     sig = ST.newsignature(sig, prefetch_delta.delta);
+//     if (prefetch_delta.delta == 0 && initial_delta.delta != 0){
+//         prefetch_trans.addr += 64 * initial_delta.delta;
+//     } else {
+//         prefetch_trans.addr += 64 * prefetch_delta.delta;
+//     }
+//     prefetch_trans.IsPrefetch = 1;
+//     prefetch_trans.is_write = false;
+//     return std::make_pair(prefetch_delta.p, prefetch_trans);
+// }
+
 std::pair<double, Transaction> SPP_Prefetcher::GetPrefetch(){
-    prefetch_delta = PT.prefetch_delta(sig);
-    P = a * P * prefetch_delta.p;
-    sig = ST.newsignature(sig, prefetch_delta.delta);
-    if (prefetch_delta.delta == 0 && initial_delta.delta != 0){
-        prefetch_trans.addr += 64 * initial_delta.delta;
-    } else {
-        prefetch_trans.addr += 64 * prefetch_delta.delta;
-    }
-    prefetch_trans.IsPrefetch = 1;
-    prefetch_trans.is_write = false;
-    return std::make_pair(prefetch_delta.p, prefetch_trans);
+    Transaction prefetch;
+    prefetch.addr = prefetch_trans.addr + prefetch_delta[i].delta * 64;
+    prefetch.IsPrefetch = 1;
+    prefetch.is_write = false;
+    return std::make_pair(prefetch_delta[i].p, prefetch);
 }
 
 void SPP_Prefetcher::UpdateaDistance(){
     Updatea_epoch_info();
     a = epoch_stats.epoch_a;
-    if (epoch_stats.epoch_a > Th){
-            if (distance < 3){
-                distance = 5;
-            } else if (distance < max_distance){
-                distance ++;
-            }
-        } else if (epoch_stats.epoch_a > Tl){
-                distance = 3;
-        } else {
-            if (distance > 3){
-                distance = 3;
-            } else if (distance > 1){
-                distance --;
-            }
-        }
+    // if (epoch_stats.last_trans_num == 0 || abs(epoch_stats.epoch_trans_num - epoch_stats.last_trans_num) > epoch_stats.last_trans_num * 0.15)
+    //     distance = 3;
+    // else{
+    //     if (epoch_stats.epoch_a > Th){
+    //         if (distance < 3){
+    //             distance = 5;
+    //         } else if (distance < max_distance){
+    //             distance ++;
+    //         }
+    //     } else if (epoch_stats.epoch_a > Tl){
+    //                 distance = 3;
+    //     } else {
+    //         if (distance > 3){
+    //             distance = 3;
+    //         } else if (distance > 1){
+    //             distance --;
+    //         }
+    //     }
+    // }
 }
 
 void SPP_Prefetcher::initial(const Transaction &trans){
@@ -747,12 +753,31 @@ void SPP_Prefetcher::initial(const Transaction &trans){
     updateSTandPT(transinfo);
     P = 1;
     i = 0;
-    initial_delta = PT.prefetch_delta(sig);
+    // initial_delta = PT.prefetch_delta(sig);
+    for (int m = 0; m < max_distance && P > Tl; m ++){
+        prefetch_delta[m] = PT.prefetch_delta(sig);
+        P = a * P * prefetch_delta[m].p;
+        sig = ST.newsignature(sig, prefetch_delta[m].delta);
+    }
+    if (prefetch_delta[0].delta !=0 && prefetch_delta[distance - 1].delta == 0){
+        int k = 2;
+        for (int j = 1; j < distance; ++j){
+            if (prefetch_delta[j].delta == 0){
+                prefetch_delta[j].delta = prefetch_delta[0].delta * k;
+                prefetch_delta[j].p = prefetch_delta[0].p * epoch_stats.epoch_a;
+                k++;
+            }
+        }
+    }
+    if (prefetch_delta[0].delta == 0){
+        prefetch_delta[0].delta = 1;
+        prefetch_delta[0].p = epoch_stats.epoch_a;
+    }
 }
 
 bool SPP_Prefetcher::Continue(){
     // if (P > Th && i < distance)
-    if (P > Tl && i < distance)
+    if (i < distance)
         return true;
     return false;
 }
@@ -784,10 +809,14 @@ void Delta_Prefetcher::update(uint16_t tag, uint64_t addr){
         for (int j = 1; j < distance; ++j){
             if (DT.prefetch_delta[j].delta == 0){
                 DT.prefetch_delta[j].delta = DT.prefetch_delta[0].delta * k;
-                DT.prefetch_delta[j].p = DT.prefetch_delta[0].p;
+                DT.prefetch_delta[j].p = DT.prefetch_delta[0].p * epoch_stats.epoch_a;
                 k++;
             }
         }
+    }
+    if (DT.prefetch_delta[0].delta == 0){
+        DT.prefetch_delta[0].delta = 64;
+        DT.prefetch_delta[0].p = epoch_stats.epoch_a;
     }
 }
 
@@ -801,20 +830,25 @@ std::pair<double, Transaction> Delta_Prefetcher::GetPrefetch(){
 
 void Delta_Prefetcher::UpdateaDistance(){
     Updatea_epoch_info();
-    // if (epoch_stats.epoch_a > Th){
-    //     if (distance < 5){
-    //         distance = 5;
-    //     } else if (distance < HT.way){
-    //         distance ++;
-    //     }
-    // } else if (epoch_stats.epoch_a > Tl){
-    //         distance = 3;
-    // } else {
-    //     if (distance > 5){
-    //         distance = 3;
-    //     } else if (distance > 1){
-    //         distance --;
-    //     }
-    // }
+    if (epoch_stats.last_trans_num == 0 || abs(epoch_stats.epoch_trans_num - epoch_stats.last_trans_num) > epoch_stats.last_trans_num * 0.15)
+        distance = 3;
+    else{
+        // update distance with prefetch accuracy
+        if (epoch_stats.epoch_a > Th){
+            if (distance < 5){
+                distance = 5;
+            } else if (distance < max_distance){
+                distance ++;
+            }
+        } else if (epoch_stats.epoch_a > Tl){
+                distance = 3;
+        } else {
+            if (distance > 5){
+                distance = 5;
+            } else if (distance > 1){
+                distance --;
+            }
+        }
+    }
 }
 }

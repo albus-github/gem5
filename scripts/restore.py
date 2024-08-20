@@ -231,6 +231,7 @@ def restore_cpt(benchmark, some_extra_args, restore_dir, i):
     elif cpu_model == 'OoO':
         options += [
             '--cpu-type=X86O3CPU',
+            '--cpu-clock=3GHz',
             '--mem-type=DRAMsim3',
 
             '--caches',

@@ -311,7 +311,11 @@ bool Controller::AddTransaction(Transaction trans) {
                 std::pair<double, Transaction> prefetch = prefetcher.GetPrefetch();
                 Address prefetch_addr = config_.AddressMapping(prefetch.second.addr);
                 prefetcher.i ++;
-                // if (prefetch.addr != trans.addr && (read_queue_.size() < read_queue_.capacity() - 1)){
+
+                // without prefetche filter
+                // if (prefetch.second.addr != trans.addr && (read_queue_.size() < read_queue_.capacity() - 1)){
+
+                // prefetche filter implement
                 if (prefetcher.IssuePrefetch(trans, prefetch.second) && (read_queue_.size() < read_queue_.capacity() - 1)){
                     if (    (channel_state_.OpenRow(prefetch_addr.rank, prefetch_addr.bankgroup, prefetch_addr.bank) != prefetch_addr.row)
                          && (channel_state_.OpenRow(prefetch_addr.rank, prefetch_addr.bankgroup, prefetch_addr.bank) != -1)
