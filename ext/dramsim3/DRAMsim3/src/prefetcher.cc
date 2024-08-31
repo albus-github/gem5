@@ -305,6 +305,11 @@ void Prefetcher::Updatea_epoch_info(){           //compulate prefetch accuracy i
     }
     epoch_stats.epoch_hit = 0;
     epoch_stats.epoch_total = 0;
+    epoch_stats.last_read_latency = epoch_stats.epoch_read_latency;
+    epoch_stats.epoch_read_done = 0;
+    epoch_stats.last_trans_num = epoch_stats.epoch_trans_num;
+    epoch_stats.epoch_trans_num = 0;
+    epoch_stats.epoch_read_latency = 0;
     //PrefetchBuffer.epoch_update(PF);  //life time
     PF.update_valid();
 }
@@ -359,12 +364,6 @@ void Prefetcher::UpdateaDistance(){
         //     distance --;
         // }
     }
-
-    epoch_stats.last_read_latency = epoch_stats.epoch_read_latency;
-    epoch_stats.epoch_read_done = 0;
-    epoch_stats.last_trans_num = epoch_stats.epoch_trans_num;
-    epoch_stats.epoch_trans_num = 0;
-    epoch_stats.epoch_read_latency = 0;
 }
 
 void Prefetcher::UpdatePrefetchBuffer(Transaction &trans){
