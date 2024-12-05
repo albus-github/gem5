@@ -211,7 +211,7 @@ void Controller::ClockTick() {
         std::string epoch_infostr = epoch_info.str();
         TraceFile(epoch_infostr, "trace");
     #endif
-        prefetcher.UpdateaDistance();
+        // prefetcher.UpdateaDistance();
     }
 
     clk_++;
@@ -313,16 +313,16 @@ bool Controller::AddTransaction(Transaction trans) {
                 prefetcher.i ++;
 
                 // without prefetche filter
-                // if (prefetch.second.addr != trans.addr && (read_queue_.size() < read_queue_.capacity() - 1)){
+                if (prefetch.second.addr != trans.addr && (read_queue_.size() < read_queue_.capacity() - 1)){
 
                 // prefetche filter implement
-                if (prefetcher.IssuePrefetch(trans, prefetch.second) && (read_queue_.size() < read_queue_.capacity() - 1)){
-                    if (    (channel_state_.OpenRow(prefetch_addr.rank, prefetch_addr.bankgroup, prefetch_addr.bank) != prefetch_addr.row)
-                         && (channel_state_.OpenRow(prefetch_addr.rank, prefetch_addr.bankgroup, prefetch_addr.bank) != -1)
-                         && (prefetch.first < prefetcher.Tl)
-                        ){
-                        continue;
-                    }
+                // if (prefetcher.IssuePrefetch(trans, prefetch.second) && (read_queue_.size() < read_queue_.capacity() - 1)){
+                //     if (    (channel_state_.OpenRow(prefetch_addr.rank, prefetch_addr.bankgroup, prefetch_addr.bank) != prefetch_addr.row)
+                //          && (channel_state_.OpenRow(prefetch_addr.rank, prefetch_addr.bankgroup, prefetch_addr.bank) != -1)
+                //          && (prefetch.first < prefetcher.Tl)
+                //         ){
+                //         continue;
+                //     }
                 #ifdef TRACE
                     std::stringstream p_trans_info;
                     p_trans_info<<"Cycle: "<<clk_<<", "<<"Prefetch_Trans: "<<"Addr: "<<prefetch.second.addr<<'\n';
@@ -357,59 +357,60 @@ void Controller::ScheduleTransaction() {
                           : write_draining_ > 0 ? write_buffer_ : read_queue_;
 
     // shedule cmds before prefetch trans
-    for (auto it = queue.begin(); it != queue.end(); it++) {
-        if (!it->is_write && !it->IsPrefetch ){
-            if (PrefetchHit(it->addr)){
-                IssueHitTrans(*it);
-                queue.erase(it);
-                return;
-            }/*if (WaitPrefetch(*it)){
-                //std::cout<<"Trans addr: "<<it->addr<<std::endl;
-                continue;
-            }*/
-        }
-    }
+
+    // for (auto it = queue.begin(); it != queue.end(); it++) {
+    //     if (!it->is_write && !it->IsPrefetch ){
+    //         if (PrefetchHit(it->addr)){
+    //             IssueHitTrans(*it);
+    //             queue.erase(it);
+    //             return;
+    //         }/*if (WaitPrefetch(*it)){
+    //             //std::cout<<"Trans addr: "<<it->addr<<std::endl;
+    //             continue;
+    //         }*/
+    //     }
+    // }
            
-    for (auto it = queue.begin(); it != queue.end(); it++) {
-        if (!it->is_write && !it->IsPrefetch ){
-            auto cmd = TransToCommand(*it);
-            if (channel_state_.IsRowOpen(cmd.addr.rank, cmd.addr.bankgroup, cmd.addr.bank)){
-                if (cmd_queue_.WillAcceptCommand(cmd.Rank(), cmd.Bankgroup(),
-                                             cmd.Bank())) {
-                    if (!is_unified_queue_ && cmd.IsWrite()) {
-                        // Enforce R->W dependency
-                        if (pending_rd_q_.count(it->addr) > 0) {
-                            write_draining_ = 0;
-                            is_rw_denp_ = true;
-                            return;
-                        }
-                        write_draining_ -= 1;
-                    }
-                    is_rw_denp_ = false;
-                    cmd_queue_.AddCommand(cmd);
-                    queue.erase(it);
-                    return;
-                }
-            }
-        }
-    }
+    // for (auto it = queue.begin(); it != queue.end(); it++) {
+    //     if (!it->is_write && !it->IsPrefetch ){
+    //         auto cmd = TransToCommand(*it);
+    //         if (channel_state_.IsRowOpen(cmd.addr.rank, cmd.addr.bankgroup, cmd.addr.bank)){
+    //             if (cmd_queue_.WillAcceptCommand(cmd.Rank(), cmd.Bankgroup(),
+    //                                          cmd.Bank())) {
+    //                 if (!is_unified_queue_ && cmd.IsWrite()) {
+    //                     // Enforce R->W dependency
+    //                     if (pending_rd_q_.count(it->addr) > 0) {
+    //                         write_draining_ = 0;
+    //                         is_rw_denp_ = true;
+    //                         return;
+    //                     }
+    //                     write_draining_ -= 1;
+    //                 }
+    //                 is_rw_denp_ = false;
+    //                 cmd_queue_.AddCommand(cmd);
+    //                 queue.erase(it);
+    //                 return;
+    //             }
+    //         }
+    //     }
+    // }
 
     for (auto it = queue.begin(); it != queue.end(); it++) {
         if (it->is_write){
             prefetcher.W_ivicte(it->addr);
         }
 
-        // if (!it->is_write && !it->IsPrefetch){
-        //     if (PrefetchHit(it->addr)){
-        //         IssueHitTrans(*it);
-        //         queue.erase(it);
-        //         break;
-        //     }
-        //     /*if (WaitPrefetch(*it)){
-        //         //std::cout<<"Trans addr: "<<it->addr<<std::endl;
-        //         continue;
-        //     }*/
-        // }
+        if (!it->is_write && !it->IsPrefetch){
+            if (PrefetchHit(it->addr)){
+                IssueHitTrans(*it);
+                queue.erase(it);
+                break;
+            }
+            /*if (WaitPrefetch(*it)){
+                //std::cout<<"Trans addr: "<<it->addr<<std::endl;
+                continue;
+            }*/
+        }
         
         auto cmd = TransToCommand(*it);
         if (cmd_queue_.WillAcceptCommand(cmd.Rank(), cmd.Bankgroup(),

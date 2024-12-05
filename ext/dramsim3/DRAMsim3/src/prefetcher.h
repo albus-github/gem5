@@ -268,7 +268,7 @@ public:
 
 class Stream_Prefetcher : public Prefetcher {
 public:
-    Stream_Prefetcher(const Config &config) : Prefetcher(config, 0.2, 0.5, 3, 8) {}
+    Stream_Prefetcher(const Config &config) : Prefetcher(config, 0.2, 0.5, 1, 8) {}
     ~Stream_Prefetcher(){};
     
     stream_buffer Stream_buffer;

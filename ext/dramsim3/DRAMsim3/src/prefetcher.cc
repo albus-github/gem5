@@ -164,6 +164,60 @@ bool Latency_Table::Istimely(const Transaction &trans, Transaction &prefetch_tra
     return true;
 }
 
+// void stream_buffer::update(uint16_t tag, uint64_t addr) {
+//     sb_entry entry;
+//     if (stream_buffer.empty()){
+//         entry = {tag, addr, 0};
+//         stream_buffer.emplace_back(entry);
+//         capacity ++;
+//     } else{
+//         bool found = false;
+//         for (auto it = stream_buffer.begin(); it != stream_buffer.end();){  
+//             if (it->tag == tag){
+//                 found = true;
+//                 if (addr == it->addr + it->delta){
+//                     ghr.update_ghr(tag, addr, it->delta);
+//                     entry = {tag, addr, it->delta};
+//                     it = stream_buffer.erase(it);
+//                     stream_buffer.emplace_front(entry);
+//                 } else if (it->delta ==0){
+//                     it->delta = addr - it->addr;
+//                     it->addr = addr;
+//                     bool erased = false;
+//                     for (auto k = stream_buffer.begin(); k != stream_buffer.end(); ++k){
+//                         if (k->tag == it->tag && k->delta == it->delta && k != it){
+//                             it = stream_buffer.erase(it);
+//                             capacity --;
+//                             erased = true;
+//                             break;
+//                         }
+//                     } if (!erased){
+//                         ghr.update_ghr(tag, addr, it->delta);
+//                         ++ it;
+//                     }
+//                 } else
+//                     ++ it;
+//             } else
+//                 ++ it;
+//         } 
+//         if (!found){
+//             int h_delta = ghr.search_ghr(tag, addr);
+//             if (capacity == 8){
+//                 stream_buffer.pop_back();
+//                 capacity --;
+//             }
+//             entry = {tag, addr, 0};
+//             stream_buffer.emplace_front(entry);
+//             capacity ++;
+//         }
+//         if (found && capacity < 8){
+//             entry = {tag, addr, 0};
+//             stream_buffer.emplace_back(entry);
+//             capacity ++;
+//         }
+//     }
+// }
+
 void stream_buffer::update(uint16_t tag, uint64_t addr) {
     sb_entry entry;
     if (stream_buffer.empty()){
@@ -176,7 +230,6 @@ void stream_buffer::update(uint16_t tag, uint64_t addr) {
             if (it->tag == tag){
                 found = true;
                 if (addr == it->addr + it->delta){
-                    ghr.update_ghr(tag, addr, it->delta);
                     entry = {tag, addr, it->delta};
                     it = stream_buffer.erase(it);
                     stream_buffer.emplace_front(entry);
@@ -192,7 +245,6 @@ void stream_buffer::update(uint16_t tag, uint64_t addr) {
                             break;
                         }
                     } if (!erased){
-                        ghr.update_ghr(tag, addr, it->delta);
                         ++ it;
                     }
                 } else
@@ -201,18 +253,21 @@ void stream_buffer::update(uint16_t tag, uint64_t addr) {
                 ++ it;
         } 
         if (!found){
-            int h_delta = ghr.search_ghr(tag, addr);
-            if (capacity == 8){
-                stream_buffer.pop_back();
-                capacity --;
+            if (capacity == 4){
+                for (auto l = stream_buffer.end(); l != stream_buffer.begin(); l++){
+                    if (l->delta == 0){
+                        stream_buffer.erase(l);
+                        break;
+                    }
+                    capacity --;
+                }
+                if (capacity == 4){
+                    stream_buffer.pop_back();
+                    capacity --;
+                }       
             }
             entry = {tag, addr, 0};
             stream_buffer.emplace_front(entry);
-            capacity ++;
-        }
-        if (found && capacity < 8){
-            entry = {tag, addr, 0};
-            stream_buffer.emplace_back(entry);
             capacity ++;
         }
     }
@@ -221,7 +276,7 @@ void stream_buffer::update(uint16_t tag, uint64_t addr) {
 void stream_buffer::get_delta(uint16_t tag){
     int i =0;
     for (auto it = stream_buffer.begin(); it != stream_buffer.end(); ++it){
-        if (tag == it->tag && i < 8){
+        if (tag == it->tag && i < capacity){
             delta[i] = it->delta;
             ++i;
         }
@@ -404,21 +459,21 @@ std::pair<double, Transaction> NextLine_Prefetcher::GetPrefetch(){
 void Stream_Prefetcher::initial(const Transaction &trans) {
     i = 0;
     prefetch_trans = trans;
-    for (int i = 0; i < 8 ; ++i){
-        Stream_buffer.delta[i] = 0;
+    for (int l = 0; l < 4 ; ++l){
+        Stream_buffer.delta[l] = 0;
     }
     tag = get_tag_uint16(trans.addr);
     Stream_buffer.update(tag, trans.addr);
     Stream_buffer.get_delta(tag);
-    if (Stream_buffer.delta[0] !=0){
-        for (int j = 1; j < distance; ++j){
-            int k = 0;
-            if (Stream_buffer.delta[j] == 0){
-                Stream_buffer.delta[j] = Stream_buffer.delta[k];
-                ++k;
-            }
-        }
-    }
+    // if (Stream_buffer.delta[0] !=0){
+    //     for (int j = 1; j < distance; ++j){
+    //         int k = 0;
+    //         if (Stream_buffer.delta[j] == 0){
+    //             Stream_buffer.delta[j] = Stream_buffer.delta[k];
+    //             ++k;
+    //         }
+    //     }
+    // }
 }
 
 std::pair<double, Transaction> Stream_Prefetcher::GetPrefetch(){
